@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="assets">
+      <UniqueIdentifier>{a281aeac-1b9c-4e0d-bc35-d34bf3cd64ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,5 +54,22 @@
   <ItemGroup>
     <Text Include="fragshader.txt" />
     <Text Include="vertshader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\Box-nouv.3dm">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="assets\car.3dm">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="assets\cilinder-nouv.3dm">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="assets\sphere2-nouv.3dm">
+      <Filter>assets</Filter>
+    </None>
+    <None Include="assets\Sphere-nouv.3dm">
+      <Filter>assets</Filter>
+    </None>
   </ItemGroup>
 </Project>
