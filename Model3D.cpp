@@ -19,7 +19,7 @@ Model3D* Model3D::LoadModel(const wchar_t* filename)
 
   FILE* file=NULL;
   _wfopen_s(&file, filename, L"rb");
-    
+
   if (file)
   {
     byte buffer[4];
@@ -29,10 +29,10 @@ Model3D* Model3D::LoadModel(const wchar_t* filename)
       Read3DSVersion4(file, model);
     fclose(file);
   }
-    
+
   return model;
 }
-  
+
 void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
 {
   int config=0;   // if the file includes texture coordinates then config&1=1
@@ -41,14 +41,14 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
   int read=fread(buffer, 1, 4, file);
   if (read==4)
     config=*(int*) buffer;
-    
+
   read=fread(buffer, 1, 4, file);
   if (read==4)
   {
     model->noofobjects=*(int*) buffer;
     model->objects=(Object3D**) malloc(sizeof(Object3D*)*model->noofobjects);
   }
-    
+
   for (int i=0; i<model->noofobjects; i++)
   {
     Object3D* object=model->objects[i]=new Object3D();
@@ -58,23 +58,23 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
 
     buffer[len]='\0';
     object->SetName((char*) buffer);
-  
+
     fread(buffer, 1, 8, file);
     int noofverts=*(int*) buffer;
     int noofpolys=*(int*) (buffer+4);
-      
+
     int reqsize=noofverts*6;
     if ((config&1)==1)
       reqsize+=noofverts*2; // uv coordindates
     reqsize*=4;
-      
+
     if (bufflen<reqsize)
     {
       free(buffer);
       buffer=(byte*) malloc(reqsize);
       bufflen=reqsize;
     }
-      
+
     int pos=0;
     do
     {
@@ -82,8 +82,8 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
       if (read>0)
         pos+=read;
     } while (read>0 && pos<reqsize);
-    object->SetVertexData(buffer, noofverts, reqsize); 
-      
+    object->SetVertexData(buffer, noofverts, reqsize);
+
     reqsize=noofpolys*6;
     if (bufflen<reqsize)
     {
@@ -91,7 +91,7 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
       buffer=(byte*) malloc(reqsize);
       bufflen=reqsize;
     }
-      
+
     pos=0;
     do
     {
@@ -100,13 +100,13 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
         pos+=read;
     } while (read>0 && pos<reqsize);
     object->SetTriangles(buffer, noofpolys);
-    
+
     fread(buffer, 1, 12, file);
     object->SetTranslation(buffer);
-      
+
     fread(buffer, 1, 52, file);
-    //object->SetMaterial(buffer);
+    object->SetMaterial(buffer);
   }
 
   free(buffer);
-}  
+}
