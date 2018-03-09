@@ -28,8 +28,8 @@ public:
   float mvmatrix[16], mvpmatrix[16];
 
   // if you are reading this, feel free to uncomment the following two lines and use these declarations for the light and material handles
-//  int lighthandles[5];  // direction; halfplane; ambient; diffuse; specular
-//  int mathandles[4];    // ambient, diffuse, specular, shininess
+  int lighthandles[5];  // direction; halfplane; ambient; diffuse; specular
+  int mathandles[4];    // ambient, diffuse, specular, shininess
   int verthandles[2];   // position, normal
 
 private:
