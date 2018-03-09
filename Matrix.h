@@ -1,0 +1,29 @@
+#pragma once
+
+/*
+The matrix is assumed to be stored as illustrated below:
+m[0] m[4] m[8]  m[12]
+m[1] m[5] m[9]  m[13]
+m[2] m[6] m[10] m[14]
+m[3] m[7] m[11] m[15]
+*/
+
+class Matrix
+{
+public:
+  static void SetIdentity(float* matrix);
+  static void Normalise3(float* vector);
+  static void CrossProduct3(const float* vec1, const float* vec2, float* dst);
+  static float DotProduct3(const float* vec1, const float* vec2);
+  static void MultiplyMatrix(float* result, const float* lhs, const float* rhs);
+  static void Translate(float* matrix, const float tx, const float ty, const float tz);
+  static void Scale(float* matrix, const float sx, const float sy, const float sz);
+  static void RotateX(float* matrix, const float degs);
+  static void RotateY(float* matrix, const float degs);
+  static void RotateZ(float* matrix, const float degs);
+
+  static void SetOrtho(float* matrix, const float left, const float right, const float bottom, const float top, const float znear, const float zfar);
+  static void SetFrustum(float* matrix, const float left, const float right, const float bottom, const float top, const float znear, const float zfar);
+  static void SetLookAt(float* matrix, const float* eye, const float* centre, const float* up);
+};
+
