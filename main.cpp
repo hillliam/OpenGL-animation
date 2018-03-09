@@ -11,23 +11,37 @@ static HWND hwnd;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 RenderingContext rcontext;
-Model3D* sphere, *box;
+Model3D* sphere, *box, *car, *Cylinder, *picker;
+
+Object3D* ball; // static item
+
+Object3D* arm_base, *arm_mid, *armjoint, *arm_end, *lift_box_p, *lift_box, // arm
+*base , *cabin, *left_wind, *rear_wheels, *right_wind, //root
+*left_wheel, *rightwheel, //driving
+*right_mirror, *left_mirror; // mirrors
 
 void OnCreate();
 void OnDraw();
 void OnSize(DWORD type, UINT cx, UINT cy);
 void OnLButtonDown(UINT nFlags, int x, int y);
 void OnMouseMove(UINT nFlags, int x, int y);
-
+void populatepicker();
 void CreateObjects();
 void CleanUp();
+void lights();
+void sethalfplane();
+void calculateoffsetpicker();
+
+float eye[3] = { 0.0f, 1.0f, 3.0f };
+
+float lightpos[3] = { 4.0f, 4.0f, 3.0f };
 
 // Win32 entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
   // This mini section is really useful to find memory leaks
 #ifdef _DEBUG   // only include this section of code in the DEBUG build
-//  _CrtSetBreakAlloc(65);  // really useful line of code to help find memory leaks
+//_CrtSetBreakAlloc(12);  // really useful line of code to help find memory leaks
   _onexit(_CrtDumpMemoryLeaks); // check for memory leaks when the program exits
 #endif
 
@@ -125,9 +139,16 @@ void OnCreate()
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
 
   // Light
-
+  rcontext.lighthandles[0] = glGetUniformLocation(rcontext.glprogram, "u_l_direction");
+  rcontext.lighthandles[1] = glGetUniformLocation(rcontext.glprogram, "u_l_halfplane");
+  rcontext.lighthandles[2] = glGetUniformLocation(rcontext.glprogram, "u_l_ambient");
+  rcontext.lighthandles[3] = glGetUniformLocation(rcontext.glprogram, "u_l_diffuse");
+  rcontext.lighthandles[4] = glGetUniformLocation(rcontext.glprogram, "u_l_specular");
   // Material
-        
+  rcontext.mathandles[0] = glGetUniformLocation(rcontext.glprogram, "u_m_ambient");
+  rcontext.mathandles[1] = glGetUniformLocation(rcontext.glprogram, "u_m_diffuse");
+  rcontext.mathandles[2] = glGetUniformLocation(rcontext.glprogram, "u_m_specular");
+  rcontext.mathandles[3] = glGetUniformLocation(rcontext.glprogram, "u_m_shininess");
   // Matrices
   rcontext.mvhandle=glGetUniformLocation(rcontext.glprogram, "u_mvmatrix");
   rcontext.mvphandle=glGetUniformLocation(rcontext.glprogram, "u_mvpmatrix");
@@ -137,6 +158,8 @@ void OnCreate()
   rcontext.verthandles[1]=glGetAttribLocation(rcontext.glprogram, "a_normal");
   
   glUseProgram(rcontext.glprogram);
+  // populate light
+
 
   glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
   glEnable(GL_CULL_FACE);
@@ -145,10 +168,82 @@ void OnCreate()
   glEnable(GL_DEPTH_TEST);
 
   // we can do this here because the camera never moves (for the moment...)
-  float eye[3]={0.0f, 1.0f, 3.0f};
   float centre[3]={0.0f, 0.0f, 0.0f};
   float up[3]={0.0f, 1.0f, 0.0f};
   Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
+  sethalfplane();
+  lights();
+}
+
+void drawbase()
+{
+	base->Draw(&rcontext);
+	rcontext.PushModelMatrix();
+		left_wind->Draw(&rcontext);
+		rear_wheels->Draw(&rcontext);
+		right_wind->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+}
+
+void draw_arm_1()
+{
+	arm_base->Draw(&rcontext);
+	arm_mid->Draw(&rcontext);
+}
+
+void draw_arm_2()
+{
+	armjoint->Draw(&rcontext); 
+	arm_end->Draw(&rcontext);
+}
+
+void draw_arm_3()
+{
+	lift_box_p->Draw(&rcontext);
+	lift_box->Draw(&rcontext);
+}
+
+void drawmirrors()
+{
+	cabin->Draw(&rcontext);
+	right_mirror->Draw(&rcontext);
+	left_mirror->Draw(&rcontext);
+}
+
+void draw_wheels()
+{
+	left_wheel->Draw(&rcontext);
+	rightwheel->Draw(&rcontext);
+}
+
+void drawarm()
+{
+	rcontext.PushModelMatrix();
+	rcontext.Scale(1.0, 7.0, 1.0);
+	//rcontext.RotateX(90);
+	//rcontext.RotateZ(90);
+	Cylinder->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+}
+
+void drawsphere()
+{
+	rcontext.Translate(0.0f, 2.5f, 0.0f);
+	rcontext.PushModelMatrix();
+	//rcontext.Translate(0.0f, 2.0f, 0.0f);
+	rcontext.Scale(2.0, 2.0, 2.0);
+	sphere->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+}
+
+void drawcar()
+{
+	rcontext.PushModelMatrix();
+	rcontext.Translate(1.0f, -1.0f, 1.0f);
+	rcontext.RotateX(180);
+	rcontext.Scale(1.2, 1.2, 1.2);
+	car->Draw(&rcontext);
+	rcontext.PopModelMatrix();
 }
 
 // This is called when the window needs to be redrawn
@@ -159,20 +254,171 @@ void OnDraw()
   glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
   rcontext.InitModelMatrix(true);
-
+  //drawarm();
+  //rcontext.Translate(-1.0f, -0.3f, -1.0f);
+  rcontext.Scale(1.3f,1.3f,1.3f);
+  //ball->Draw(&rcontext);
   rcontext.PushModelMatrix();
-    rcontext.Translate(-1.0f, 0.0f, 0.0f);
-    rcontext.RotateX(180);  // puts the seam at the back
-    sphere->Draw(rcontext);
+  drawbase();
+  rcontext.PushModelMatrix();
+  draw_arm_1();
+  rcontext.PushModelMatrix();
+  draw_arm_2();
+  rcontext.PushModelMatrix();
+  draw_arm_3();
+  rcontext.PopModelMatrix();
+  rcontext.PopModelMatrix();
   rcontext.PopModelMatrix();
 
-  rcontext.PushModelMatrix();
-    rcontext.Translate(1.0f, -1.0f, 0.0f);
-    box->Draw(rcontext);
+  drawmirrors();
+  
+  draw_wheels();
   rcontext.PopModelMatrix();
-
   glFinish();
   SwapBuffers(wglGetCurrentDC());
+}
+
+// arm
+void ondraw2()
+{
+	rcontext.PushModelMatrix();
+	//rcontext.Translate(-1.0f, -0.3f, -1.0f);
+	//rcontext.RotateX(180);
+	rcontext.Scale(2.0, 2.0, 2.0);
+	rcontext.RotateZ(90);
+	sphere->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+
+	rcontext.PushModelMatrix();
+	rcontext.RotateZ(30);
+	rcontext.RotateX(40);
+	rcontext.Translate(0.0f, 4.0f, 0.0f);
+
+	drawarm();
+
+	drawsphere();
+	//drawcar();
+
+	rcontext.PushModelMatrix();
+	rcontext.RotateZ(-30);
+	rcontext.Translate(0.0f, 4.0f, 0.0f);
+
+	drawarm();
+
+	drawsphere();
+	//drawcar();
+
+	rcontext.PushModelMatrix();
+	rcontext.RotateZ(-120);
+	rcontext.RotateX(70);
+	rcontext.Translate(0.0f, 4.0f, 0.0f);
+
+	drawarm();
+
+	drawsphere();
+
+	rcontext.PushModelMatrix();
+	rcontext.Translate(0.2f, 0.2f, 0.3f);
+	rcontext.Scale(0.7, 0.7, 0.7);
+	rcontext.RotateX(40);
+	drawarm();
+
+	rcontext.PushModelMatrix();
+	rcontext.Translate(0.9f, 5.0f, 0.0f);
+	rcontext.Scale(0.5, 0.5, 0.5);
+	rcontext.RotateX(40);
+	drawarm();
+	rcontext.PopModelMatrix();
+
+	rcontext.RotateX(40);
+	drawarm();
+
+	rcontext.PushModelMatrix();
+	rcontext.Translate(-0.7f, 5.0f, 0.0f);
+	rcontext.Scale(0.5, 0.5, 0.5);
+	rcontext.RotateX(-40);
+	drawarm();
+	rcontext.PopModelMatrix();
+
+	rcontext.PopModelMatrix();
+	//drawcar();
+
+	rcontext.PopModelMatrix();
+
+	rcontext.PopModelMatrix();
+
+	rcontext.PopModelMatrix();
+}
+// snowman
+void scean1()
+{
+	rcontext.PushModelMatrix();
+	rcontext.Translate(-1.0f, -0.4f, 0.0f);
+	rcontext.RotateX(180);  // puts the seam at the back
+	sphere->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+	rcontext.PushModelMatrix();
+	rcontext.Translate(-1.0f, 0.3f, 0.0f);
+	rcontext.RotateX(180);
+	rcontext.Scale(0.7, 0.7, 0.7);
+	sphere->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+
+	rcontext.PushModelMatrix();
+	rcontext.Translate(-1.0f, 0.8f, 0.0f);
+	rcontext.RotateX(180);
+	rcontext.Scale(0.4, 0.4, 0.4);
+	sphere->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+
+	rcontext.PushModelMatrix();
+	rcontext.Translate(-1.0f, 0.8f, 0.0f);
+	rcontext.RotateX(180);
+	rcontext.Scale(0.1, 0.1, 0.1);
+	sphere->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+	rcontext.PushModelMatrix();
+	rcontext.Translate(-1.0f, 0.8f, 0.0f);
+	rcontext.RotateX(180);
+	rcontext.Scale(0.1, 0.1, 0.1);
+	sphere->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+
+	rcontext.PushModelMatrix();
+	rcontext.Translate(1.0f, -1.0f, 0.0f);
+	rcontext.RotateX(340);
+	car->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+}
+
+void sethalfplane()
+{
+	float h[3];
+	float nh[3];
+	float neye[3] = { eye[0], eye[1], eye[2] };
+	float nlight[3] = { lightpos[0], lightpos[1], lightpos[2] };
+	float mag = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		h[i] = eye[i] + lightpos[i];
+		mag += h[i] * h[i];
+//		nh[i] = neye[i] + nlight[i];
+	}
+	Matrix::Normalise3(nh);
+	for (int i = 0; i < 3; i++)
+	{
+		h[i] /= mag;// nh[i];
+	}
+
+	glUniform3f(rcontext.lighthandles[1], h[0], h[1], h[2]); // set halfplane
+}
+
+void lights()
+{
+	glUniform3fv(rcontext.lighthandles[0],3, lightpos);
+	glUniform4f(rcontext.lighthandles[2], 0.5, 0.5, 0.5, 1);
+	glUniform4f(rcontext.lighthandles[3], 1.0, 1.0, 1.0, 1);
+	glUniform4f(rcontext.lighthandles[4], 1.0, 1.0, 1.0, 1);
 }
 
 // Called when the window is resized
@@ -205,11 +451,107 @@ void OnMouseMove(UINT nFlags, int x, int y)
 {
 }
 
-
 void CreateObjects()
 {
-  sphere=Model3D::LoadModel(L"Sphere-nouv.3dm");
-  box=Model3D::LoadModel(L"Box-nouv.3dm");
+  sphere = Model3D::LoadModel(L"assets\\Sphere2-nouv.3dm");
+  box = Model3D::LoadModel(L"assets\\Box-nouv.3dm");
+  car = Model3D::LoadModel(L"assets\\car.3dm");
+  Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
+  picker = Model3D::LoadModel(L"assets\\crane.3dm");
+  ball = new Object3D(true);
+  ball->SetDiffuse(255, 0, 0, 0);
+  populatepicker();
+  calculateoffsetpicker();
+}
+
+void calculateoffsetpicker()
+{
+	arm_base->getlocalmove(base);
+	arm_mid->getlocalmove(arm_base);
+	armjoint->getlocalmove(arm_mid);
+	arm_end->getlocalmove(armjoint);
+	lift_box_p->getlocalmove(arm_end);
+	lift_box->getlocalmove(lift_box_p);
+	cabin->getlocalmove(base);
+	left_wind->getlocalmove(cabin);
+	rear_wheels->getlocalmove(base);
+	right_wind->getlocalmove(cabin);
+	left_wheel->getlocalmove(base);
+	rightwheel->getlocalmove(base);
+	right_mirror->getlocalmove(cabin);
+	left_mirror->getlocalmove(cabin);
+}
+
+void populatepicker()
+{
+	for (int i = 0; i < picker->GetNoOfObjects(); i++)
+	{
+		Object3D* current = picker->GetObjects()[i];
+		if (_stricmp(current->getName(), "arm_base") == 0)
+		{
+			arm_base = current;
+		}
+		else if (_stricmp(current->getName(), "arm_mid") == 0)
+		{
+			arm_mid = current;
+		}
+		else if (_stricmp(current->getName(), "armjoint") == 0)
+		{
+			armjoint = current;
+		}
+		else if (_stricmp(current->getName(), "arm_end") == 0)
+		{
+			arm_end = current;
+		}
+		else if (_stricmp(current->getName(), "lift_pbox") == 0)
+		{
+			lift_box_p = current;
+		}
+		else if (_stricmp(current->getName(), "lift_box") == 0)
+		{
+			lift_box = current;
+		}
+		else if (_stricmp(current->getName(), "base") == 0)
+		{
+			base = current;
+		}
+		else if (_stricmp(current->getName(), "cabin") == 0)
+		{
+			cabin = current;
+		}
+		else if (_stricmp(current->getName(), "left_wind") == 0)
+		{
+			left_wind = current;
+		}
+		else if (_stricmp(current->getName(), "rear_wheel") == 0)
+		{
+			rear_wheels = current;
+		}
+		else if (_stricmp(current->getName(), "right_wind") == 0)
+		{
+			right_wind = current;
+		}
+		else if (_stricmp(current->getName(), "left_wheel") == 0)
+		{
+			left_wheel = current;
+		}
+		else if (_stricmp(current->getName(), "rightwheel") == 0)
+		{
+			rightwheel = current;
+		}
+		else if (_stricmp(current->getName(), "right_mirr") == 0)
+		{
+			right_mirror = current;
+		}
+		else if (_stricmp(current->getName(), "left_mirro") == 0)
+		{
+			left_mirror = current;
+		}
+		else
+		{
+			current->getName();
+		}
+	}
 }
 
 void CleanUp()
@@ -218,4 +560,8 @@ void CleanUp()
 
   delete sphere;
   delete box;
+  delete car;
+  delete Cylinder;
+  delete ball;
+  delete picker;
 }
