@@ -6,15 +6,22 @@ class Object3D
 {
 public:
   Object3D();
+  Object3D(bool circledraw);
   ~Object3D();
+  float local[3];
 
   void SetName(const char* name);
-
+  char* getName();
   void SetVertexData(byte* buffer, int noofverts, int bufferlen);
   void SetTriangles(byte* buffer, int noofpolys);
+  void getlocalmove(Object3D* root);
+  void Draw(RenderingContext* rcontext);
 
-  void Draw(RenderingContext rcontext);
-
+  void SetMaterial(byte* buffer);
+  void SetDiffuse(float r, float g, float b, float a);
+  const float* GetDiffuse();
+  void SetTextureMap(int id);
+  
   void SetTranslation(byte* buffer);
   void SetTranslation(float x, float y, float z);
 
@@ -30,12 +37,39 @@ private:
   float* vertexdata;
   unsigned short* polygons;
   
+  float glossiness, speclevel;
+  float ambient[4], diffuse[4], specular[4];
+
   unsigned int* vbos;
   
+  int texturemap;
 
   void InitVBOs();
-
+  void circle();
 };
+
+inline void Object3D::SetTextureMap(int id)
+{
+  texturemap=id;
+}
+
+inline void Object3D::SetDiffuse(float r, float g, float b, float a)
+{
+  diffuse[0]=r;
+  diffuse[1]=g;
+  diffuse[2]=b;
+  diffuse[3]=a;
+}
+  
+inline char* Object3D::getName()
+{
+	return name;
+}
+
+inline const float* Object3D::GetDiffuse()
+{
+  return diffuse;
+}
 
 inline void Object3D::SetName(const char* name)
 {
