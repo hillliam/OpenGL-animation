@@ -16,34 +16,39 @@ class Matrix
 public:
   static void SetIdentity(float* matrix);
   static void Normalise3(float* vector);
+  static void CrossProduct3(const float* vec1, const float* vec2, float* dst);
+  static float DotProduct3(const float* vec1, const float* vec2);
   static void MultiplyMatrix(float* result, const float* lhs, const float* rhs);
   static void Translate(float* matrix, const float tx, const float ty, const float tz);
   static void Scale(float* matrix, const float sx, const float sy, const float sz);
   static void RotateX(float* matrix, const float degs);
   static void RotateY(float* matrix, const float degs);
   static void RotateZ(float* matrix, const float degs);
-  static void SetOrtho(float* matrix, float left, float right, float bottom, float top, float neara, float fara);
-  static void SetFrustum(float* matrix, float left, float right, float bottom, float top, float neara, float fara);
-  static void SetLookAt(float* matrix, float* eye, float* centre, float* up);
-  static float dotproduct(float* a, float* b);
-  static float* crosproduct(float* a, float* b);
+  static void SetOrtho(float* matrix, const float left, const float right, const float bottom, const float top, const float znear, const float zfar);
+  static void SetFrustum(float* matrix, const float left, const float right, const float bottom, const float top, const float znear, const float zfar);
+  static void SetLookAt(float* matrix, const float* eye, const float* centre, const float* up);
 };
 
-inline void Matrix::SetLookAt(float* matrix, float* eye, float* centre, float* up)
+#ifndef _MIKE
+
+inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* centre, const float* up)
 {
 	Matrix::SetIdentity(matrix);
-	Matrix::Normalise3(up);
+	float nup[3] = {up[0], up[1], up[2]};
+	Matrix::Normalise3(nup);
 	float* forward = new float[3];
 	forward[0] = centre[0] - eye[0];
 	forward[1] = centre[1] - eye[1];
 	forward[2] = centre[2] - eye[2];
 	Matrix::Normalise3(forward);
-	float* s = crosproduct(forward, up);
+	float* s = new float[3];
+	CrossProduct3(forward, up, s);
 	Matrix::Normalise3(s);
 	matrix[0] = s[0];
 	matrix[4] = s[1];
 	matrix[8] = s[2];
-	float* u = crosproduct(s, forward);
+	float* u = new float[3];
+	CrossProduct3(s, forward, u);
 	Matrix::Normalise3(u);
 	matrix[1] = u[0];
 	matrix[5] = u[1];
@@ -51,33 +56,30 @@ inline void Matrix::SetLookAt(float* matrix, float* eye, float* centre, float* u
 	matrix[2] = forward[0];
 	matrix[6] = forward[1];
 	matrix[10] = forward[2];
-	matrix[12] = dotproduct(s, eye);
-	matrix[13] = dotproduct(u, eye);
-	matrix[14] = dotproduct(forward, eye);
+	matrix[12] = DotProduct3(s, eye);
+	matrix[13] = DotProduct3(u, eye);
+	matrix[14] = DotProduct3(forward, eye);
 
 }
 
-inline float Matrix::dotproduct(float* a, float* b)
+inline float Matrix::DotProduct3(const float* vec1, const float* vec2)
 {
 	float value = 0;
-	value += a[0] * b[0];
-	value += a[1] * b[1];
-	value += a[2] * b[2];
+	value += vec1[0] * vec2[0];
+	value += vec1[1] * vec2[1];
+	value += vec1[2] * vec2[2];
 	return value;
 }
 
-inline float* Matrix::crosproduct(float* a, float* b)
+inline void Matrix::CrossProduct3(const float* vec1, const float* vec2, float* dst)
 {
-	float* cros = new float[3];
-	cros[0] = a[1] * b[2] - a[2] * b[1];
-	cros[1] = a[2] * b[0] - a[0] * b[2];
-	cros[2] = a[0] * b[1] - a[1] * b[0];
-	return cros;
+	dst[0] = vec1[1] * vec2[2] - vec1[2] * vec2[1];
+	dst[1] = vec1[2] * vec2[0] - vec1[0] * vec2[2];
+	dst[2] = vec1[0] * vec2[1] - vec1[1] * vec2[0];
 }
 
 // We can inline SetIdentity because it is such a small method
 // This method is done for you
-#ifndef _MIKE
 
 inline void Matrix::SetIdentity(float* matrix)
 {
