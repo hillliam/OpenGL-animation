@@ -22,7 +22,9 @@ Object3D* arm_base, *arm_mid, *armjoint, *arm_end, *lift_box_p, *lift_box, // ar
 
 void OnCreate();
 void OnDraw();
+void OnTimer(UINT nIDEvent);
 void OnSize(DWORD type, UINT cx, UINT cy);
+void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 void OnLButtonDown(UINT nFlags, int x, int y);
 void OnMouseMove(UINT nFlags, int x, int y);
 void populatepicker();
@@ -33,9 +35,22 @@ void sethalfplane();
 void calculateoffsetpicker();
 
 float eye[3] = { 0.0f, 1.0f, 3.0f };
-
+float centre[3] = { 0.0f, 0.0f, 0.0f };
+float up[3] = { 0.0f, 1.0f, 0.0f };
 float lightpos[3] = { 4.0f, 4.0f, 3.0f };
+float width = 0;
+float hight = 0;
+const float FOVY = (60.0f*(float)M_PI / 180.0f);
+float fAspect = 0;
+// our FOV is 60 degrees 
+const float NEAR_CLIP = 0.01f;  // for example
+const float FAR_CLIP = 100.0f;  // for example
 
+float ray_pos[3];
+float ray_dir[3];
+
+int vbo[2] = { 0 };
+float verts[6];
 // Win32 entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -66,7 +81,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   int height=768;
   int offx=(::GetSystemMetrics(SM_CXSCREEN)-width)/2;
   int offy=(::GetSystemMetrics(SM_CYSCREEN)-height)/2;
-
+  OnSize(NULL, width, hight);
   // Create the window using the definition provided above
   CreateWindowEx(NULL, L"GettingStarted", L"Getting Started with OpenGL - lighting", WS_OVERLAPPEDWINDOW|WS_VISIBLE, offx, offy, width, height, NULL, NULL, hInstance, NULL);
 
@@ -76,7 +91,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   while (msg.message!=WM_QUIT)  // keep looping until we get the quit message
   {
     if (GetMessage(&msg, NULL, 0, 0)) // cause this thread to wait until there is a message to process
-    {
+	//while (PeekMessage(&msg, NULL, 0, 0,0))    
+	{
       // These two lines of code take the MSG structure, mess with it, and correctly dispatch it to the WndProc defined during the window creation
       TranslateMessage(&msg);
       DispatchMessage(&msg);
@@ -92,6 +108,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
   switch (message) 
   {
+  case WM_TIMER:
+	  OnTimer(wParam);
+	  break;
   case WM_CREATE:
     hwnd=hWnd;
     OnCreate();
@@ -114,6 +133,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
   case WM_MOUSEMOVE:
     OnMouseMove(wParam, lParam&0xFFFF, (lParam>>16)&0xFFFF);
     break;
+  case WM_KEYDOWN:
+	  OnKeyDown(wParam, lParam & 0xFFFF, lParam >> 16);
+	  break;
   case WM_DESTROY:
     PostQuitMessage(0);
     break;
@@ -160,6 +182,18 @@ void OnCreate()
   glUseProgram(rcontext.glprogram);
   // populate light
 
+//glEnable(GL_BLEND);
+
+  glGenBuffers(2, (unsigned int*)vbo);
+  int size = sizeof(float) * 2 * 3;
+  glLineWidth(4.0f);
+  for (int i = 0; i < 3; i++)
+  {
+	  verts[i] = ray_pos[i];
+	  verts[i + 3] = ray_pos[i] + ray_dir[i] * 1000;
+  }
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+  glBufferData(GL_ARRAY_BUFFER, size, verts, GL_DYNAMIC_DRAW);
 
   glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
   glEnable(GL_CULL_FACE);
@@ -168,8 +202,6 @@ void OnCreate()
   glEnable(GL_DEPTH_TEST);
 
   // we can do this here because the camera never moves (for the moment...)
-  float centre[3]={0.0f, 0.0f, 0.0f};
-  float up[3]={0.0f, 1.0f, 0.0f};
   Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
   sethalfplane();
   lights();
@@ -404,13 +436,45 @@ void sethalfplane()
 		mag += h[i] * h[i];
 //		nh[i] = neye[i] + nlight[i];
 	}
-	Matrix::Normalise3(nh);
+	//Matrix::Normalise3(nh);
 	for (int i = 0; i < 3; i++)
 	{
 		h[i] /= mag;// nh[i];
 	}
 
 	glUniform3f(rcontext.lighthandles[1], h[0], h[1], h[2]); // set halfplane
+}
+
+void Raytrace(double x, double y)
+{
+	float vlength = tan(FOVY / 2) * NEAR_CLIP;
+	float h_length = fAspect*vlength;
+
+	float view[3] = { centre[0] -eye[0], centre[1] - eye[1], centre[2] - eye[2] };
+	float h[3];
+	float v[3];
+
+	Matrix::CrossProduct3(rcontext.viewmatrix, up, h);
+	Matrix::CrossProduct3(h, rcontext.viewmatrix, v);
+
+	Matrix::Normalise3(view);
+	Matrix::Normalise3(h);
+	Matrix::Normalise3(v);
+
+	for (int i = 0; i < 3; i++)
+	{
+		v[i] = v[i] * vlength;
+		h[i] = h[i] * h_length;
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		ray_dir[i] = h[i] * x + v[i] * y + view[i] * NEAR_CLIP;
+	}
+
+	ray_pos[0] = eye[0] + ray_dir[0];
+	ray_pos[1] = eye[1] + ray_dir[1];
+	ray_pos[2] = eye[2] + ray_dir[2];
 }
 
 void lights()
@@ -424,25 +488,55 @@ void lights()
 // Called when the window is resized
 void OnSize(DWORD type, UINT cx, UINT cy)
 {
-  if (cx>0 && cy>0)
-  {
-    glViewport(0, 0, cx, cy);
+	if (cx > 0 && cy > 0)
+	{
+		glViewport(0, 0, cx, cy);
 
-    // our FOV is 60 degrees 
-    const float FOVY=(60.0f*(float) M_PI/180.0f); 
-    const float NEAR_CLIP=0.01f;  // for example
-    const float FAR_CLIP=100.0f;  // for example
+		fAspect = (float)cx / cy;
+		float top = (float)(tan(FOVY*0.5)*NEAR_CLIP);
+		float bottom = -top;
+		float left = fAspect * bottom;
+		float right = fAspect * top;
 
-    float fAspect=(float) cx/cy;
-    float top=(float) (tan(FOVY*0.5)*NEAR_CLIP);
-    float bottom=-top;
-    float left=fAspect*bottom;
-    float right=fAspect*top;
-  
-    Matrix::SetFrustum(rcontext.projectionmatrix, left, right, bottom, top, NEAR_CLIP, FAR_CLIP);
-  }
+		width = cx;
+		hight = cy;
+
+		Matrix::SetFrustum(rcontext.projectionmatrix, left, right, bottom, top, NEAR_CLIP, FAR_CLIP);
+	}
+}
+void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+	switch (nChar)
+	{
+	case 'A':
+		eye[0] += 0.1f;
+		//centre[0] += 0.1f;
+		break;
+	case 'S':
+		eye[1] += 0.1f;
+		//centre[1] += 0.1f;
+		break;
+	case 'Z':
+		eye[0] -= 0.1f;
+		break;
+	case 'X':
+		eye[1] -= 0.1f;
+		break;
+	default:
+		break;
+	}
+	sethalfplane();
+	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
+	PAINTSTRUCT paint;
+	BeginPaint(hwnd, &paint);
+	OnDraw();
+	EndPaint(hwnd, &paint);
 }
 
+void OnTimer(UINT nIDEvent)
+{
+
+}
 void OnLButtonDown(UINT nFlags, int x, int y)
 {
 }
