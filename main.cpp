@@ -33,6 +33,7 @@ void CleanUp();
 void lights();
 void sethalfplane();
 void calculateoffsetpicker();
+void calculateoffsetpickerdebug();
 
 float eye[3] = { 0.0f, 1.0f, 3.0f };
 float centre[3] = { 0.0f, 0.0f, 0.0f };
@@ -51,6 +52,10 @@ float ray_dir[3];
 
 int vbo[2] = { 0 };
 float verts[6];
+
+float lastx = 0;
+float lasty = 0;
+
 // Win32 entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -288,8 +293,12 @@ void OnDraw()
   rcontext.InitModelMatrix(true);
   //drawarm();
   //rcontext.Translate(-1.0f, -0.3f, -1.0f);
-  rcontext.Scale(1.3f,1.3f,1.3f);
-  //ball->Draw(&rcontext);
+  //rcontext.Scale(0.3f,0.3f,0.3f);
+  rcontext.PushModelMatrix();
+  rcontext.Scale(0.3f, 0.3f, 0.3f);
+  rcontext.Translate(0, 0, -5);
+  ball->Draw(&rcontext);
+  /*rcontext.PopModelMatrix();
   rcontext.PushModelMatrix();
   drawbase();
   rcontext.PushModelMatrix();
@@ -304,7 +313,7 @@ void OnDraw()
 
   drawmirrors();
   
-  draw_wheels();
+  draw_wheels();*/
   rcontext.PopModelMatrix();
   glFinish();
   SwapBuffers(wglGetCurrentDC());
@@ -543,6 +552,28 @@ void OnLButtonDown(UINT nFlags, int x, int y)
 
 void OnMouseMove(UINT nFlags, int x, int y)
 {
+	if (nFlags == 1) // mouse key is down
+	{// diffrence between last and now
+		eye[0] = (lastx - x);
+		eye[1] = (lasty - y);
+	}
+	else if (nFlags == 1)
+	{// does nothing
+		//centre[0] = (lastx - x);
+		//centre[1] = (lasty - y);
+	}
+	else
+	{ // record starting x and y
+		lastx = x;
+		lasty = y;
+	}
+
+	sethalfplane();
+	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
+	PAINTSTRUCT paint;
+	BeginPaint(hwnd, &paint);
+	OnDraw();
+	EndPaint(hwnd, &paint);
 }
 
 void CreateObjects()
@@ -555,7 +586,8 @@ void CreateObjects()
   ball = new Object3D(true);
   ball->SetDiffuse(255, 0, 0, 0);
   populatepicker();
-  calculateoffsetpicker();
+  //calculateoffsetpicker();
+  calculateoffsetpickerdebug();
 }
 
 void calculateoffsetpicker()
@@ -574,6 +606,24 @@ void calculateoffsetpicker()
 	rightwheel->getlocalmove(base);
 	right_mirror->getlocalmove(cabin);
 	left_mirror->getlocalmove(cabin);
+}
+
+void calculateoffsetpickerdebug()
+{
+	arm_base->getlocalmove(base);
+	arm_mid->getlocalmove(base);
+	armjoint->getlocalmove(base);
+	arm_end->getlocalmove(base);
+	lift_box_p->getlocalmove(base);
+	lift_box->getlocalmove(base);
+	cabin->getlocalmove(base);
+	left_wind->getlocalmove(base);
+	rear_wheels->getlocalmove(base);
+	right_wind->getlocalmove(base);
+	left_wheel->getlocalmove(base);
+	rightwheel->getlocalmove(base);
+	right_mirror->getlocalmove(base);
+	left_mirror->getlocalmove(base);
 }
 
 void populatepicker()

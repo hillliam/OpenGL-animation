@@ -46,6 +46,7 @@ private:
 
   void InitVBOs();
   void circle();
+  void cube();
 };
 
 inline void Object3D::SetTextureMap(int id)

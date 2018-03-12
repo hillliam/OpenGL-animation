@@ -7,7 +7,6 @@ Object3D::Object3D()
   vertexdata=NULL;
   polygons=NULL;
   name=NULL;
-  SetName("circle");
   translation[0]=translation[1]=translation[2]=0.0f;
   local[0] = local[1] = local[2] = 0.0f;
   speclevel=5;
@@ -28,9 +27,18 @@ Object3D::Object3D()
   texturemap=-1;
 }
 
+void Object3D::cube()
+{
+	const int vsize = 8 * sizeof(float);
+	vertexdata = (float*)malloc(vsize);
+	const int psize = (8/3) * sizeof(unsigned short);
+	polygons = (unsigned short*)malloc(psize);
+
+}
+
 void Object3D::circle()
 {
-	const int n = 3*300;
+	const int n = 3*10;
 	const int NOOFVERTS = (n + 1);
 	const int NOOFTRIANGLES = n;
 	const int size2 = 3 * NOOFVERTS * sizeof(float);
@@ -42,16 +50,17 @@ void Object3D::circle()
 	
 	vertexdata[0] = 0;
 	vertexdata[1] = 0;
-	vertexdata[2] = -1;
+	vertexdata[2] = 0;
 
 	for (int i = 0; i < n; i += 3)
 	{
 		float rads = DEGSTORADS(i*(360.0 / n));
 		float x = sin(rads * 0.9);
 		float y = cos(rads * 0.9);
+		float z = tan(rads * 0.9);
 		vertexdata[i] = x;
 		vertexdata[i+1] = y;
-		vertexdata[i+2] = -1;
+		vertexdata[i+2] = z;
 	}
 	for (int i = 2; i < n; i++)
 	{
@@ -72,6 +81,8 @@ Object3D::Object3D(bool circledraw)
 	polygons = NULL;
 	name = NULL;
 
+	SetName("circle");
+
 	translation[0] = translation[1] = translation[2] = 0.0f;
 	local[0] = local[1] = local[2] = 0.0f;
 	speclevel = 5;
@@ -91,6 +102,7 @@ Object3D::Object3D(bool circledraw)
 
 	texturemap = -1;
 
+	//cube();
 	circle();
 }
 
@@ -216,6 +228,11 @@ void Object3D::Draw(RenderingContext* rcontext)
       glEnableVertexAttribArray(rcontext->verthandles[1]);
      //glEnableVertexAttribArray(rcontext->verthandles[2]);
     }
+	else if (getName() == "circle")
+	{
+		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4 * 3, (void*)0);
+		glEnableVertexAttribArray(rcontext->verthandles[0]);
+	}
     else
     {
       glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4*6, (void*) 0);
