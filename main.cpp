@@ -53,9 +53,12 @@ float ray_dir[3];
 int vbo[2] = { 0 };
 float verts[6];
 
+// starting location on screen of mouse
 float lastx = 0;
 float lasty = 0;
 
+bool animating = false;
+int animationstage = 0;
 // Win32 entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -544,7 +547,20 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void OnTimer(UINT nIDEvent)
 {
-
+	if (animating)
+	{
+		switch (animationstage)
+		{
+		case 0: // chery picker extend legs
+			break;
+		case 1: // fold mirrors in
+			break;
+		case 2: // rotate base of arm 90 left
+			break;
+		case 3: // raise arm up
+			break;
+		}
+	}
 }
 void OnLButtonDown(UINT nFlags, int x, int y)
 {
@@ -557,10 +573,10 @@ void OnMouseMove(UINT nFlags, int x, int y)
 		eye[0] = (lastx - x);
 		eye[1] = (lasty - y);
 	}
-	else if (nFlags == 1)
-	{// does nothing
-		//centre[0] = (lastx - x);
-		//centre[1] = (lasty - y);
+	else if (nFlags == 2)
+	{
+		centre[0] = (lastx - x);
+		centre[1] = (lasty - y);
 	}
 	else
 	{ // record starting x and y
