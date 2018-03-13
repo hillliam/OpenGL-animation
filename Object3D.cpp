@@ -11,7 +11,7 @@ Object3D::Object3D()
   local[0] = local[1] = local[2] = 0.0f;
   speclevel=5;
   glossiness=25;
-    
+
   elementcount=0;
   elementtype=GL_TRIANGLES;    
 
@@ -228,7 +228,7 @@ void Object3D::Draw(RenderingContext* rcontext)
       glEnableVertexAttribArray(rcontext->verthandles[1]);
      //glEnableVertexAttribArray(rcontext->verthandles[2]);
     }
-	else if (getName() == "circle")
+	else if (_stricmp(getName(), "circle") == 0)
 	{
 		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4 * 3, (void*)0);
 		glEnableVertexAttribArray(rcontext->verthandles[0]);
