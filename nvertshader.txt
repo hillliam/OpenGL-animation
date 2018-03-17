@@ -1,0 +1,29 @@
+// Light 
+uniform vec3 u_l_direction; 
+uniform vec3 u_l_halfplane; 
+uniform vec4 u_l_ambient; 
+uniform vec4 u_l_diffuse; 
+uniform vec4 u_l_specular; 
+ 
+// Material 
+uniform vec4 u_m_ambient; 
+uniform vec4 u_m_diffuse; 
+uniform vec4 u_m_specular; 
+uniform float u_m_shininess; 
+ 
+// Matrices 
+uniform mat4 u_mvmatrix; 
+uniform mat4 u_mvpmatrix; 
+ 
+// Attributes 
+attribute vec4 a_position; 
+attribute vec3 a_normal; 
+ 
+// Varyings 
+varying vec4 v_colour; 
+ 
+void main() 
+{
+  v_colour=u_m_ambient;
+  gl_Position=u_mvpmatrix*a_position;
+}
