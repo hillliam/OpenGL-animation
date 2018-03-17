@@ -22,7 +22,8 @@ public:
   void RotateY(const float degs);
   void RotateZ(const float degs);
 
-  int glprogram;
+  int glprogram; // full shader with lighting 
+  int nullglprogram; // no lighting program
   int mvhandle, mvphandle;
   float viewmatrix[16], projectionmatrix[16];
   float mvmatrix[16], mvpmatrix[16];
@@ -49,7 +50,7 @@ inline void RenderingContext::InitModelMatrix(bool resetdepth)
 {
   if (resetdepth)
     depth=0;
-  Matrix::SetIdentity(modelmatrix);  
+  Matrix::SetIdentity(modelmatrix + depth);
 }
 
 inline void RenderingContext::PushModelMatrix()

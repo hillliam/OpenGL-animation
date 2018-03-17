@@ -89,7 +89,7 @@
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <StringPooling>true</StringPooling>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
       <ControlFlowGuard>false</ControlFlowGuard>
       <FloatingPointExceptions>true</FloatingPointExceptions>
     </ClCompile>
