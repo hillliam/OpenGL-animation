@@ -144,7 +144,7 @@ inline void Matrix::Translate(float* matrix, const float tx, const float ty, con
 	matrix[12] = matrix[0] * tx + matrix[4] * ty + matrix[8] * tz + matrix[12];
 	matrix[13] = matrix[1] * tx + matrix[5] * ty + matrix[9] * tz + matrix[13];
 	matrix[14] = matrix[2] * tx + matrix[6] * ty + matrix[10] * tz + matrix[14];
-	matrix[15] = matrix[3] * tx + matrix[7] * ty + matrix[11] * tz + matrix[15];
+	//matrix[15] = matrix[3] * tx + matrix[7] * ty + matrix[11] * tz + matrix[15];
 }
 
 inline void Matrix::Scale(float* matrix, const float sx, const float sy, const float sz)
@@ -165,38 +165,30 @@ inline void Matrix::Scale(float* matrix, const float sx, const float sy, const f
 
 inline void Matrix::RotateX(float* matrix, const float degs)
 {
-	matrix[1] = matrix[5] * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
+	matrix[11] = matrix[5] * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
 	float old5 = matrix[5];
-	matrix[5] = matrix[5] * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
+	matrix[12] = matrix[5] * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
 	float old9 = matrix[9];
-	matrix[9] = old5 * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
-	matrix[13] = old5 * cos(DEGSTORADS(degs)) + old9 * -sin(DEGSTORADS(degs));
-
-	matrix[2] = matrix[6] * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
-	float old6 = matrix[6];
-	matrix[6] = matrix[6] * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
-	float old10 = matrix[10];
-	matrix[10] = old6 * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
-	matrix[14] = old6 * sin(DEGSTORADS(degs)) + old10 * cos(DEGSTORADS(degs));
-
+	matrix[13] = old5 * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
+	matrix[14] = old5 * cos(DEGSTORADS(degs)) + old9 * -sin(DEGSTORADS(degs));
 }
 
 inline void Matrix::RotateY(float* matrix, const float degs)
 {
 	float old0 = matrix[0];
-	matrix[0] = matrix[0] * cos(DEGSTORADS(degs)) + matrix[2] * -sin(DEGSTORADS(degs));
-	float old8 = matrix[8];
+	matrix[8] = matrix[0] * cos(DEGSTORADS(degs)) + matrix[2] * -sin(DEGSTORADS(degs));
+	float old1 = matrix[1];
 	matrix[8] = matrix[8] * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
 
 	matrix[1] = old0 * cos(DEGSTORADS(degs)) + matrix[2] * -sin(DEGSTORADS(degs));
-	matrix[9] = old8 * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
+	matrix[9] = old1 * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
 	float old2 = matrix[2];
 	matrix[2] = old0 * cos(DEGSTORADS(degs)) + old2 * -sin(DEGSTORADS(degs));
-	float old10 = matrix[10];
-	matrix[10] = old8 * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
+	float old3 = matrix[3];
+	matrix[10] = old1 * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
 
 	matrix[3] = old0 * cos(DEGSTORADS(degs)) + old2 * -sin(DEGSTORADS(degs));
-	matrix[11] = old8 * sin(DEGSTORADS(degs)) + old10 * cos(DEGSTORADS(degs));
+	matrix[11] = old1 * sin(DEGSTORADS(degs)) + old3 * cos(DEGSTORADS(degs));
 }
 
 inline void Matrix::RotateZ(float* matrix, const float degs)
