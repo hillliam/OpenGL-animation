@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "Matrix.h"
 
 class Test
@@ -13,6 +15,9 @@ private:
 	static void testsmatrix();
 	static void testmultiply();
 	static void testtranslate();
+	static void testtranslateu();
+	static void testscale();
+	static void testscaleu();
 	static void testrotx();
 	static void testroty();
 	static void testrotz();
@@ -54,6 +59,10 @@ void Test::testnormal()
 	{
 		std::cout << "Normalise3 pass" << std::endl;
 	}
+	else
+	{
+		std::cout << "Normalise3 fail" << std::endl;
+	}
 }
 void Test::testcprod()
 {
@@ -68,6 +77,10 @@ void Test::testcprod()
 	{
 		std::cout << "cross product pass" << std::endl;
 	}
+	else
+	{
+		std::cout << "cross product fail" << std::endl;
+	}
 }
 void Test::testdot()
 {
@@ -79,6 +92,10 @@ void Test::testdot()
 	if (result == rresult)
 	{
 		std::cout << "dot pruduct pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "dot pruduct fail" << std::endl;
 	}
 }
 void Test::testsmatrix()
@@ -113,8 +130,33 @@ void Test::testmultiply()
 	{
 		std::cout << "multiply pass" << std::endl;
 	}
+	else
+	{
+		std::cout << "multiply fail" << std::endl;
+	}
 }
 void Test::testtranslate()
+{
+	float data[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,13,14,15,16 };
+	float rdata[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,51,58,65,16 };
+	Matrix::Translate(data, 1, 2, 3);
+	printmatrix(data, 16);
+	if (compare(data, rdata, 16))
+	{
+		std::cout << "translate pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "translate fail" << std::endl;
+	}
+}
+void Test::testtranslateu()
 {
 	float data[16] = { 1,2,3,4
 		,5,6,7,8
@@ -128,7 +170,53 @@ void Test::testtranslate()
 	printmatrix(data, 16);
 	if (compare(data, rdata, 16))
 	{
-		std::cout << "translate pass" << std::endl;
+		std::cout << "translate u pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "translate u fail" << std::endl;
+	}
+}
+void Test::testscale()
+{
+	float data[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,13,14,15,16 };
+	float rdata[16] = { 1,2,3,4
+		,10,12,14,16
+		,27,30,33,36
+		,13,14,15,16 };
+	Matrix::Scale(data, 1, 2, 3);
+	printmatrix(data, 16);
+	if (compare(data, rdata, 16))
+	{
+		std::cout << "scale pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "scale fail" << std::endl;
+	}
+}
+void Test::testscaleu()
+{
+	float data[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,13,14,15,16 };
+	float rdata[16] = { 2,4,6,8
+		,10,12,14,16
+		,18,20,22,24
+		,13,14,15,16 };
+	Matrix::Scale(data, 2, 2, 2);
+	printmatrix(data, 16);
+	if (compare(data, rdata, 16))
+	{
+		std::cout << "scale u pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "scale u fail" << std::endl;
 	}
 }
 void Test::testrotx()
@@ -147,6 +235,10 @@ void Test::testrotx()
 	{
 		std::cout << "rotate x pass" << std::endl;
 	}
+	else
+	{
+		std::cout << "rotate x fail" << std::endl;
+	}
 }
 void Test::testroty()
 {
@@ -162,7 +254,11 @@ void Test::testroty()
 	printmatrix(data, 16);
 	if (compare(data, rdata, 16))
 	{
-		std::cout << "multiply pass" << std::endl;
+		std::cout << "rotate y pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "rotate y fail" << std::endl;
 	}
 }
 void Test::testrotz()
@@ -179,13 +275,20 @@ void Test::testrotz()
 	printmatrix(data, 16);
 	if (compare(data, rdata, 16))
 	{
-		std::cout << "multiply pass" << std::endl;
+		std::cout << "rotate z pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "rotate z fail" << std::endl;
 	}
 }
 void Test::testbmatrix()
 {
 	testmultiply();
 	testtranslate();
+	testtranslateu();
+	testscale();
+	testscaleu();
 	testrotx();
 	testroty();
 	testrotz();
@@ -208,6 +311,10 @@ void Test::testlookat()
 	if (compare(data, rdata, 16))
 	{
 		std::cout << "look at pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "look at fail" << std::endl;
 	}
 }
 void Test::testotho()
@@ -234,6 +341,10 @@ void Test::testotho()
 	{
 		std::cout << "ortho pass" << std::endl;
 	}
+	else
+	{
+		std::cout << "ortho fail" << std::endl;
+	}
 }
 void Test::testfrustum()
 {
@@ -257,7 +368,11 @@ void Test::testfrustum()
 	printmatrix(data, 16);
 	if (compare(data, rdata, 16))
 	{
-		std::cout << "multiply pass" << std::endl;
+		std::cout << "frustum pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "frustum fail" << std::endl;
 	}
 }
 void Test::testcomplex()
@@ -268,6 +383,9 @@ void Test::testcomplex()
 }
 void Test::testmatrixclass()
 {
+	std::ofstream out("test.txt");
+	std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
+	std::cout.rdbuf(out.rdbuf());
 	testsmatrix();
 	testbmatrix();
 	testcomplex();
