@@ -228,10 +228,81 @@ void testbmatrix()
 	testroty();
 	testrotz();
 }
+void testlookat()
+{
+	float data[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,13,14,15,16 };
+	float eyes[3] = { 0.0f, 1.0f, 3.0f };
+	float centres[3] = { 0.0f, 0.0f, 0.0f };
+	float ups[3] = { 0.0f, 1.0f, 0.0f };
+	float rdata[16] = { 1,0,-0,0
+		,-0,0.948683262,0.316227764,0
+		,0,-0.316227764,0.948683262,0
+		,-0,-0,-3.16227746,1 };
+	Matrix::SetLookAt(data,eyes, centres, ups);
+	printmatrix(data, 16);
+	if (compare(data, rdata, 16))
+	{
+		std::cout << "look at pass" << std::endl;
+	}
+}
+void testotho()
+{
+	float data[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,13,14,15,16 };
+	float fAspect = (float)1024 / 768;
+	float top = (float)(tan(FOVY*0.5)*NEAR_CLIP);
+	float bottom = -top;
+	float left = fAspect * bottom;
+	float right = fAspect * top;
+	float rdata[16] = { 129.903809,0,0,0
+		,0,173.205078,0,0
+		,0,0,-0.020002,0
+		,-0,-0,-1.00020003,1 };
+	Matrix::SetOrtho(data, left, right, bottom, top, NEAR_CLIP, FAR_CLIP);
+	printmatrix(data, 16);
+	if (compare(data, rdata, 16))
+	{
+		std::cout << "ortho pass" << std::endl;
+	}
+}
+void testfrustum()
+{
+	float data[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,13,14,15,16 };
+	float fAspect = (float)1024 / 768;
+	float top = (float)(tan(FOVY*0.5)*NEAR_CLIP);
+	float bottom = -top;
+	float left = fAspect * bottom;
+	float right = fAspect * top;
+	float rdata[16] = { 1.29903793,0,0,0
+		,0,1.73205066,0,0
+		,0,0,-1.00020003,-1
+		,0,0,-0.020002,0 };
+	Matrix::SetFrustum(data,left, right, bottom, top, NEAR_CLIP, FAR_CLIP);
+	printmatrix(data, 16);
+	if (compare(data, rdata, 16))
+	{
+		std::cout << "multiply pass" << std::endl;
+	}
+}
+void testcomplex()
+{
+	testotho();
+	testlookat();
+	testfrustum();
+}
 void testmatrixclass()
 {
 	testsmatrix();
 	testbmatrix();
+	testcomplex();
 	//Matrix::MultiplyMatrix(data, data1, data2); 
 	//std::cout << "Multiply Matrix result" << std::endl;
 	//printmatrix(data, 3);
