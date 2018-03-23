@@ -23,6 +23,8 @@ Object3D* arm_base, *arm_mid, *armjoint, *arm_end, *lift_box_p, *lift_box, // ar
 *left_wheel, *rightwheel, //driving
 *right_mirror, *left_mirror; // mirrors
 
+// learnopengl.com
+
 void OnCreate();
 void OnDraw();
 void OnTimer(UINT nIDEvent);
@@ -60,6 +62,17 @@ float verts[6];
 float lastx = 0;
 float lasty = 0;
 
+// rotation of wheels
+float wheelangle = 0;
+// are the mirrors folder 90 yes 0 no other inbetween
+int foldedmirrors = 0;
+// arm base rotation
+int baserotation = 0;
+// arm hight
+int sisorx = 0;
+// piviot box turning
+int boxy = 0;
+
 bool animating = false;
 int animationstage = 0;
 
@@ -67,7 +80,7 @@ int animationstage = 0;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	Test::testmatrixclass();
-	return 0;
+	//return 0;
   // This mini section is really useful to find memory leaks
 #ifdef _DEBUG   // only include this section of code in the DEBUG build
 //_CrtSetBreakAlloc(12);  // really useful line of code to help find memory leaks
@@ -226,41 +239,60 @@ void drawbase()
 {
 	base->Draw(&rcontext);
 	rcontext.PushModelMatrix();
-		left_wind->Draw(&rcontext);
-		rear_wheels->Draw(&rcontext);
-		right_wind->Draw(&rcontext);
+			rear_wheels->Draw(&rcontext);
 	rcontext.PopModelMatrix();
 }
 
 void draw_arm_1()
 {
 	arm_base->Draw(&rcontext);
+	rcontext.RotateY(baserotation);
 	arm_mid->Draw(&rcontext);
 }
 
 void draw_arm_2()
 {
 	armjoint->Draw(&rcontext); 
+	rcontext.RotateZ(sisorx);
 	arm_end->Draw(&rcontext);
 }
 
 void draw_arm_3()
 {
 	lift_box_p->Draw(&rcontext);
+	rcontext.RotateY(boxy);
 	lift_box->Draw(&rcontext);
 }
 
 void drawmirrors()
 {
 	cabin->Draw(&rcontext);
-	right_mirror->Draw(&rcontext);
-	left_mirror->Draw(&rcontext);
+	rcontext.PushModelMatrix();
+		rcontext.PushModelMatrix();
+			rcontext.RotateY(foldedmirrors);
+			right_mirror->Draw(&rcontext);
+		rcontext.PopModelMatrix();
+		rcontext.PushModelMatrix();
+			rcontext.RotateY(foldedmirrors);
+			left_mirror->Draw(&rcontext);
+		rcontext.PopModelMatrix();
+	rcontext.PopModelMatrix();
+	rcontext.PushModelMatrix();
+		right_wind->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+	rcontext.PushModelMatrix();
+		left_wind->Draw(&rcontext);
+	rcontext.PopModelMatrix();
 }
 
 void draw_wheels()
 {
+	rcontext.PushModelMatrix();
 	left_wheel->Draw(&rcontext);
+	rcontext.PopModelMatrix();
+	rcontext.PushModelMatrix();
 	rightwheel->Draw(&rcontext);
+	rcontext.PopModelMatrix();
 }
 
 void drawarm()
@@ -305,12 +337,15 @@ void OnDraw()
   //rcontext.Translate(-1.0f, -0.3f, -1.0f);
   //rcontext.Scale(0.3f,0.3f,0.3f);
   rcontext.PushModelMatrix();
-  rcontext.Scale(0.3f, 0.3f, 0.3f);
-  rcontext.Translate(0, 0, -5);
-  skybox->Draw(&rcontext);
-  /*rcontext.PopModelMatrix();
+  //rcontext.Scale(0.3f, 0.3f, 0.3f);
+  //rcontext.Translate(0, 0, -5);
+  //ball->Draw(&rcontext);
+  rcontext.PopModelMatrix();
   rcontext.PushModelMatrix();
   drawbase();
+  rcontext.PushModelMatrix();
+  draw_wheels();
+  rcontext.PopModelMatrix();
   rcontext.PushModelMatrix();
   draw_arm_1();
   rcontext.PushModelMatrix();
@@ -323,7 +358,6 @@ void OnDraw()
 
   drawmirrors();
   
-  draw_wheels();*/
   rcontext.PopModelMatrix();
   glFinish();
   SwapBuffers(wglGetCurrentDC());
@@ -498,10 +532,10 @@ void Raytrace(double x, double y)
 
 void lights()
 {
-	glUniform3fv(rcontext.lighthandles[0],3, lightpos);
-	glUniform4f(rcontext.lighthandles[2], 0.5, 0.5, 0.5, 1);
-	glUniform4f(rcontext.lighthandles[3], 1.0, 1.0, 1.0, 1);
-	glUniform4f(rcontext.lighthandles[4], 1.0, 1.0, 1.0, 1);
+	glUniform3fv(rcontext.lighthandles[0],3, lightpos); // set light direction
+	glUniform4f(rcontext.lighthandles[2], 0.7, 0.7, 0.7, 1); // set ambiant
+	glUniform4f(rcontext.lighthandles[3], 1.0, 1.0, 1.0, 1); // set difuse
+	glUniform4f(rcontext.lighthandles[4], 1.0, 1.0, 1.0, 1); // set specular
 }
 
 // Called when the window is resized
@@ -540,6 +574,30 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		break;
 	case 'X':
 		eye[1] -= 0.1f;
+		break;
+	case 'Q':
+		foldedmirrors += 90;
+		break;
+	case 'W':
+		foldedmirrors -= 90;
+		break;
+	case 'E':
+		baserotation += 1;
+		break;
+	case 'R':
+		baserotation -= 1;
+		break;
+	case 'T':
+		sisorx += 1;
+		break;
+	case 'Y':
+		sisorx -= 1;
+		break;
+	case 'U':
+		boxy += 1;
+		break;
+	case 'I':
+		boxy -= 1;
 		break;
 	default:
 		break;
@@ -612,8 +670,8 @@ void CreateObjects()
   ball = new Object3D(true);
   ball->SetDiffuse(255, 0, 0, 0);
   populatepicker();
-  //calculateoffsetpicker();
-  calculateoffsetpickerdebug();
+  calculateoffsetpicker();
+  //calculateoffsetpickerdebug();
 }
 
 void calculateoffsetpicker()
