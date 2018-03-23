@@ -116,9 +116,9 @@ Object3D::~Object3D()
 
 void Object3D::getlocalmove(Object3D* root)
 {
-	local[0] = root->translation[0] - this->translation[0];
-	local[1] = root->translation[1] - this->translation[1];
-	local[2] = root->translation[2] - this->translation[2];
+	local[0] = this->translation[0] - root->translation[0];
+	local[1] = this->translation[1] - root->translation[1];
+	local[2] = this->translation[2] - root->translation[2];
 }
 
 void Object3D::InitVBOs()
