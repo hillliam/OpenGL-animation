@@ -45,19 +45,19 @@ inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* cent
 	CrossProduct3(forward, up, s);
 	Matrix::Normalise3(s);
 	matrix[0] = s[0];
-	matrix[4] = s[1];
+	matrix[4] = s[1]; // not negative
 	matrix[8] = s[2];
 	float* u = new float[3];
 	CrossProduct3(s, forward, u);
 	Matrix::Normalise3(u);
 	matrix[1] = u[0];
-	matrix[5] = u[1];
+	matrix[5] = u[1]; // not right
 	matrix[9] = u[2];
 	matrix[2] = forward[0];
-	matrix[6] = forward[1];
+	matrix[6] = forward[1]; //not negative
 	matrix[10] = forward[2];
 	matrix[12] = DotProduct3(s, eye);
-	matrix[13] = DotProduct3(u, eye);
+	//matrix[13] = DotProduct3(u, eye);
 	matrix[14] = DotProduct3(forward, eye);
 
 }
@@ -115,13 +115,13 @@ inline void Matrix::SetFrustum(float* matrix, float left, float right, float bot
 
 inline void Matrix::SetOrtho(float* matrix, float left, float right, float bottom, float top, float neara, float fara)
 {
-	matrix[1] = matrix[2] = matrix[3] = matrix[4] = matrix[6] = matrix[7] = matrix[8] = matrix[9] = 0;
+	memset(matrix, 0, sizeof(float) * 16);
 	matrix[0] = 2 / (right - left);
 	matrix[5] = 2 / (top - bottom);
-	matrix[10] = -(2 / (top - bottom));
+	matrix[10] = -(2 / (top - bottom)); // fix me
 	matrix[12] = -((right + left) / (right - left));
 	matrix[13] = -((top + bottom) / (top - bottom));
-	matrix[14] = -((fara + neara) / (fara - neara));
+	matrix[14] = -(fara + neara) / (fara - neara);
 	matrix[15] = 1;
 }
 
@@ -165,45 +165,69 @@ inline void Matrix::Scale(float* matrix, const float sx, const float sy, const f
 
 inline void Matrix::RotateX(float* matrix, const float degs)
 {
-	matrix[11] = matrix[5] * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
+	const float sine = sin(DEGSTORADS(degs));
+	const float cost = cos(DEGSTORADS(degs));
+	//matrix[4] = matrix[9] * sine
+	//matrix[5] = matrix[10] * sine
+	//matrix[6] = matrix[11] * sine
+	//matrix[7] = matrix[12] * sine
+	
+	//matrix[9] = -matrix[4] * -sine
+	//matrix[10] = -matrix[5] * -sine
+	//matrix[11] = -matrix[6] * -sine
+	//matrix[12] = -matrix[7] * -sine
+	matrix[11] = matrix[5] * cost + matrix[9] * -sine;
 	float old5 = matrix[5];
-	matrix[12] = matrix[5] * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
+	matrix[12] = matrix[5] * cost + matrix[9] * -sine;
 	float old9 = matrix[9];
-	matrix[13] = old5 * cos(DEGSTORADS(degs)) + matrix[9] * -sin(DEGSTORADS(degs));
-	matrix[14] = old5 * cos(DEGSTORADS(degs)) + old9 * -sin(DEGSTORADS(degs));
+	matrix[13] = old5 * cost + matrix[9] * -sine;
+	matrix[14] = old5 * cost + old9 * -sine;
 }
 
 inline void Matrix::RotateY(float* matrix, const float degs)
 {
+	const float sine = sin(DEGSTORADS(degs));
+	const float cost = cos(DEGSTORADS(degs));
+	//matrix[0] = -matrix[8] * -sine
+	//matrix[1] = -matrix[9]
+	//matrix[2] = -matrix[10]
+	//matrix[3] = -matrix[11]
+
+	//matrix[8] = matrix[0]
+	//matrix[9] = matrix[1]
+	//matrix[10] = matrix[2]
+	//matrix[11] = matrix[3]
 	float old0 = matrix[0];
-	matrix[8] = matrix[0] * cos(DEGSTORADS(degs)) + matrix[2] * -sin(DEGSTORADS(degs));
+	matrix[8] = matrix[0] * cost + matrix[2] * -sine;
 	float old1 = matrix[1];
-	matrix[8] = matrix[8] * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
+	matrix[8] = matrix[8] * sine + matrix[10] * cost;
 
-	matrix[1] = old0 * cos(DEGSTORADS(degs)) + matrix[2] * -sin(DEGSTORADS(degs));
-	matrix[9] = old1 * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
+	matrix[1] = old0 * cost + matrix[2] * -sine;
+	matrix[9] = old1 * sine + matrix[10] * cost;
 	float old2 = matrix[2];
-	matrix[2] = old0 * cos(DEGSTORADS(degs)) + old2 * -sin(DEGSTORADS(degs));
+	matrix[2] = old0 * cost + old2 * -sine;
 	float old3 = matrix[3];
-	matrix[10] = old1 * sin(DEGSTORADS(degs)) + matrix[10] * cos(DEGSTORADS(degs));
+	matrix[10] = old1 * sine + matrix[10] * cost;
 
-	matrix[3] = old0 * cos(DEGSTORADS(degs)) + old2 * -sin(DEGSTORADS(degs));
-	matrix[11] = old1 * sin(DEGSTORADS(degs)) + old3 * cos(DEGSTORADS(degs));
+	matrix[3] = old0 * cost + old2 * -sine;
+	matrix[11] = old1 * sine + old3 * cost;
 }
 
 inline void Matrix::RotateZ(float* matrix, const float degs)
 {
+	const float sine = sin(DEGSTORADS(degs));
+	const float cost = cos(DEGSTORADS(degs));
 	float old0 = matrix[0];
-	matrix[0] = matrix[0] * cos(DEGSTORADS(degs)) + matrix[4] * sin(DEGSTORADS(degs));
-	matrix[4] = old0 * cos(DEGSTORADS(degs)) + matrix[4] * sin(DEGSTORADS(degs));
+	matrix[0] = matrix[0] * cost + matrix[4] * sine;
+	matrix[4] = old0 * cost + matrix[4] * sine; //fix me
 	float old1 = matrix[1];
-	matrix[1] = matrix[1] * cos(DEGSTORADS(degs)) + matrix[5] * sin(DEGSTORADS(degs));
-	matrix[5] = old1 * cos(DEGSTORADS(degs)) + matrix[5] * sin(DEGSTORADS(degs));
+	matrix[1] = matrix[1] * cost + matrix[5] * sine;
+	matrix[5] = old1 * cost + matrix[5] * sine; //fix me
 	float old2 = matrix[2];
-	matrix[2] = matrix[2] * cos(DEGSTORADS(degs)) + matrix[6] * sin(DEGSTORADS(degs));
-	matrix[6] = old2 * cos(DEGSTORADS(degs)) + matrix[6] * sin(DEGSTORADS(degs));
+	matrix[2] = matrix[2] * cost + matrix[6] * sine;
+	matrix[6] = old2 * cost + matrix[6] * sine; //fix me
 	float old3 = matrix[3];
-	matrix[3] = matrix[3] * cos(DEGSTORADS(degs)) + matrix[7] * sin(DEGSTORADS(degs));
-	matrix[7] = old3 * cos(DEGSTORADS(degs)) + matrix[7] * sin(DEGSTORADS(degs));
+	matrix[3] = matrix[3] * cost + matrix[7] * sine;
+	matrix[7] = old3 * cost + matrix[7] * sine; //fix me
 }
 #endif
