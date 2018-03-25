@@ -16,6 +16,9 @@
     <Filter Include="assets">
       <UniqueIdentifier>{a281aeac-1b9c-4e0d-bc35-d34bf3cd64ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{71910127-0f7d-4a3f-9f17-45c8c64bb103}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -53,10 +56,23 @@
     <ClInclude Include="testing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="picker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="fragshader.txt" />
-    <Text Include="vertshader.txt" />
+    <Text Include="fragshader.txt">
+      <Filter>shaders</Filter>
+    </Text>
+    <Text Include="vertshader.txt">
+      <Filter>shaders</Filter>
+    </Text>
+    <Text Include="nfragshader.txt">
+      <Filter>shaders</Filter>
+    </Text>
+    <Text Include="nvertshader.txt">
+      <Filter>shaders</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\Box-nouv.3dm">

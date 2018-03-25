@@ -131,12 +131,15 @@
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Object3D.h" />
+    <ClInclude Include="picker.h" />
     <ClInclude Include="RenderingContext.h" />
     <ClInclude Include="testing.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragshader.txt" />
+    <Text Include="nfragshader.txt" />
+    <Text Include="nvertshader.txt" />
     <Text Include="vertshader.txt" />
   </ItemGroup>
   <ItemGroup>

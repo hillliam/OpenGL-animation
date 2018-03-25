@@ -7,23 +7,22 @@
 #include "RenderingContext.h"
 #include "Model3D.h"
 #include "testing.h"
+#include "picker.h"
 
 static HWND hwnd;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 RenderingContext rcontext;
-Model3D* sphere, *box, *car, *Cylinder, *picker;
+Model3D* sphere, *box, *car, *Cylinder;
 
 Object3D* ball; // static item
 Object3D* skybox; // static item
 
-Object3D* arm_base, *arm_mid, *armjoint, *arm_end, *lift_box_p, *lift_box, // arm
-*base , *cabin, *left_wind, *rear_wheels, *right_wind, //root
-*left_wheel, *rightwheel, //driving
-*right_mirror, *left_mirror; // mirrors
-
+picker* mainobject;
 // learnopengl.com
+
+DWORD start;
 
 void OnCreate();
 void OnDraw();
@@ -32,13 +31,10 @@ void OnSize(DWORD type, UINT cx, UINT cy);
 void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 void OnLButtonDown(UINT nFlags, int x, int y);
 void OnMouseMove(UINT nFlags, int x, int y);
-void populatepicker();
 void CreateObjects();
 void CleanUp();
 void lights();
 void sethalfplane();
-void calculateoffsetpicker();
-void calculateoffsetpickerdebug();
 
 float eye[3] = { 0.0f, 1.0f, 3.0f };
 float centre[3] = { 0.0f, 0.0f, 0.0f };
@@ -61,20 +57,6 @@ float verts[6];
 // starting location on screen of mouse
 float lastx = 0;
 float lasty = 0;
-
-// rotation of wheels
-float wheelangle = 0;
-// are the mirrors folder 90 yes 0 no other inbetween
-int foldedmirrors = 0;
-// arm base rotation
-int baserotation = 0;
-// arm hight
-int sisorx = 0;
-// piviot box turning
-int boxy = 0;
-
-bool animating = false;
-int animationstage = 0;
 
 // Win32 entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -235,66 +217,6 @@ void OnCreate()
   lights();
 }
 
-void drawbase()
-{
-	base->Draw(&rcontext);
-	rcontext.PushModelMatrix();
-			rear_wheels->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
-void draw_arm_1()
-{
-	arm_base->Draw(&rcontext);
-	rcontext.RotateY(baserotation);
-	arm_mid->Draw(&rcontext);
-}
-
-void draw_arm_2()
-{
-	armjoint->Draw(&rcontext); 
-	rcontext.RotateZ(sisorx);
-	arm_end->Draw(&rcontext);
-}
-
-void draw_arm_3()
-{
-	lift_box_p->Draw(&rcontext);
-	rcontext.RotateY(boxy);
-	lift_box->Draw(&rcontext);
-}
-
-void drawmirrors()
-{
-	cabin->Draw(&rcontext);
-	rcontext.PushModelMatrix();
-		rcontext.PushModelMatrix();
-			rcontext.RotateY(foldedmirrors);
-			right_mirror->Draw(&rcontext);
-		rcontext.PopModelMatrix();
-		rcontext.PushModelMatrix();
-			rcontext.RotateY(foldedmirrors);
-			left_mirror->Draw(&rcontext);
-		rcontext.PopModelMatrix();
-	rcontext.PopModelMatrix();
-	rcontext.PushModelMatrix();
-		right_wind->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-	rcontext.PushModelMatrix();
-		left_wind->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
-void draw_wheels()
-{
-	rcontext.PushModelMatrix();
-	left_wheel->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-	rcontext.PushModelMatrix();
-	rightwheel->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
 void drawarm()
 {
 	rcontext.PushModelMatrix();
@@ -341,139 +263,9 @@ void OnDraw()
   //rcontext.Translate(0, 0, -5);
   //ball->Draw(&rcontext);
   rcontext.PopModelMatrix();
-  rcontext.PushModelMatrix();
-  drawbase();
-  rcontext.PushModelMatrix();
-  draw_wheels();
-  rcontext.PopModelMatrix();
-  rcontext.PushModelMatrix();
-  draw_arm_1();
-  rcontext.PushModelMatrix();
-  draw_arm_2();
-  rcontext.PushModelMatrix();
-  draw_arm_3();
-  rcontext.PopModelMatrix();
-  rcontext.PopModelMatrix();
-  rcontext.PopModelMatrix();
-
-  drawmirrors();
-  
-  rcontext.PopModelMatrix();
+  mainobject->drawpicker(&rcontext);
   glFinish();
   SwapBuffers(wglGetCurrentDC());
-}
-
-// arm
-void ondraw2()
-{
-	rcontext.PushModelMatrix();
-	//rcontext.Translate(-1.0f, -0.3f, -1.0f);
-	//rcontext.RotateX(180);
-	rcontext.Scale(2.0, 2.0, 2.0);
-	rcontext.RotateZ(90);
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-
-	rcontext.PushModelMatrix();
-	rcontext.RotateZ(30);
-	rcontext.RotateX(40);
-	rcontext.Translate(0.0f, 4.0f, 0.0f);
-
-	drawarm();
-
-	drawsphere();
-	//drawcar();
-
-	rcontext.PushModelMatrix();
-	rcontext.RotateZ(-30);
-	rcontext.Translate(0.0f, 4.0f, 0.0f);
-
-	drawarm();
-
-	drawsphere();
-	//drawcar();
-
-	rcontext.PushModelMatrix();
-	rcontext.RotateZ(-120);
-	rcontext.RotateX(70);
-	rcontext.Translate(0.0f, 4.0f, 0.0f);
-
-	drawarm();
-
-	drawsphere();
-
-	rcontext.PushModelMatrix();
-	rcontext.Translate(0.2f, 0.2f, 0.3f);
-	rcontext.Scale(0.7, 0.7, 0.7);
-	rcontext.RotateX(40);
-	drawarm();
-
-	rcontext.PushModelMatrix();
-	rcontext.Translate(0.9f, 5.0f, 0.0f);
-	rcontext.Scale(0.5, 0.5, 0.5);
-	rcontext.RotateX(40);
-	drawarm();
-	rcontext.PopModelMatrix();
-
-	rcontext.RotateX(40);
-	drawarm();
-
-	rcontext.PushModelMatrix();
-	rcontext.Translate(-0.7f, 5.0f, 0.0f);
-	rcontext.Scale(0.5, 0.5, 0.5);
-	rcontext.RotateX(-40);
-	drawarm();
-	rcontext.PopModelMatrix();
-
-	rcontext.PopModelMatrix();
-	//drawcar();
-
-	rcontext.PopModelMatrix();
-
-	rcontext.PopModelMatrix();
-
-	rcontext.PopModelMatrix();
-}
-// snowman
-void scean1()
-{
-	rcontext.PushModelMatrix();
-	rcontext.Translate(-1.0f, -0.4f, 0.0f);
-	rcontext.RotateX(180);  // puts the seam at the back
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-	rcontext.PushModelMatrix();
-	rcontext.Translate(-1.0f, 0.3f, 0.0f);
-	rcontext.RotateX(180);
-	rcontext.Scale(0.7, 0.7, 0.7);
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-
-	rcontext.PushModelMatrix();
-	rcontext.Translate(-1.0f, 0.8f, 0.0f);
-	rcontext.RotateX(180);
-	rcontext.Scale(0.4, 0.4, 0.4);
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-
-	rcontext.PushModelMatrix();
-	rcontext.Translate(-1.0f, 0.8f, 0.0f);
-	rcontext.RotateX(180);
-	rcontext.Scale(0.1, 0.1, 0.1);
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-	rcontext.PushModelMatrix();
-	rcontext.Translate(-1.0f, 0.8f, 0.0f);
-	rcontext.RotateX(180);
-	rcontext.Scale(0.1, 0.1, 0.1);
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-
-	rcontext.PushModelMatrix();
-	rcontext.Translate(1.0f, -1.0f, 0.0f);
-	rcontext.RotateX(340);
-	car->Draw(&rcontext);
-	rcontext.PopModelMatrix();
 }
 
 void sethalfplane()
@@ -576,28 +368,32 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		eye[1] -= 0.1f;
 		break;
 	case 'Q':
-		foldedmirrors += 90;
+		mainobject->foldedmirrors += 90;
 		break;
 	case 'W':
-		foldedmirrors -= 90;
+		mainobject->foldedmirrors -= 90;
 		break;
 	case 'E':
-		baserotation += 1;
+		mainobject->baserotation += 1;
 		break;
 	case 'R':
-		baserotation -= 1;
+		mainobject->baserotation -= 1;
 		break;
 	case 'T':
-		sisorx += 1;
+		mainobject->sisorx += 1;
 		break;
 	case 'Y':
-		sisorx -= 1;
+		mainobject->sisorx -= 1;
 		break;
 	case 'U':
-		boxy += 1;
+		mainobject->boxy += 1;
 		break;
 	case 'I':
-		boxy -= 1;
+		mainobject->boxy -= 1;
+		break;
+	case 'Z':
+		SetTimer(hwnd, 101, 60, NULL);
+		start = ::GetTickCount();
 		break;
 	default:
 		break;
@@ -612,20 +408,7 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void OnTimer(UINT nIDEvent)
 {
-	if (animating)
-	{
-		switch (animationstage)
-		{
-		case 0: // chery picker extend legs
-			break;
-		case 1: // fold mirrors in
-			break;
-		case 2: // rotate base of arm 90 left
-			break;
-		case 3: // raise arm up
-			break;
-		}
-	}
+
 }
 void OnLButtonDown(UINT nFlags, int x, int y)
 {
@@ -663,123 +446,12 @@ void CreateObjects()
   box = Model3D::LoadModel(L"assets\\Box-nouv.3dm");
   car = Model3D::LoadModel(L"assets\\car.3dm");
   Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
-  picker = Model3D::LoadModel(L"assets\\crane.3dm");
+  mainobject = new picker();
   skybox = new Object3D();
   skybox->SetName("skybox");
   skybox->makeplane();
   ball = new Object3D(true);
   ball->SetDiffuse(255, 0, 0, 0);
-  populatepicker();
-  calculateoffsetpicker();
-  //calculateoffsetpickerdebug();
-}
-
-void calculateoffsetpicker()
-{
-	arm_base->getlocalmove(base);
-	arm_mid->getlocalmove(arm_base);
-	armjoint->getlocalmove(arm_mid);
-	arm_end->getlocalmove(armjoint);
-	lift_box_p->getlocalmove(arm_end);
-	lift_box->getlocalmove(lift_box_p);
-	cabin->getlocalmove(base);
-	left_wind->getlocalmove(cabin);
-	rear_wheels->getlocalmove(base);
-	right_wind->getlocalmove(cabin);
-	left_wheel->getlocalmove(base);
-	rightwheel->getlocalmove(base);
-	right_mirror->getlocalmove(cabin);
-	left_mirror->getlocalmove(cabin);
-}
-
-void calculateoffsetpickerdebug()
-{
-	arm_base->getlocalmove(base);
-	arm_mid->getlocalmove(base);
-	armjoint->getlocalmove(base);
-	arm_end->getlocalmove(base);
-	lift_box_p->getlocalmove(base);
-	lift_box->getlocalmove(base);
-	cabin->getlocalmove(base);
-	left_wind->getlocalmove(base);
-	rear_wheels->getlocalmove(base);
-	right_wind->getlocalmove(base);
-	left_wheel->getlocalmove(base);
-	rightwheel->getlocalmove(base);
-	right_mirror->getlocalmove(base);
-	left_mirror->getlocalmove(base);
-}
-
-void populatepicker()
-{
-	for (int i = 0; i < picker->GetNoOfObjects(); i++)
-	{
-		Object3D* current = picker->GetObjects()[i];
-		if (_stricmp(current->getName(), "arm_base") == 0)
-		{
-			arm_base = current;
-		}
-		else if (_stricmp(current->getName(), "arm_mid") == 0)
-		{
-			arm_mid = current;
-		}
-		else if (_stricmp(current->getName(), "armjoint") == 0)
-		{
-			armjoint = current;
-		}
-		else if (_stricmp(current->getName(), "arm_end") == 0)
-		{
-			arm_end = current;
-		}
-		else if (_stricmp(current->getName(), "lift_pbox") == 0)
-		{
-			lift_box_p = current;
-		}
-		else if (_stricmp(current->getName(), "lift_box") == 0)
-		{
-			lift_box = current;
-		}
-		else if (_stricmp(current->getName(), "base") == 0)
-		{
-			base = current;
-		}
-		else if (_stricmp(current->getName(), "cabin") == 0)
-		{
-			cabin = current;
-		}
-		else if (_stricmp(current->getName(), "left_wind") == 0)
-		{
-			left_wind = current;
-		}
-		else if (_stricmp(current->getName(), "rear_wheel") == 0)
-		{
-			rear_wheels = current;
-		}
-		else if (_stricmp(current->getName(), "right_wind") == 0)
-		{
-			right_wind = current;
-		}
-		else if (_stricmp(current->getName(), "left_wheel") == 0)
-		{
-			left_wheel = current;
-		}
-		else if (_stricmp(current->getName(), "rightwheel") == 0)
-		{
-			rightwheel = current;
-		}
-		else if (_stricmp(current->getName(), "right_mirr") == 0)
-		{
-			right_mirror = current;
-		}
-		else if (_stricmp(current->getName(), "left_mirro") == 0)
-		{
-			left_mirror = current;
-		}
-		else
-		{
-			current->getName();
-		}
-	}
 }
 
 void CleanUp()
@@ -791,5 +463,5 @@ void CleanUp()
   delete car;
   delete Cylinder;
   delete ball;
-  delete picker;
+  delete mainobject;
 }
