@@ -9,3 +9,10 @@ inline void DisplayMessage(const char* msg)
   MessageBox(NULL, text, L"OpenGL Message", MB_ICONINFORMATION);
   free(text);
 }
+
+struct location
+{
+	float x;
+	float y;
+	float z;
+};

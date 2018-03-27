@@ -12,20 +12,20 @@ public:
 
   void SetName(const char* name);
   char* getName();
-  void SetVertexData(byte* buffer, int noofverts, int bufferlen);
-  void SetTriangles(byte* buffer, int noofpolys);
-  void getlocalmove(Object3D* root);
+  void SetVertexData(const byte* buffer, int noofverts, int bufferlen);
+  void SetTriangles(const byte* buffer, int noofpolys);
+  void getlocalmove(const Object3D* root);
   void Draw(RenderingContext* rcontext);
-
-  void SetMaterial(byte* buffer);
+  void makeplane();
+  void SetMaterial(const byte* buffer);
   void SetDiffuse(float r, float g, float b, float a);
   const float* GetDiffuse();
   void SetTextureMap(int id);
   
-  void SetTranslation(byte* buffer);
+  void SetTranslation(const byte* buffer);
   void SetTranslation(float x, float y, float z);
 
-
+  void resetlocal();
 private:
   char* name;
   

@@ -27,15 +27,6 @@ Object3D::Object3D()
   texturemap=-1;
 }
 
-void Object3D::cube()
-{
-	const int vsize = 8 * sizeof(float);
-	vertexdata = (float*)malloc(vsize);
-	const int psize = (8/3) * sizeof(unsigned short);
-	polygons = (unsigned short*)malloc(psize);
-
-}
-
 void Object3D::circle()
 {
 	const int n = 3*10;
@@ -114,7 +105,7 @@ Object3D::~Object3D()
   free(name);
 }
 
-void Object3D::getlocalmove(Object3D* root)
+void Object3D::getlocalmove(const Object3D* root)
 {
 	local[0] = this->translation[0] - root->translation[0];
 	local[1] = this->translation[1] - root->translation[1];
@@ -136,7 +127,7 @@ void Object3D::InitVBOs()
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, polygons, GL_STATIC_DRAW);
 }
   
-void Object3D::SetVertexData(byte* buffer, int noofverts, int bufferlen)
+void Object3D::SetVertexData(const byte* buffer, int noofverts, int bufferlen)
 {
   incuv=(bufferlen==4*(noofverts*8));
   vertexdata=(float*) malloc(bufferlen);
@@ -144,7 +135,7 @@ void Object3D::SetVertexData(byte* buffer, int noofverts, int bufferlen)
   this->noofverts=noofverts;
 }
   
-void Object3D::SetTriangles(byte* buffer, int noofpolys)
+void Object3D::SetTriangles(const byte* buffer, int noofpolys)
 {
   const int size=3*noofpolys*sizeof(unsigned short);
   polygons=(unsigned short*) malloc(size);
@@ -154,7 +145,7 @@ void Object3D::SetTriangles(byte* buffer, int noofpolys)
   elementcount=3*noofpolys;
 }
 
-void Object3D::SetTranslation(byte* buffer)
+void Object3D::SetTranslation(const byte* buffer)
 {
   translation[0]=*(float*) buffer;
   translation[1]=*(float*) (buffer+4);
@@ -167,8 +158,13 @@ void Object3D::SetTranslation(float x, float y, float z)
   translation[1]=y;
   translation[2]=z;
 }
+
+void Object3D::resetlocal()
+{
+	local[0] = local[1] = local[2] = 0.0f;
+}
   
-void Object3D::SetMaterial(byte* buffer)
+void Object3D::SetMaterial(const byte* buffer)
 {
   int i;
   int offset=0;
@@ -210,9 +206,9 @@ void Object3D::Draw(RenderingContext* rcontext)
     InitVBOs();
     
   //rcontext->PushModelMatrix();
-    //rcontext->Translate(translation[0], translation[1], translation[2]);
+   // rcontext->Translate(translation[0], translation[1], translation[2]);
   rcontext->Translate(local[0], local[1], local[2]);
-  rcontext->PushModelMatrix();
+  //rcontext->PushModelMatrix();
     rcontext->UpdateMVPs();
     glUniformMatrix4fv(rcontext->mvhandle, 1, false, rcontext->mvmatrix);
     glUniformMatrix4fv(rcontext->mvphandle, 1, false, rcontext->mvpmatrix);
@@ -245,5 +241,6 @@ void Object3D::Draw(RenderingContext* rcontext)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);    
     glDrawElements(elementtype, elementcount, GL_UNSIGNED_SHORT, 0);
 
-  rcontext->PopModelMatrix();
+ // rcontext->PopModelMatrix();
 }
+

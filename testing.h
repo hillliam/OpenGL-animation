@@ -7,8 +7,8 @@
 class Test
 {
 private:
-	static void printmatrix(float data[], int size);
-	static bool compare(float data1[], float data2[], int size);
+	static void printmatrix(const float data[], int size);
+	static bool compare(const float data1[], const float data2[], int size);
 	static void testnormal();
 	static void testcprod();
 	static void testdot();
@@ -29,14 +29,14 @@ private:
 public:
 	static void testmatrixclass();
 };
-void Test::printmatrix(float data[], int size)
+void Test::printmatrix(const float data[], int size)
 {
 	for (int i = 0; i != size; i++)
 	{
 		std::cout << data[i] << std::endl;
 	}
 }
-bool Test::compare(float data1[], float data2[], int size)
+bool Test::compare(const float data1[], const float data2[], int size)
 {
 	for (int i = 0; i != size; i++)
 	{
@@ -252,7 +252,7 @@ void Test::testroty()
 		,13,14,15,16 };
 	Matrix::RotateY(data, 90);
 	printmatrix(data, 16);
-	if (compare(data, rdata, 16))
+  	if (compare(data, rdata, 16))
 	{
 		std::cout << "rotate y pass" << std::endl;
 	}
