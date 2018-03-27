@@ -8,6 +8,7 @@
 #include "Model3D.h"
 #include "testing.h"
 #include "picker.h"
+#include "staticgeom.h"
 
 static HWND hwnd;
 
@@ -18,6 +19,9 @@ Model3D* sphere, *box, *car, *Cylinder;
 
 Object3D* ball; // static item
 Object3D* skybox; // static item
+
+//world objects
+staticgeom* tower, *house, *ground;
 
 picker* mainobject;
 // learnopengl.com
@@ -36,7 +40,6 @@ void CleanUp();
 void lights();
 void sethalfplane();
 
-float eye[3] = { 0.0f, 1.0f, 3.0f };
 const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
 float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
 float centre[3] = { 0.0f, 0.0f, 0.0f };
@@ -111,9 +114,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   }
 
   CleanUp();
-
-}
   return 0;
+}
+
 // This is our message handling method and is called by the system (via the above while-loop) when we have a message to process
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -265,6 +268,8 @@ void OnDraw()
   //rcontext.Translate(0, 0, -5);
   //ball->Draw(&rcontext);
   rcontext.PopModelMatrix();
+  tower->draw(&rcontext);
+  ground->draw(&rcontext);
   mainobject->drawpicker(&rcontext);
   glFinish();
   SwapBuffers(wglGetCurrentDC());
@@ -368,13 +373,13 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		break;
 	case 'X':
 		eye[1] -= 0.1f;
-		break;
+		break;*/
 	case 'Q':
 		mainobject->foldedmirrors += 90;
 		break;
 	case 'W':
 		mainobject->foldedmirrors -= 90;
-		break;*/
+		break;
 	case 'E':
 		mainobject->baserotation += 1;
 		break;
@@ -419,12 +424,12 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void OnTimer(UINT nIDEvent)
 {
-
+	mainobject->handleanimation(start);
 }
 void OnLButtonDown(UINT nFlags, int x, int y)
 {
 }
-	mainobject->handleanimation(start);
+
 void OnMouseMove(UINT nFlags, int x, int y)
 {
 	if (nFlags == 1) // mouse key is down
@@ -453,6 +458,8 @@ void OnMouseMove(UINT nFlags, int x, int y)
 
 void CreateObjects()
 {
+  tower = new staticgeom(L"assets\\monument-nouv.3dm");
+  ground = new staticgeom(L"assets\\landscape-nouv.3dm");
   sphere = Model3D::LoadModel(L"assets\\Sphere2-nouv.3dm");
   box = Model3D::LoadModel(L"assets\\Box-nouv.3dm");
   car = Model3D::LoadModel(L"assets\\car.3dm");
@@ -463,6 +470,9 @@ void CreateObjects()
   skybox->makeplane();
   ball = new Object3D(true);
   ball->SetDiffuse(255, 0, 0, 0);
+  ground->setlocation(1,-0.2,-1);
+  ground->setscale(4, 4, 4);
+  tower->setlocation(2, -0.2, -1);
 }
 
 void CleanUp()

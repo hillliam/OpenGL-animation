@@ -128,11 +128,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLSetup.h" />
+    <ClInclude Include="enviroment.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="picker.h" />
     <ClInclude Include="RenderingContext.h" />
+    <ClInclude Include="staticgeom.h" />
     <ClInclude Include="testing.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
