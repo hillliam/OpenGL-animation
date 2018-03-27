@@ -10,7 +10,17 @@ private:
 		*base, *cabin, *left_wind, *rear_wheels, *right_wind, //root
 		*left_wheel, *rightwheel, //driving
 		*right_mirror, *left_mirror; // mirrors
+	
+	location cabinpoint;
+	location lmirror;
+	location rmirror;
 
+	location lwheel;
+	location rwheel;
+
+	location startpoint = { 0,0,0 };
+	location startrotation = { 0,0,0 };
+	location startscale = { 1,1,1 };
 	int animationstage = 0;
 
 	void drawbase(RenderingContext * rcontext);
@@ -22,6 +32,8 @@ private:
 	void calculateoffsetpicker();
 	void populatepicker();
 public:
+	// is the eye set to the cabin
+	bool cabineye = 0;
 	// rotation of wheels
 	float wheelangle = 0;
 	// are the mirrors folder 90 yes 0 no other inbetween
@@ -33,11 +45,68 @@ public:
 	// piviot box turning
 	int boxy = 0;
 	void drawpicker(RenderingContext * rcontext);
-	void handleanimation();
+	void handleanimation(DWORD start);
+	void geteye(float *eye, float * center);
+	void setlocation(float x, float y, float z);
+	void setscale(float x, float y, float z);
+	void setrotation(float x, float y, float z);
+	void keypress(UINT nChar);
 	picker();
 	~picker();
 };
-void picker::handleanimation()
+void picker::geteye(float *eye, float *center)
+{
+	eye[0] = cabinpoint.x + startpoint.x;
+	eye[1] = cabinpoint.y + startpoint.y;
+	eye[2] = cabinpoint.z + startpoint.z;
+	//center[0] = 90; // point the camera forword
+}
+
+inline void picker::setlocation(float x, float y, float z)
+{
+	startpoint.x = x;
+	startpoint.y = y;
+	startpoint.z = z;
+}
+
+inline void picker::setscale(float x, float y, float z)
+{
+	startscale.x = x;
+	startscale.y = y;
+	startscale.z = z;
+}
+
+inline void picker::setrotation(float x, float y, float z)
+{
+	startrotation.x = x;
+	startrotation.y = y;
+	startrotation.z = z;
+}
+inline void picker::keypress(UINT nChar)
+{
+	switch (nChar)
+	{
+	case 'G':
+		startpoint.x += 0.2;
+		break;
+	case 'H':
+		startpoint.x -= 0.2;
+		break;
+	case 'J':
+		startpoint.y += 0.2;
+		break;
+	case 'K':
+		startpoint.y -= 0.2;
+		break;
+	case 'C':
+		startpoint.z += 0.2;
+		break;
+	case 'V':
+		startpoint.z -= 0.2;
+		break;
+	}
+}
+void picker::handleanimation(DWORD start)
 {
 
 	DWORD elapsed = GetTickCount() - start;
@@ -55,6 +124,7 @@ void picker::handleanimation()
 }
 void picker::drawpicker(RenderingContext* rcontext)
 {
+	rcontext->Translate(startpoint.x, startpoint.y, startpoint.z);
 	rcontext->PushModelMatrix();
 	drawbase(rcontext);
 	rcontext->PushModelMatrix();
@@ -118,13 +188,20 @@ void picker::draw_arm_3(RenderingContext* rcontext)
 
 void picker::drawmirrors(RenderingContext* rcontext)
 {
+	float offset = 0;
+	if (foldedmirrors != 0)
+	{
+		offset = 0.03;
+	}
 	cabin->Draw(rcontext);
 	rcontext->PushModelMatrix();
 	rcontext->PushModelMatrix();
+	rcontext->Translate(rmirror.x, rmirror.y, rmirror.z - offset);
 	rcontext->RotateY(foldedmirrors);
 	right_mirror->Draw(rcontext);
 	rcontext->PopModelMatrix();
 	rcontext->PushModelMatrix();
+	rcontext->Translate(lmirror.x, lmirror.y, lmirror.z + offset);
 	rcontext->RotateY(foldedmirrors);
 	left_mirror->Draw(rcontext);
 	rcontext->PopModelMatrix();
@@ -163,6 +240,17 @@ void picker::calculateoffsetpicker()
 	rightwheel->getlocalmove(base);
 	right_mirror->getlocalmove(cabin);
 	left_mirror->getlocalmove(cabin);
+	lmirror.x = left_mirror->local[0]; // saves editing the model
+	lmirror.y = left_mirror->local[1];
+	lmirror.z = left_mirror->local[2];
+	rmirror.x = right_mirror->local[0];
+	rmirror.y = right_mirror->local[1];
+	rmirror.z = right_mirror->local[2];
+	left_mirror->resetlocal();
+	right_mirror->resetlocal();
+	cabinpoint.x = cabin->local[0];
+	cabinpoint.y = cabin->local[1];
+	cabinpoint.z = cabin->local[2];
 }
 
 void picker::populatepicker()

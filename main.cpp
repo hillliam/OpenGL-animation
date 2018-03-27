@@ -37,6 +37,8 @@ void lights();
 void sethalfplane();
 
 float eye[3] = { 0.0f, 1.0f, 3.0f };
+const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
+float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
 float centre[3] = { 0.0f, 0.0f, 0.0f };
 float up[3] = { 0.0f, 1.0f, 0.0f };
 float lightpos[3] = { 4.0f, 4.0f, 3.0f };
@@ -111,7 +113,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   CleanUp();
 
 }
-
+  return 0;
 // This is our message handling method and is called by the system (via the above while-loop) when we have a message to process
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -272,8 +274,8 @@ void sethalfplane()
 {
 	float h[3];
 	//float nh[3];
-	float neye[3] = { eye[0], eye[1], eye[2] };
-	float nlight[3] = { lightpos[0], lightpos[1], lightpos[2] };
+	//float neye[3] = { eye[0], eye[1], eye[2] };
+	//float nlight[3] = { lightpos[0], lightpos[1], lightpos[2] };
 	float mag = 0;
 	for (int i = 0; i < 3; i++)
 	{
@@ -353,7 +355,7 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
 	switch (nChar)
 	{
-	case 'A':
+	/*case 'A':
 		eye[0] += 0.1f;
 		//centre[0] += 0.1f;
 		break;
@@ -372,7 +374,7 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		break;
 	case 'W':
 		mainobject->foldedmirrors -= 90;
-		break;
+		break;*/
 	case 'E':
 		mainobject->baserotation += 1;
 		break;
@@ -391,11 +393,20 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case 'I':
 		mainobject->boxy -= 1;
 		break;
-	case 'Z':
+	case '1': // default view 
+		eye[0] = defaulteye[0];
+		eye[1] = defaulteye[1];
+		eye[2] = defaulteye[2];
+		break;
+	case '2':// view inside picker
+		mainobject->geteye(eye, centre);
+		break;
+	case 'M':
 		SetTimer(hwnd, 101, 60, NULL);
 		start = ::GetTickCount();
 		break;
 	default:
+		mainobject->keypress(nChar);
 		break;
 	}
 	sethalfplane();
@@ -413,7 +424,7 @@ void OnTimer(UINT nIDEvent)
 void OnLButtonDown(UINT nFlags, int x, int y)
 {
 }
-
+	mainobject->handleanimation(start);
 void OnMouseMove(UINT nFlags, int x, int y)
 {
 	if (nFlags == 1) // mouse key is down
@@ -457,6 +468,7 @@ void CreateObjects()
 void CleanUp()
 {
   glDeleteProgram(rcontext.glprogram);
+  glDeleteProgram(rcontext.nullglprogram);
 
   delete sphere;
   delete box;
