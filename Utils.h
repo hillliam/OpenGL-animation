@@ -1,6 +1,11 @@
 #pragma once
 #include <Windows.h>
 
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
+
 inline void DisplayMessage(const char* msg)
 {
   int len=strlen(msg)+1;

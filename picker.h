@@ -19,7 +19,7 @@ private:
 	location rwheel;
 
 	location startpoint = { 0,0,0 };
-	location startrotation = { 0,0,0 };
+	location startrotation = { 0,270,0 };
 	location startscale = { 1,1,1 };
 	int animationstage = 0;
 
@@ -31,10 +31,11 @@ private:
 	void draw_wheels(RenderingContext * rcontext);
 	void calculateoffsetpicker();
 	void populatepicker();
+	void movedirection(bool up);
 public:
 	// is the eye set to the cabin
 	bool cabineye = 0;
-	// rotation of wheels
+	// rotation of wheels 
 	float wheelangle = 0;
 	// are the mirrors folder 90 yes 0 no other inbetween
 	int foldedmirrors = 0;
@@ -82,8 +83,25 @@ inline void picker::setrotation(float x, float y, float z)
 	startrotation.y = y;
 	startrotation.z = z;
 }
+
 inline void picker::keypress(UINT nChar)
 {
+	if (cabineye)
+	{ // handle driveing
+		switch (nChar)
+		{
+		case KEY_UP:
+		case KEY_DOWN:
+			movedirection(nChar == KEY_UP);
+			break;
+		case KEY_LEFT:
+			wheelangle -= 1;
+			break;
+		case KEY_RIGHT:
+			wheelangle -= 1;
+			break;
+		}
+	}
 	switch (nChar)
 	{
 	case 'G':
@@ -113,6 +131,7 @@ void picker::handleanimation(DWORD start)
 		switch (animationstage)
 		{
 		case 0: // chery picker extend legs
+
 			break;
 		case 1: // fold mirrors in
 			break;
@@ -125,6 +144,10 @@ void picker::handleanimation(DWORD start)
 void picker::drawpicker(RenderingContext* rcontext)
 {
 	rcontext->Translate(startpoint.x, startpoint.y, startpoint.z);
+	rcontext->Scale(startscale.x, startscale.y, startscale.z);
+	rcontext->RotateX(startrotation.x);
+	rcontext->RotateY(startrotation.y);
+	rcontext->RotateZ(startrotation.z);
 	rcontext->PushModelMatrix();
 	drawbase(rcontext);
 	rcontext->PushModelMatrix();
@@ -188,20 +211,22 @@ void picker::draw_arm_3(RenderingContext* rcontext)
 
 void picker::drawmirrors(RenderingContext* rcontext)
 {
-	float offset = 0;
+	float loffset = 0;
+	float roffset = 0;
 	if (foldedmirrors != 0)
 	{
-		offset = 0.03;
+		loffset = 0.03;
+		roffset = 0.05;
 	}
 	cabin->Draw(rcontext);
 	rcontext->PushModelMatrix();
 	rcontext->PushModelMatrix();
-	rcontext->Translate(rmirror.x, rmirror.y, rmirror.z - offset);
+	rcontext->Translate(rmirror.x, rmirror.y, rmirror.z - roffset);
 	rcontext->RotateY(foldedmirrors);
 	right_mirror->Draw(rcontext);
 	rcontext->PopModelMatrix();
 	rcontext->PushModelMatrix();
-	rcontext->Translate(lmirror.x, lmirror.y, lmirror.z + offset);
+	rcontext->Translate(lmirror.x, lmirror.y, lmirror.z + loffset);
 	rcontext->RotateY(foldedmirrors);
 	left_mirror->Draw(rcontext);
 	rcontext->PopModelMatrix();
@@ -322,5 +347,17 @@ void picker::populatepicker()
 		{
 			current->getName();
 		}
+	}
+}
+
+inline void picker::movedirection(bool up)
+{
+	if (up)
+	{
+		startpoint.x += 0.2;
+	}
+	else
+	{
+		startpoint.x -= 0.2;
 	}
 }

@@ -399,11 +399,13 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		mainobject->boxy -= 1;
 		break;
 	case '1': // default view 
+		mainobject->cabineye = false;
 		eye[0] = defaulteye[0];
 		eye[1] = defaulteye[1];
 		eye[2] = defaulteye[2];
 		break;
 	case '2':// view inside picker
+		mainobject->cabineye = true;
 		mainobject->geteye(eye, centre);
 		break;
 	case 'M':

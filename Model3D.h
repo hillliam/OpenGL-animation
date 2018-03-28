@@ -34,6 +34,10 @@ inline Object3D** Model3D::GetObjects()
 
 inline void Model3D::Draw(RenderingContext* rcontext)
 {
-  for (int i=0; i<noofobjects; i++)
-    objects[i]->Draw(rcontext);
+	for (int i = 0; i < noofobjects; i++)
+	{
+		rcontext->PushModelMatrix();
+		objects[i]->Draw(rcontext);
+		rcontext->PopModelMatrix();
+	}
 }
