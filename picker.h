@@ -130,14 +130,18 @@ void picker::handleanimation(DWORD start)
 	DWORD elapsed = GetTickCount() - start;
 		switch (animationstage)
 		{
-		case 0: // chery picker extend legs
-
+		case 0: // chery picker move to piramid
+			lerpbetween(startpoint.x, startpoint.x, elapsed, start, 35.5);
+			lerpbetween(startpoint.y, startpoint.y, elapsed, start, 35.5);
 			break;
 		case 1: // fold mirrors in
+
 			break;
 		case 2: // rotate base of arm 90 left
+
 			break;
 		case 3: // raise arm up
+
 			break;
 		}
 }
@@ -354,10 +358,26 @@ inline void picker::movedirection(bool up)
 {
 	if (up)
 	{
-		startpoint.x += 0.2;
+		startpoint.y += 0.2;
+		if (wheelangle > 0)
+		{
+			startpoint.z += 0.01 * wheelangle;
+		}
+		else if (wheelangle < 0)
+		{
+			startpoint.z -= 0.2 * -wheelangle;
+		}
 	}
 	else
 	{
-		startpoint.x -= 0.2;
+		startpoint.y -= 0.2;
+		if (wheelangle > 0)
+		{
+			startpoint.z -= 0.01 * wheelangle;
+		}
+		else if (wheelangle < 0)
+		{
+			startpoint.z += 0.2 * -wheelangle;
+		}
 	}
 }
