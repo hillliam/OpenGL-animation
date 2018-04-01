@@ -15,6 +15,25 @@ inline void DisplayMessage(const char* msg)
   free(text);
 }
 
+inline float lerpbetween(float svalue, float evalue, DWORD current, float stime, float etime)
+{
+	if (current < stime)
+	{
+		return svalue;
+	}
+	else if (current > etime)
+	{
+		return evalue;
+	}
+	else
+	{
+		float r = current * 0.0005;
+		double u = r - (int)r;
+		float x = (1 - u) * svalue + u * evalue;
+		return x;
+	}
+}
+
 struct location
 {
 	float x;
