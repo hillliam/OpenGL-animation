@@ -58,7 +58,7 @@ float ray_dir[3];
 
 int vbo[2] = { 0 };
 float verts[6];
-
+bool animating = false;
 // starting location on screen of mouse
 float lastx = 0;
 float lasty = 0;
@@ -409,8 +409,17 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		mainobject->geteye(eye, centre);
 		break;
 	case 'M':
-		SetTimer(hwnd, 101, 60, NULL);
-		start = ::GetTickCount();
+		if (!animating)
+		{
+			SetTimer(hwnd, 101, 60, NULL);
+			start = ::GetTickCount();
+			animating == true;
+		}
+		else
+		{
+			KillTimer(hwnd, 101);
+			animating = false;
+		}
 		break;
 	default:
 		mainobject->keypress(nChar);

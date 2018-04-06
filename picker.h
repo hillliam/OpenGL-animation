@@ -131,11 +131,13 @@ void picker::handleanimation(DWORD start)
 		switch (animationstage)
 		{
 		case 0: // chery picker move to piramid
-			lerpbetween(startpoint.x, startpoint.x, elapsed, start, 35.5);
-			lerpbetween(startpoint.y, startpoint.y, elapsed, start, 35.5);
+			startpoint.x = lerpbetween(startpoint.x, startpoint.x+10, elapsed, start, 35.5);
+			startpoint.x = lerpbetween(startpoint.y, startpoint.y+10, elapsed, start, 35.5);
+			if (elapsed >= 35.5)
+				animationstage = 1;
 			break;
 		case 1: // fold mirrors in
-
+			foldedmirrors = lerpbetween(0, 90, elapsed,35.5,50);
 			break;
 		case 2: // rotate base of arm 90 left
 

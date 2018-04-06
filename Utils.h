@@ -27,7 +27,7 @@ inline float lerpbetween(float svalue, float evalue, DWORD current, float stime,
 	}
 	else
 	{
-		float r = current * 0.0005;
+		float r = current * 0.005;
 		double u = r - (int)r;
 		float x = (1 - u) * svalue + u * evalue;
 		return x;

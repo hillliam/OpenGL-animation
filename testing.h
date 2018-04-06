@@ -23,6 +23,7 @@ private:
 	static void testrotz();
 	static void testbmatrix();
 	static void testlookat();
+	static void testlookat2();
 	static void testotho();
 	static void testfrustum();
 	static void testcomplex();
@@ -317,6 +318,30 @@ void Test::testlookat()
 		std::cout << "look at fail" << std::endl;
 	}
 }
+void Test::testlookat2()
+{
+	float data[16] = { 1,2,3,4
+		,5,6,7,8
+		,9,10,11,12
+		,13,14,15,16 };
+	float eyes[3] = { 2.0f, 1.0f, 3.0f };
+	float centres[3] = { 1.0f, 0.0f, 0.5f };
+	float ups[3] = { 0.0f, 0.0f, 1.0f };
+	float rdata[16] = { -0.707106769,-0.615457416,0.348155320,0
+		,0.707106769,-0.615457416,0.348155320,0
+		,0,0.492365956,0.870388269,0
+		,0.707106769,0.369274378,-3.65563083,1 };
+	Matrix::SetLookAt(data, eyes, centres, ups);
+	printmatrix(data, 16);
+	if (compare(data, rdata, 16))
+	{
+		std::cout << "look at pass" << std::endl;
+	}
+	else
+	{
+		std::cout << "look at fail" << std::endl;
+	}
+}
 void Test::testotho()
 {
 	float data[16] = { 1,2,3,4
@@ -379,6 +404,7 @@ void Test::testcomplex()
 {
 	testotho();
 	testlookat();
+	testlookat2();
 	testfrustum();
 }
 void Test::testmatrixclass()
