@@ -18,9 +18,13 @@ private:
 	location lwheel;
 	location rwheel;
 
+	location armjoin;
+
 	location startpoint = { 0,0,0 };
 	location startrotation = { 0,270,0 };
 	location startscale = { 1,1,1 };
+	// scale of the base of the arm 
+	double armscale = 4;
 	int animationstage = 0;
 
 	void drawbase(RenderingContext * rcontext);
@@ -33,6 +37,8 @@ private:
 	void populatepicker();
 	void movedirection(bool up);
 public:
+	// where the piramid is in the world
+	location targetpoint = { 0,0,0 };
 	// is the eye set to the cabin
 	bool cabineye = 0;
 	// rotation of wheels 
@@ -86,7 +92,7 @@ inline void picker::setrotation(float x, float y, float z)
 
 inline void picker::keypress(UINT nChar)
 {
-	if (cabineye)
+	if (!cabineye)
 	{ // handle driveing
 		switch (nChar)
 		{
@@ -131,13 +137,16 @@ void picker::handleanimation(DWORD start)
 		switch (animationstage)
 		{
 		case 0: // chery picker move to piramid
-			startpoint.x = lerpbetween(startpoint.x, startpoint.x+10, elapsed, start, 35.5);
-			startpoint.x = lerpbetween(startpoint.y, startpoint.y+10, elapsed, start, 35.5);
+			startpoint.x = lerpbetween(startpoint.x, targetpoint.x, elapsed, start, 35.5);
+			startpoint.y = lerpbetween(startpoint.y, targetpoint.y, elapsed, start, 35.5);
+			startpoint.z = lerpbetween(startpoint.z, targetpoint.z, elapsed, start, 35.5);
 			if (elapsed >= 35.5)
-				animationstage = 1;
+				animationstage++;
 			break;
 		case 1: // fold mirrors in
 			foldedmirrors = lerpbetween(0, 90, elapsed,35.5,50);
+			if (elapsed >= 50)
+				animationstage++;
 			break;
 		case 2: // rotate base of arm 90 left
 
@@ -149,6 +158,7 @@ void picker::handleanimation(DWORD start)
 }
 void picker::drawpicker(RenderingContext* rcontext)
 {
+	rcontext->PushModelMatrix();
 	rcontext->Translate(startpoint.x, startpoint.y, startpoint.z);
 	rcontext->Scale(startscale.x, startscale.y, startscale.z);
 	rcontext->RotateX(startrotation.x);
@@ -171,6 +181,7 @@ void picker::drawpicker(RenderingContext* rcontext)
 
 	drawmirrors(rcontext);
 
+	rcontext->PopModelMatrix();
 	rcontext->PopModelMatrix();
 }
 
@@ -204,12 +215,18 @@ void picker::draw_arm_1(RenderingContext* rcontext)
 void picker::draw_arm_2(RenderingContext* rcontext)
 {
 	armjoint->Draw(rcontext);
+	rcontext->PushModelMatrix();
+	rcontext->Scale(armscale, 1, 1); // this should only be applied to the arm end
 	rcontext->RotateZ(sisorx);
 	arm_end->Draw(rcontext);
+	rcontext->PopModelMatrix();
+	rcontext->RotateZ(sisorx);
+	rcontext->Translate(arm_end->local[0], arm_end->local[1], arm_end->local[2]);
 }
 
 void picker::draw_arm_3(RenderingContext* rcontext)
 {
+	rcontext->Translate(armjoin.x * armscale, armjoin.y, armjoin.z);
 	lift_box_p->Draw(rcontext);
 	rcontext->RotateY(boxy);
 	lift_box->Draw(rcontext);
@@ -279,9 +296,13 @@ void picker::calculateoffsetpicker()
 	rmirror.z = right_mirror->local[2];
 	left_mirror->resetlocal();
 	right_mirror->resetlocal();
-	cabinpoint.x = cabin->local[0];
+	cabinpoint.x = cabin->local[0]; // camera point
 	cabinpoint.y = cabin->local[1];
 	cabinpoint.z = cabin->local[2];
+	armjoin.x = lift_box_p->local[0];
+	armjoin.y = lift_box_p->local[1];
+	armjoin.z = lift_box_p->local[2];
+	lift_box_p->resetlocal();
 }
 
 void picker::populatepicker()
@@ -360,26 +381,26 @@ inline void picker::movedirection(bool up)
 {
 	if (up)
 	{
-		startpoint.y += 0.2;
+		startpoint.z += 0.2;
 		if (wheelangle > 0)
 		{
-			startpoint.z += 0.01 * wheelangle;
+			startpoint.x += 0.01 * wheelangle;
 		}
 		else if (wheelangle < 0)
 		{
-			startpoint.z -= 0.2 * -wheelangle;
+			startpoint.x -= 0.2 * -wheelangle;
 		}
 	}
 	else
 	{
-		startpoint.y -= 0.2;
+		startpoint.z -= 0.2;
 		if (wheelangle > 0)
 		{
-			startpoint.z -= 0.01 * wheelangle;
+			startpoint.x -= 0.01 * wheelangle;
 		}
 		else if (wheelangle < 0)
 		{
-			startpoint.z += 0.2 * -wheelangle;
+			startpoint.x += 0.2 * -wheelangle;
 		}
 	}
 }
