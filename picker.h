@@ -24,7 +24,7 @@ private:
 	location startrotation = { 0,270,0 };
 	location startscale = { 1,1,1 };
 	// scale of the base of the arm 
-	double armscale = 4;
+	double armscale = 1;
 	int animationstage = 0;
 
 	void drawbase(RenderingContext * rcontext);
@@ -96,38 +96,47 @@ inline void picker::keypress(UINT nChar)
 	{ // handle driveing
 		switch (nChar)
 		{
-		case KEY_UP:
-		case KEY_DOWN:
-			movedirection(nChar == KEY_UP);
+		case KEY_MUP:
+		case KEY_MDOWN:
+			movedirection(nChar == KEY_MUP);
 			break;
-		case KEY_LEFT:
+		case KEY_MLEFT:
 			wheelangle -= 1;
 			break;
-		case KEY_RIGHT:
+		case KEY_MRIGHT:
 			wheelangle -= 1;
 			break;
 		}
 	}
-	switch (nChar)
+	else
 	{
-	case 'G':
-		startpoint.x += 0.2;
-		break;
-	case 'H':
-		startpoint.x -= 0.2;
-		break;
-	case 'J':
-		startpoint.y += 0.2;
-		break;
-	case 'K':
-		startpoint.y -= 0.2;
-		break;
-	case 'C':
-		startpoint.z += 0.2;
-		break;
-	case 'V':
-		startpoint.z -= 0.2;
-		break;
+		switch (nChar)
+		{
+		case 'G':
+			startpoint.x += 0.2;
+			break;
+		case 'H':
+			startpoint.x -= 0.2;
+			break;
+		case 'J':
+			startpoint.y += 0.2;
+			break;
+		case 'K':
+			startpoint.y -= 0.2;
+			break;
+		case 'C':
+			startpoint.z += 0.2;
+			break;
+		case 'V':
+			startpoint.z -= 0.2;
+			break;
+		case 'B':
+			armscale -= 0.1;
+			break;
+		case 'N':
+			armscale += 0.1;
+			break;
+		}
 	}
 }
 void picker::handleanimation(DWORD start)
@@ -216,8 +225,8 @@ void picker::draw_arm_2(RenderingContext* rcontext)
 {
 	armjoint->Draw(rcontext);
 	rcontext->PushModelMatrix();
-	rcontext->Scale(armscale, 1, 1); // this should only be applied to the arm end
 	rcontext->RotateZ(sisorx);
+	rcontext->Scale(armscale, 1, 1); // this should only be applied to the arm end
 	arm_end->Draw(rcontext);
 	rcontext->PopModelMatrix();
 	rcontext->RotateZ(sisorx);
@@ -384,7 +393,7 @@ inline void picker::movedirection(bool up)
 		startpoint.z += 0.2;
 		if (wheelangle > 0)
 		{
-			startpoint.x += 0.01 * wheelangle;
+			startpoint.x += 0.2 * wheelangle;
 		}
 		else if (wheelangle < 0)
 		{
@@ -396,7 +405,7 @@ inline void picker::movedirection(bool up)
 		startpoint.z -= 0.2;
 		if (wheelangle > 0)
 		{
-			startpoint.x -= 0.01 * wheelangle;
+			startpoint.x -= 0.2 * wheelangle;
 		}
 		else if (wheelangle < 0)
 		{

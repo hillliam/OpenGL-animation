@@ -1,10 +1,16 @@
 #pragma once
 #include <Windows.h>
 
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
+// keys that will be shared between cameras
+#define KEY_MUP 'I'
+#define KEY_MDOWN 'K'
+#define KEY_MLEFT 'J'
+#define KEY_MRIGHT 'L'
+
+#define KEY_PUP 'I'
+#define KEY_PDOWN 'K'
+#define KEY_PLEFT 'J'
+#define KEY_PRIGHT 'L'
 
 inline void DisplayMessage(const char* msg)
 {

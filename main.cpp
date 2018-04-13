@@ -39,6 +39,7 @@ void CreateObjects();
 void CleanUp();
 void lights();
 void sethalfplane();
+void redraw();
 
 const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
 float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
@@ -413,7 +414,7 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		{
 			SetTimer(hwnd, 101, 60, NULL);
 			start = ::GetTickCount();
-			animating == true;
+			animating = true;
 		}
 		else
 		{
@@ -427,15 +428,13 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	sethalfplane();
 	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
-	PAINTSTRUCT paint;
-	BeginPaint(hwnd, &paint);
-	OnDraw();
-	EndPaint(hwnd, &paint);
+	redraw();
 }
 
 void OnTimer(UINT nIDEvent)
 {
 	mainobject->handleanimation(start);
+	redraw();
 }
 void OnLButtonDown(UINT nFlags, int x, int y)
 {
@@ -461,6 +460,11 @@ void OnMouseMove(UINT nFlags, int x, int y)
 
 	sethalfplane();
 	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
+	redraw();
+}
+
+void redraw()
+{
 	PAINTSTRUCT paint;
 	BeginPaint(hwnd, &paint);
 	OnDraw();
@@ -483,7 +487,10 @@ void CreateObjects()
   ball->SetDiffuse(255, 0, 0, 0);
   ground->setlocation(1,-0.2,-1);
   ground->setscale(4, 4, 4);
-  tower->setlocation(2, -0.2, -1);
+  tower->setlocation(-0.5, -0.7, -1);
+  mainobject->targetpoint.x = -0.5;
+  mainobject->targetpoint.y = -0.7;
+  mainobject->targetpoint.z = -1;
 }
 
 void CleanUp()
