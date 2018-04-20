@@ -9,6 +9,7 @@
 #include "testing.h"
 #include "picker.h"
 #include "staticgeom.h"
+#include "HUD.h"
 
 static HWND hwnd;
 
@@ -170,7 +171,7 @@ void OnCreate()
   GLenum err=glewInit();
   if (err!=GLEW_OK)
     DisplayMessage((char*) glewGetErrorString(err));
-
+  setupfont();
   CreateObjects();
 
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
@@ -272,8 +273,10 @@ void OnDraw()
   tower->draw(&rcontext);
   ground->draw(&rcontext);
   mainobject->drawpicker(&rcontext);
-  glFinish();
-  SwapBuffers(wglGetCurrentDC());
+  //glFinish();
+  HDC display = wglGetCurrentDC();
+  drawhud(display, width, hight);
+  SwapBuffers(display);
 }
 
 void sethalfplane()
@@ -497,7 +500,7 @@ void CleanUp()
 {
   glDeleteProgram(rcontext.glprogram);
   glDeleteProgram(rcontext.nullglprogram);
-
+  cleanhud();
   delete sphere;
   delete box;
   delete car;

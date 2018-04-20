@@ -65,18 +65,21 @@
     <ClInclude Include="staticgeom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragshader.txt">
-      <Filter>shaders</Filter>
-    </Text>
-    <Text Include="vertshader.txt">
       <Filter>shaders</Filter>
     </Text>
     <Text Include="nfragshader.txt">
       <Filter>shaders</Filter>
     </Text>
     <Text Include="nvertshader.txt">
+      <Filter>shaders</Filter>
+    </Text>
+    <Text Include="vertshader.txt">
       <Filter>shaders</Filter>
     </Text>
   </ItemGroup>

@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="GLSetup.h" />
     <ClInclude Include="enviroment.h" />
+    <ClInclude Include="HUD.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Object3D.h" />
