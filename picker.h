@@ -20,7 +20,7 @@ private:
 
 	location armjoin;
 
-	location startpoint = { 0,0,0 };
+	location startpoint = { 0,-0.6,0 };
 	location startrotation = { 0,270,0 };
 	location startscale = { 1,1,1 };
 	// scale of the base of the arm 
@@ -38,7 +38,7 @@ private:
 	void movedirection(bool up);
 public:
 	// where the piramid is in the world
-	location targetpoint = { 0,0,0 };
+	location targetpoint = { -600,0,-1700 };
 	// is the eye set to the cabin
 	bool cabineye = 0;
 	// rotation of wheels 
@@ -66,7 +66,7 @@ void picker::geteye(float *eye, float *center)
 	eye[0] = cabinpoint.x + startpoint.x;
 	eye[1] = cabinpoint.y + startpoint.y;
 	eye[2] = cabinpoint.z + startpoint.z;
-	//center[0] = 90; // point the camera forword
+	center[0] = startrotation.y; // point the camera forword
 }
 
 inline void picker::setlocation(float x, float y, float z)
@@ -92,7 +92,7 @@ inline void picker::setrotation(float x, float y, float z)
 
 inline void picker::keypress(UINT nChar)
 {
-	if (!cabineye)
+	if (cabineye)
 	{ // handle driveing
 		switch (nChar)
 		{
@@ -143,25 +143,30 @@ void picker::handleanimation(DWORD start)
 {
 
 	DWORD elapsed = GetTickCount() - start;
+	float r = elapsed * 0.005;
 		switch (animationstage)
 		{
 		case 0: // chery picker move to piramid
-			startpoint.x = lerpbetween(startpoint.x, targetpoint.x, elapsed, start, 35.5);
-			startpoint.y = lerpbetween(startpoint.y, targetpoint.y, elapsed, start, 35.5);
-			startpoint.z = lerpbetween(startpoint.z, targetpoint.z, elapsed, start, 35.5);
-			if (elapsed >= 35.5)
+			startpoint.x = lerpbetween(0, targetpoint.x, r, 0, 40);
+			//startpoint.y = lerpbetween(0, targetpoint.y, r, start, 40);
+			startpoint.z = lerpbetween(0, targetpoint.z, r, 0, 40);
+			if (r > 40.0)
 				animationstage++;
 			break;
 		case 1: // fold mirrors in
-			foldedmirrors = lerpbetween(0, 90, elapsed,35.5,50);
-			if (elapsed >= 50)
+			foldedmirrors = lerpbetween(0, 90, r,40,70);
+			if (r > 70.0)
 				animationstage++;
 			break;
 		case 2: // rotate base of arm 90 left
-
+			baserotation = lerpbetween(0, 90, r, 70, 120);
+			if (r > 120.0)
+				animationstage++;
 			break;
 		case 3: // raise arm up
-
+			sisorx = lerpbetween(0, -35, r, 120, 160);
+			if (r > 160.0)
+				animationstage++;
 			break;
 		}
 }
@@ -187,9 +192,7 @@ void picker::drawpicker(RenderingContext* rcontext)
 	rcontext->PopModelMatrix();
 	rcontext->PopModelMatrix();
 	rcontext->PopModelMatrix();
-
 	drawmirrors(rcontext);
-
 	rcontext->PopModelMatrix();
 	rcontext->PopModelMatrix();
 }
