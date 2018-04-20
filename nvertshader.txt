@@ -18,12 +18,16 @@ uniform mat4 u_mvpmatrix;
 // Attributes 
 attribute vec4 a_position; 
 attribute vec3 a_normal; 
- 
-// Varyings 
-varying vec4 v_colour; 
- 
+
+// Varyings
+varying vec4 v_colour;
+
+out vec2 TexCoord;
+
 void main() 
 {
-  v_colour=u_m_ambient;
+  //v_colour=texture(ourTexture, a_position);
+  TexCoord = aTexCoord;
+  //v_colour=u_m_ambient;
   gl_Position=u_mvpmatrix*a_position;
 }

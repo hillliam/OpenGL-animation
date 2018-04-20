@@ -1,6 +1,11 @@
 varying vec4 v_colour; 
 
+//texture for skybox
+uniform sampler2D ourTexture;
+
+in vec2 TexCoord;
+
 void main()  
 { 
-gl_FragColor=v_colour; 
+gl_FragColor = texture(ourTexture, TexCoord);; 
 } 
