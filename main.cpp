@@ -171,9 +171,9 @@ void OnCreate()
   GLenum err=glewInit();
   if (err!=GLEW_OK)
     DisplayMessage((char*) glewGetErrorString(err));
-  setupfont();
-  CreateObjects();
 
+  CreateObjects();
+  setupfont();
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
   rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
 
@@ -268,7 +268,12 @@ void OnDraw()
   rcontext.PushModelMatrix();
   //rcontext.Scale(0.3f, 0.3f, 0.3f);
   //rcontext.Translate(0, 0, -5);
-  //ball->Draw(&rcontext);
+  rcontext.Translate(2, 0.5, 0);
+  rcontext.RotateX(90);
+  rcontext.RotateY(90);
+  rcontext.Scale(5, 5, 5);
+  
+  ball->Draw(&rcontext);
   rcontext.PopModelMatrix();
   tower->draw(&rcontext);
   ground->draw(&rcontext);
@@ -425,6 +430,12 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			animating = false;
 		}
 		break;
+	case '3': // wireframe mode
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case '4': // wireframe mode
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
 	default:
 		mainobject->keypress(nChar);
 		break;
@@ -486,7 +497,9 @@ void CreateObjects()
   skybox = new Object3D();
   skybox->SetName("skybox");
   skybox->makeplane();
-  ball = new Object3D(true);
+  ball = new Object3D();
+  ball->SetName("circle");
+  ball->makeplane();
   ball->SetDiffuse(255, 0, 0, 0);
   ground->setlocation(1,-0.2,-1);
   ground->setscale(4, 4, 4);
@@ -507,4 +520,24 @@ void CleanUp()
   delete Cylinder;
   delete ball;
   delete mainobject;
+}
+
+void loadtexture(LPWSTR file)
+{
+	BITMAP bmpinfo;
+	HBITMAP hbmp = (HBITMAP) ::LoadImage(NULL,
+		file, IMAGE_BITMAP, 0, 0,
+		LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+	GetObject(hbmp, sizeof(BITMAP), &bmpinfo);
+	DWORD* data = new DWORD[bmpinfo.bmWidth * bmpinfo.bmHeight];
+
+	for (int i = 0; i != bmpinfo.bmHeight; i++)
+	{
+		for (int j = 0; j != bmpinfo.bmWidth; j++)
+		{
+			DWORD* index = (DWORD*)&bmpinfo.bmBits;
+			data[i*bmpinfo.bmHeight + j] = index[i*bmpinfo.bmHeight + j];
+		}
+	}
+
 }

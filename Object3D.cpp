@@ -114,17 +114,28 @@ void Object3D::getlocalmove(const Object3D* root)
 
 void Object3D::InitVBOs()
 {
-  if (!vbos)
-    vbos=(unsigned int*) malloc(2*sizeof(unsigned int));
-  glGenBuffers(2, vbos);
+	if (!vbos)
+		vbos = (unsigned int*)malloc(2 * sizeof(unsigned int));
+	glGenBuffers(2, vbos);
 
-  int size=4*noofverts*(incuv?8:6);
-  glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-  glBufferData(GL_ARRAY_BUFFER, size, vertexdata, GL_STATIC_DRAW);
-    
-  size=2*elementcount;
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, polygons, GL_STATIC_DRAW);
+	if (_stricmp(getName(), "circle") == 0)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*4*4, vertexdata, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short)* 6, polygons, GL_STATIC_DRAW);
+	}
+	else
+	{
+		int size = 4 * noofverts*(incuv ? 8 : 6);
+		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+		glBufferData(GL_ARRAY_BUFFER, size, vertexdata, GL_STATIC_DRAW);
+
+		size = 2 * elementcount;
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, polygons, GL_STATIC_DRAW);
+	}
 }
   
 void Object3D::SetVertexData(const byte* buffer, int noofverts, int bufferlen)
@@ -213,7 +224,11 @@ void Object3D::Draw(RenderingContext* rcontext)
     glUniformMatrix4fv(rcontext->mvhandle, 1, false, rcontext->mvmatrix);
     glUniformMatrix4fv(rcontext->mvphandle, 1, false, rcontext->mvpmatrix);
     
-    glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);    
+    glBindBuffer(GL_ARRAY_BUFFER, vbos[0]); 
+	// texture 
+	if (texturemap != -1)
+	{
+	}
     // Attributes
     if (incuv)
     {
@@ -226,7 +241,8 @@ void Object3D::Draw(RenderingContext* rcontext)
     }
 	else if (_stricmp(getName(), "circle") == 0)
 	{
-		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4 * 3, (void*)0);
+		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
+		//glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4, (void*)0);
 		glEnableVertexAttribArray(rcontext->verthandles[0]);
 	}
     else
@@ -244,3 +260,31 @@ void Object3D::Draw(RenderingContext* rcontext)
  // rcontext->PopModelMatrix();
 }
 
+void Object3D::makeplane()
+{
+	vertexdata = (float*)malloc((sizeof(float) * 3) * 4);
+	vertexdata[0] = 0.5;
+	vertexdata[1] = 0.5;
+	vertexdata[2] = 0;
+	vertexdata[3] = 0.5; 
+	vertexdata[4] = -0.5; 
+	vertexdata[5] = 0;
+	vertexdata[6] = -0.5;
+	vertexdata[7] = -0.5;
+	vertexdata[8] = 0;
+	vertexdata[9] = -0.5;
+	vertexdata[10] = 0.5;
+	vertexdata[11] = 0;
+	this->noofverts = 4;
+
+	polygons = (unsigned short*)malloc((sizeof(unsigned short)* 3)*2);
+	polygons[0] = 0;
+	polygons[1] = 1;
+	polygons[2] = 3;
+	polygons[3] = 1;
+	polygons[4] = 2;
+	polygons[5] = 3;
+
+	elementtype = GL_TRIANGLES;
+	elementcount = 3 * 2;
+}

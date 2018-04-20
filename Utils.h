@@ -7,10 +7,10 @@
 #define KEY_MLEFT 'J'
 #define KEY_MRIGHT 'L'
 
-#define KEY_PUP 'I'
-#define KEY_PDOWN 'K'
-#define KEY_PLEFT 'J'
-#define KEY_PRIGHT 'L'
+#define KEY_PUP 'w'
+#define KEY_PDOWN 'a'
+#define KEY_PLEFT 's'
+#define KEY_PRIGHT 'd'
 
 inline void DisplayMessage(const char* msg)
 {
@@ -21,20 +21,22 @@ inline void DisplayMessage(const char* msg)
   free(text);
 }
 
-inline float lerpbetween(float svalue, float evalue, DWORD current, float stime, float etime)
+inline float lerpbetween(float svalue, float evalue, double r, float stime, float etime)
 {
-	if (current < stime)
+	if (r <= stime)
 	{
 		return svalue;
 	}
-	else if (current > etime)
+	else if (r >= etime)
 	{
 		return evalue;
 	}
 	else
 	{
-		float r = current * 0.005;
-		double u = r - (int)r;
+		//double u = r - (int)r;
+		double dif = etime - stime;
+		double decrease = dif - r;
+		double u = (decrease / dif * 100) - 100; // must be between 0 and 1
 		float x = (1 - u) * svalue + u * evalue;
 		return x;
 	}
@@ -42,7 +44,7 @@ inline float lerpbetween(float svalue, float evalue, DWORD current, float stime,
 
 struct location
 {
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 };

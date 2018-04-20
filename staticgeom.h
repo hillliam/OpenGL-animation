@@ -9,7 +9,7 @@ public:
 	void setscale(float x, float y, float z);
 	void setrotation(float x, float y, float z);
 	void draw(RenderingContext * rcontext);
-	location startpoint = {0,0,0};
+	location startpoint = {0,0,-1};
 	location startrotation = { 0,0,0 };
 	location startscale = { 1,1,1 };
 	Model3D* model;
