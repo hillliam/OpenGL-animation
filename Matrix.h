@@ -45,7 +45,7 @@ inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* cent
 	CrossProduct3(forward, up, s);
 	Matrix::Normalise3(s);
 	matrix[0] = s[0];
-	matrix[4] = -s[1]; // not negative
+	matrix[4] = s[1]; // not negative
 	matrix[8] = s[2];
 	float* u = new float[3];
 	CrossProduct3(s, forward, u);
@@ -62,7 +62,6 @@ inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* cent
 	u[2] = -u[2];
 	matrix[13] = DotProduct3(u, eye); // FIX 
 	matrix[14] = DotProduct3(forward, eye);
-
 }
 
 inline float Matrix::DotProduct3(const float* vec1, const float* vec2)
@@ -134,6 +133,7 @@ inline void Matrix::MultiplyMatrix(float* result, const float* lhs, const float*
 	{
 		for (int j = 0; j < 4; j++)
 		{
+			result[i * 4 + j] = 0;
 			for (int a = 0; a < 4; a++)
 			{
 				result[i * 4 + j] += lhs[a * 4+j] * rhs[i*4 + a];
@@ -175,10 +175,10 @@ inline void Matrix::RotateX(float* matrix, const float degs)
 	float old6 = matrix[6];
 	float old7 = matrix[7];
 
-	matrix[4] = matrix[9] * sine + matrix[4] * cost;
-	matrix[5] = matrix[10] * sine + matrix[5] * cost;
-	matrix[6] = matrix[11] * sine + matrix[6] * cost;
-	matrix[7] = matrix[12] * sine + matrix[7] * cost;
+	matrix[4] = matrix[8] * sine + matrix[4] * cost;
+	matrix[5] = matrix[9] * sine + matrix[5] * cost;
+	matrix[6] = matrix[10] * sine + matrix[6] * cost;
+	matrix[7] = matrix[11] * sine + matrix[7] * cost;
 
 	matrix[8] = -old4 * sine + matrix[8] * cost;
 	matrix[9] = -old5 * sine + matrix[9] * cost;
