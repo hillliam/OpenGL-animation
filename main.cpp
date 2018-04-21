@@ -10,6 +10,7 @@
 #include "picker.h"
 #include "staticgeom.h"
 #include "HUD.h"
+#include "enviroment.h"
 
 static HWND hwnd;
 
@@ -174,6 +175,7 @@ void OnCreate()
     DisplayMessage((char*) glewGetErrorString(err));
 
   CreateObjects();
+  setupskybox();
   setupfont();
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
   rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
@@ -272,17 +274,9 @@ void OnDraw()
   //drawarm();
   //rcontext.Translate(-1.0f, -0.3f, -1.0f);
   //rcontext.Scale(0.3f,0.3f,0.3f);
-  rcontext.PushModelMatrix();
-  //rcontext.Scale(0.3f, 0.3f, 0.3f);
-  //rcontext.Translate(0, 0, -5);
-  rcontext.Translate(2, 0.5, 0);
-  rcontext.RotateX(90);
-  rcontext.RotateY(90);
-  rcontext.Scale(5, 5, 5);
   glUseProgram(rcontext.nullglprogram);
   setupshader(rcontext.nullglprogram);
-  ball->Draw(&rcontext);
-  rcontext.PopModelMatrix();
+  drawskybox(&rcontext);
   glUseProgram(rcontext.glprogram);
   setupshader(rcontext.glprogram);
   tower->draw(&rcontext);
