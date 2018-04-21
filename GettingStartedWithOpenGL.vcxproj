@@ -136,6 +136,7 @@
     <ClInclude Include="picker.h" />
     <ClInclude Include="RenderingContext.h" />
     <ClInclude Include="staticgeom.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="testing.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
