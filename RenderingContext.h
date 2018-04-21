@@ -21,7 +21,6 @@ public:
   void RotateX(const float degs);
   void RotateY(const float degs);
   void RotateZ(const float degs);
-
   int glprogram; // full shader with lighting 
   int nullglprogram; // no lighting program
   int mvhandle, mvphandle;
@@ -31,7 +30,7 @@ public:
   // if you are reading this, feel free to uncomment the following two lines and use these declarations for the light and material handles
   int lighthandles[5];  // direction; halfplane; ambient; diffuse; specular
   int mathandles[4];    // ambient, diffuse, specular, shininess
-  int verthandles[2];   // position, normal
+  int verthandles[3];   // position, normal, uv
 
 private:
   int depth;

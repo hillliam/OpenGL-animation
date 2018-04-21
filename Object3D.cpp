@@ -1,4 +1,6 @@
 #include "Object3D.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 Object3D::Object3D()
 {
@@ -118,10 +120,10 @@ void Object3D::InitVBOs()
 		vbos = (unsigned int*)malloc(2 * sizeof(unsigned int));
 	glGenBuffers(2, vbos);
 
-	if (_stricmp(getName(), "circle") == 0)
+	if (_stricmp(getName(), "plane") == 0)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*4*4, vertexdata, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*5*4, vertexdata, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short)* 6, polygons, GL_STATIC_DRAW);
@@ -173,6 +175,21 @@ void Object3D::SetTranslation(float x, float y, float z)
 void Object3D::resetlocal()
 {
 	local[0] = local[1] = local[2] = 0.0f;
+}
+
+void Object3D::bindtexture(const char* file)
+{
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load(file, &width, &height, &nrChannels, 0);
+	glGenTextures(1, (unsigned int*) &texturemap);
+	glBindTexture(GL_TEXTURE_2D, texturemap);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	stbi_image_free(data);
 }
   
 void Object3D::SetMaterial(const byte* buffer)
@@ -228,22 +245,25 @@ void Object3D::Draw(RenderingContext* rcontext)
 	// texture 
 	if (texturemap != -1)
 	{
+		glBindTexture(GL_TEXTURE_2D, texturemap);
 	}
     // Attributes
     if (incuv)
     {
       glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4*8, (void*) 0);
       glVertexAttribPointer(rcontext->verthandles[1], 3, GL_FLOAT, false, 4*8, (void*) (4*3));
-     //glVertexAttribPointer(rcontext->verthandles[2], 2, GL_FLOAT, false, 4*8, (void*) (4*6));
+      glVertexAttribPointer(rcontext->verthandles[2], 2, GL_FLOAT, false, 4*8, (void*) (4*6));
       glEnableVertexAttribArray(rcontext->verthandles[0]);
       glEnableVertexAttribArray(rcontext->verthandles[1]);
-     //glEnableVertexAttribArray(rcontext->verthandles[2]);
+      glEnableVertexAttribArray(rcontext->verthandles[2]);
     }
-	else if (_stricmp(getName(), "circle") == 0)
+	else if (_stricmp(getName(), "plane") == 0)
 	{
-		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 5 * sizeof(float), (void*)0);
 		//glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4, (void*)0);
 		glEnableVertexAttribArray(rcontext->verthandles[0]);
+		glVertexAttribPointer(rcontext->verthandles[2], 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(rcontext->verthandles[2]);
 	}
     else
     {
@@ -251,7 +271,7 @@ void Object3D::Draw(RenderingContext* rcontext)
       glVertexAttribPointer(rcontext->verthandles[1], 3, GL_FLOAT, false, 4*6, (void*) (4*3));
       glEnableVertexAttribArray(rcontext->verthandles[0]);
       glEnableVertexAttribArray(rcontext->verthandles[1]);
-      //glDisableVertexAttribArray(rcontext->verthandles[2]);
+      glDisableVertexAttribArray(rcontext->verthandles[2]);
     }
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);    
@@ -262,19 +282,28 @@ void Object3D::Draw(RenderingContext* rcontext)
 
 void Object3D::makeplane()
 {
-	vertexdata = (float*)malloc((sizeof(float) * 3) * 4);
-	vertexdata[0] = 0.5;
-	vertexdata[1] = 0.5;
+	vertexdata = (float*)malloc((sizeof(float) * 5) * 4);
+	vertexdata[0] = 1;
+	vertexdata[1] = 1;
 	vertexdata[2] = 0;
-	vertexdata[3] = 0.5; 
-	vertexdata[4] = -0.5; 
-	vertexdata[5] = 0;
-	vertexdata[6] = -0.5;
-	vertexdata[7] = -0.5;
-	vertexdata[8] = 0;
-	vertexdata[9] = -0.5;
-	vertexdata[10] = 0.5;
-	vertexdata[11] = 0;
+	vertexdata[3] = 1; // u
+	vertexdata[4] = 1; // v
+	vertexdata[5] = 1; 
+	vertexdata[6] = -1; 
+	vertexdata[7] = 0;
+	vertexdata[8] = 1; // u
+	vertexdata[9] = 0; // v
+	vertexdata[10] = -1;
+	vertexdata[11] = -1;
+	vertexdata[12] = 0;
+	vertexdata[13] = 0; // u
+	vertexdata[14] = 0; // v
+	vertexdata[15] = -1;
+	vertexdata[16] = 1;
+	vertexdata[17] = 0;
+	vertexdata[18] = 0; // u
+	vertexdata[19] = 1; // v
+
 	this->noofverts = 4;
 
 	polygons = (unsigned short*)malloc((sizeof(unsigned short)* 3)*2);

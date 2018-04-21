@@ -41,6 +41,7 @@ void CleanUp();
 void lights();
 void sethalfplane();
 void redraw();
+void setupshader(int program);
 
 const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
 float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
@@ -176,32 +177,16 @@ void OnCreate()
   setupfont();
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
   rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
-
-  // Light
-  rcontext.lighthandles[0] = glGetUniformLocation(rcontext.glprogram, "u_l_direction");
-  rcontext.lighthandles[1] = glGetUniformLocation(rcontext.glprogram, "u_l_halfplane");
-  rcontext.lighthandles[2] = glGetUniformLocation(rcontext.glprogram, "u_l_ambient");
-  rcontext.lighthandles[3] = glGetUniformLocation(rcontext.glprogram, "u_l_diffuse");
-  rcontext.lighthandles[4] = glGetUniformLocation(rcontext.glprogram, "u_l_specular");
-  // Material
-  rcontext.mathandles[0] = glGetUniformLocation(rcontext.glprogram, "u_m_ambient");
-  rcontext.mathandles[1] = glGetUniformLocation(rcontext.glprogram, "u_m_diffuse");
-  rcontext.mathandles[2] = glGetUniformLocation(rcontext.glprogram, "u_m_specular");
-  rcontext.mathandles[3] = glGetUniformLocation(rcontext.glprogram, "u_m_shininess");
-  // Matrices
-  rcontext.mvhandle=glGetUniformLocation(rcontext.glprogram, "u_mvmatrix");
-  rcontext.mvphandle=glGetUniformLocation(rcontext.glprogram, "u_mvpmatrix");
-        
-  // Attributes
-  rcontext.verthandles[0]=glGetAttribLocation(rcontext.glprogram, "a_position");
-  rcontext.verthandles[1]=glGetAttribLocation(rcontext.glprogram, "a_normal");
   
+  setupshader(rcontext.nullglprogram);
+  setupshader(rcontext.glprogram);
+
   glUseProgram(rcontext.glprogram);
   // populate light
 
 //glEnable(GL_BLEND);
 
-  glGenBuffers(2, (unsigned int*)vbo);
+  /*glGenBuffers(2, (unsigned int*)vbo);
   int size = sizeof(float) * 2 * 3;
   glLineWidth(4.0f);
   for (int i = 0; i < 3; i++)
@@ -210,18 +195,40 @@ void OnCreate()
 	  verts[i + 3] = ray_pos[i] + ray_dir[i] * 1000;
   }
   glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-  glBufferData(GL_ARRAY_BUFFER, size, verts, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, size, verts, GL_DYNAMIC_DRAW);*/
 
   glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glShadeModel(GL_SMOOTH);
   glEnable(GL_DEPTH_TEST);
-
   // we can do this here because the camera never moves (for the moment...)
   Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
   sethalfplane();
   lights();
+}
+
+void setupshader(int program)
+{
+	// Light
+	rcontext.lighthandles[0] = glGetUniformLocation(program, "u_l_direction");
+	rcontext.lighthandles[1] = glGetUniformLocation(program, "u_l_halfplane");
+	rcontext.lighthandles[2] = glGetUniformLocation(program, "u_l_ambient");
+	rcontext.lighthandles[3] = glGetUniformLocation(program, "u_l_diffuse");
+	rcontext.lighthandles[4] = glGetUniformLocation(program, "u_l_specular");
+	// Material
+	rcontext.mathandles[0] = glGetUniformLocation(program, "u_m_ambient");
+	rcontext.mathandles[1] = glGetUniformLocation(program, "u_m_diffuse");
+	rcontext.mathandles[2] = glGetUniformLocation(program, "u_m_specular");
+	rcontext.mathandles[3] = glGetUniformLocation(program, "u_m_shininess");
+	// Matrices
+	rcontext.mvhandle = glGetUniformLocation(program, "u_mvmatrix");
+	rcontext.mvphandle = glGetUniformLocation(program, "u_mvpmatrix");
+
+	// Attributes
+	rcontext.verthandles[0] = glGetAttribLocation(program, "a_position");
+	rcontext.verthandles[1] = glGetAttribLocation(program, "a_normal");
+	rcontext.verthandles[2] = glGetAttribLocation(program, "a_uv");
 }
 
 void drawarm()
@@ -272,9 +279,12 @@ void OnDraw()
   rcontext.RotateX(90);
   rcontext.RotateY(90);
   rcontext.Scale(5, 5, 5);
-  
+  glUseProgram(rcontext.nullglprogram);
+  setupshader(rcontext.nullglprogram);
   ball->Draw(&rcontext);
   rcontext.PopModelMatrix();
+  glUseProgram(rcontext.glprogram);
+  setupshader(rcontext.glprogram);
   tower->draw(&rcontext);
   ground->draw(&rcontext);
   mainobject->drawpicker(&rcontext);
@@ -433,7 +443,7 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	case '3': // wireframe mode
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		break;
-	case '4': // wireframe mode
+	case '4': // normal mode
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
 	default:
@@ -495,11 +505,12 @@ void CreateObjects()
   Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
   mainobject = new picker();
   skybox = new Object3D();
-  skybox->SetName("skybox");
+  skybox->SetName("plane");
   skybox->makeplane();
   ball = new Object3D();
-  ball->SetName("circle");
+  ball->SetName("plane");
   ball->makeplane();
+  ball->bindtexture("textures\\negx.jpg");
   ball->SetDiffuse(255, 0, 0, 0);
   ground->setlocation(1,-0.2,-1);
   ground->setscale(4, 4, 4);
@@ -520,24 +531,4 @@ void CleanUp()
   delete Cylinder;
   delete ball;
   delete mainobject;
-}
-
-void loadtexture(LPWSTR file)
-{
-	BITMAP bmpinfo;
-	HBITMAP hbmp = (HBITMAP) ::LoadImage(NULL,
-		file, IMAGE_BITMAP, 0, 0,
-		LR_CREATEDIBSECTION | LR_LOADFROMFILE);
-	GetObject(hbmp, sizeof(BITMAP), &bmpinfo);
-	DWORD* data = new DWORD[bmpinfo.bmWidth * bmpinfo.bmHeight];
-
-	for (int i = 0; i != bmpinfo.bmHeight; i++)
-	{
-		for (int j = 0; j != bmpinfo.bmWidth; j++)
-		{
-			DWORD* index = (DWORD*)&bmpinfo.bmBits;
-			data[i*bmpinfo.bmHeight + j] = index[i*bmpinfo.bmHeight + j];
-		}
-	}
-
 }

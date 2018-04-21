@@ -10,13 +10,17 @@ void drawtext(HDC display, const char* message, int x, int y);
 
 void drawhud(HDC display, float width, float hight)
 { // draw to seperate HDC to save result
-	drawtext(hdcsrc, "liams openGL city", 200, 70);
-	drawtext(hdcsrc,"test string to see if it works",200,100);
-	drawtext(hdcsrc, "keys:", 250, width - 100);
-	drawtext(hdcsrc, "m: toggle animation", 270, width - 100);
-	drawtext(hdcsrc, "1: world camera", 290, width - 100);
-	drawtext(hdcsrc, "2: driver camera", 290, width - 100);
-	::BitBlt(display, 0, 0, width, hight, hdcsrc, 0, 0, SRCCOPY); // add text to screen
+	HDC temp = ::GetDC(NULL);
+	HDC src = ::CreateCompatibleDC(temp);
+	::ReleaseDC(NULL, temp);
+	drawtext(src, "liams openGL city", 200, 70);
+	drawtext(src,"test string to see if it works",200,100);
+	drawtext(src, "keys:", 250, width - 100);
+	drawtext(src, "m: toggle animation", 270, width - 100);
+	drawtext(src, "1: world camera", 290, width - 100);
+	drawtext(src, "2: driver camera", 290, width - 100);
+	::BitBlt(display, 0, 0, width, hight, src, 0, 0, SRCAND); // add text to screen or SRCAND
+	DeleteDC(hdcsrc);
 }
 
 void cleanhud()

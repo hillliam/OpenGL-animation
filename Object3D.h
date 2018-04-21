@@ -21,11 +21,12 @@ public:
   void SetDiffuse(float r, float g, float b, float a);
   const float* GetDiffuse();
   void SetTextureMap(int id);
-  
+
   void SetTranslation(const byte* buffer);
   void SetTranslation(float x, float y, float z);
 
   void resetlocal();
+  void bindtexture(const char * file);
 private:
   char* name;
   

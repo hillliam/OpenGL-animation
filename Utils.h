@@ -33,12 +33,24 @@ inline float lerpbetween(float svalue, float evalue, double r, float stime, floa
 	}
 	else
 	{
-		//double u = r - (int)r;
-		double dif = etime - stime;
-		double decrease = dif - r;
-		double u = (decrease / dif * 100) - 100; // must be between 0 and 1
-		float x = (1 - u) * svalue + u * evalue;
-		return x;
+		if (evalue > svalue)
+		{
+			double dif = stime - etime;
+			double increase = r - dif;
+			int u = (increase / dif * 100); // must be between 0 and 1
+			double value = (100 - u) / 100.0;
+			float x = (1 - value) * svalue + value * evalue;
+			return x;
+		}
+		else
+		{
+			double dif = etime - stime;
+			double decrease = dif - r;
+			int u = (decrease / dif * 100); // must be between 0 and 1
+			double value = (100 - u) / 100.0;
+			float x = (1 - value) * svalue + value * evalue;
+			return x;
+		}
 	}
 }
 

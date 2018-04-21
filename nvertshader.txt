@@ -1,3 +1,4 @@
+#version 330 core
 // Light 
 uniform vec3 u_l_direction; 
 uniform vec3 u_l_halfplane; 
@@ -16,8 +17,9 @@ uniform mat4 u_mvmatrix;
 uniform mat4 u_mvpmatrix; 
  
 // Attributes 
-attribute vec4 a_position; 
-attribute vec3 a_normal; 
+attribute vec4 a_position;
+attribute vec3 a_normal;
+attribute vec2 a_uv;
 
 // Varyings
 varying vec4 v_colour;
@@ -27,7 +29,7 @@ out vec2 TexCoord;
 void main() 
 {
   //v_colour=texture(ourTexture, a_position);
-  TexCoord = aTexCoord;
+  TexCoord = a_uv;
   //v_colour=u_m_ambient;
   gl_Position=u_mvpmatrix*a_position;
 }
