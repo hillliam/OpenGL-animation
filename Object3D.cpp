@@ -245,7 +245,12 @@ void Object3D::Draw(RenderingContext* rcontext)
 	// texture 
 	if (texturemap != -1)
 	{
+		glUniform1i(rcontext->textureflag[0],true);
 		glBindTexture(GL_TEXTURE_2D, texturemap);
+	}
+	else
+	{
+		glUniform1i(rcontext->textureflag[0], false);
 	}
     // Attributes
     if (incuv)

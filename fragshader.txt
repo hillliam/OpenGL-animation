@@ -4,7 +4,13 @@ varying vec4 v_colour;
 // texture if maped
 uniform sampler2D ourTexture;
 
+uniform bool u_textured = false;
+in vec2 TexCoord;
+
 void main()  
 {
-	gl_FragColor=v_colour;
+	if (u_textured)
+		gl_FragColor = texture(ourTexture, TexCoord); 
+	else
+		gl_FragColor=v_colour;
 } 

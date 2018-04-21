@@ -15,7 +15,10 @@ uniform float u_m_shininess;
 // Matrices 
 uniform mat4 u_mvmatrix; 
 uniform mat4 u_mvpmatrix; 
- 
+
+ //textureflag
+uniform bool u_textured;
+
 // Attributes 
 attribute vec4 a_position;
 attribute vec3 a_normal;

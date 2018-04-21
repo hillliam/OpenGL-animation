@@ -231,6 +231,9 @@ void setupshader(int program)
 	rcontext.verthandles[0] = glGetAttribLocation(program, "a_position");
 	rcontext.verthandles[1] = glGetAttribLocation(program, "a_normal");
 	rcontext.verthandles[2] = glGetAttribLocation(program, "a_uv");
+
+	// texture flag
+	rcontext.textureflag[0] = glGetUniformLocation(program, "u_textured");
 }
 
 void drawarm()
@@ -498,17 +501,15 @@ void CreateObjects()
   car = Model3D::LoadModel(L"assets\\car.3dm");
   Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
   mainobject = new picker();
-  skybox = new Object3D();
-  skybox->SetName("plane");
-  skybox->makeplane();
   ball = new Object3D();
-  ball->SetName("plane");
-  ball->makeplane();
-  ball->bindtexture("textures\\negx.jpg");
-  ball->SetDiffuse(255, 0, 0, 0);
+  ball->SetName("cube");
+  //ball->makecube();
   ground->setlocation(1,-0.2,-1);
   ground->setscale(4, 4, 4);
   tower->setlocation(-0.5, -0.7, -1);
+  Object3D** towermodel = tower->model->GetObjects();
+  towermodel[0]->bindtexture("textures\\stone2.jpg");
+
   mainobject->targetpoint.x = -0.5;
   mainobject->targetpoint.y = -0.7;
   mainobject->targetpoint.z = -1;

@@ -31,6 +31,7 @@ public:
   int lighthandles[5];  // direction; halfplane; ambient; diffuse; specular
   int mathandles[4];    // ambient, diffuse, specular, shininess
   int verthandles[3];   // position, normal, uv
+  int textureflag[1];   // diffuse
 
 private:
   int depth;
