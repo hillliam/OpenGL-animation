@@ -19,8 +19,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 RenderingContext rcontext;
 Model3D* sphere, *box, *car, *Cylinder;
 
-Object3D* ball; // static item
-Object3D* skybox; // static item
+Object3D* cube; // static item
+Object3D* screen; // static item
 
 //world objects
 staticgeom* tower, *house, *ground;
@@ -43,6 +43,7 @@ void lights();
 void sethalfplane();
 void redraw();
 void setupshader(int program);
+void makeframebuffer();
 
 const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
 float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
@@ -177,11 +178,13 @@ void OnCreate()
   CreateObjects();
   setupskybox();
   setupfont();
+  makeframebuffer();
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
   rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
-  
+  rcontext.screenprogram = LoadShaders(L"svertshader.txt", L"sfragshader.txt");
   setupshader(rcontext.nullglprogram);
   setupshader(rcontext.glprogram);
+  setupshader(rcontext.screenprogram);
 
   glUseProgram(rcontext.glprogram);
   // populate light
@@ -269,9 +272,13 @@ void drawcar()
 // This is called when the window needs to be redrawn
 void OnDraw()
 {
-  glUseProgram(rcontext.glprogram);
+	//pre draw
+	glBindFramebuffer(GL_FRAMEBUFFER, rcontext.framebuffer);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  glUseProgram(rcontext.glprogram);
 
   rcontext.InitModelMatrix(true);
   //drawarm();
@@ -286,6 +293,18 @@ void OnDraw()
   ground->draw(&rcontext);
   mainobject->drawpicker(&rcontext);
   //glFinish();
+  //end rendering
+  glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
+  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  glDisable(GL_DEPTH_TEST);
+  //glBindTexture(GL_TEXTURE_2D, rcontext.texColorBuffer);
+  glUseProgram(rcontext.screenprogram);
+  setupshader(rcontext.screenprogram);
+  screen->SetTextureMap(rcontext.texColorBuffer);
+  rcontext.RotateX(180);
+  screen->Draw(&rcontext);
   HDC display = wglGetCurrentDC();
   drawhud(display, width, hight);
   SwapBuffers(display);
@@ -501,9 +520,12 @@ void CreateObjects()
   car = Model3D::LoadModel(L"assets\\car.3dm");
   Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
   mainobject = new picker();
-  ball = new Object3D();
-  ball->SetName("cube");
-  //ball->makecube();
+  screen = new Object3D();
+  screen->SetName("plane");
+  screen->makeplane();
+  cube = new Object3D();
+  cube->SetName("cube");
+  //cube->makecube();
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
@@ -517,6 +539,29 @@ void CreateObjects()
   mainobject->targetpoint.z = -1;
 }
 
+void makeframebuffer()
+{
+	glGenFramebuffers(1, &rcontext.framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, rcontext.framebuffer);
+
+	// generate texture
+	glGenTextures(1, &rcontext.texColorBuffer);
+	glBindTexture(GL_TEXTURE_2D, rcontext.texColorBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// attach it to currently bound framebuffer object
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rcontext.texColorBuffer, 0);
+
+	glGenRenderbuffers(1, &rcontext.rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rcontext.rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rcontext.rbo);
+}
+
 void CleanUp()
 {
   glDeleteProgram(rcontext.glprogram);
@@ -526,6 +571,7 @@ void CleanUp()
   delete box;
   delete car;
   delete Cylinder;
-  delete ball;
+  delete screen;
+  delete cube;
   delete mainobject;
 }
