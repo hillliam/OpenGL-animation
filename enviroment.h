@@ -21,12 +21,12 @@ void setupskybox()
 	fsbox = new Object3D();
 	fsbox->SetName("plane");
 	fsbox->makeplane();
-	fsbox->bindtexture("textures\\posz.jpg");
+	fsbox->bindtexture("textures\\negz.jpg");
 	//back
 	bsbox = new Object3D();
 	bsbox->SetName("plane");
 	bsbox->makeplane();
-	bsbox->bindtexture("textures\\negz.jpg");
+	bsbox->bindtexture("textures\\posz.jpg");
 	//up
 	usbox = new Object3D();
 	usbox->SetName("plane");
