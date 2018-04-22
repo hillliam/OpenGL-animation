@@ -36,6 +36,7 @@ private:
 	void calculateoffsetpicker();
 	void populatepicker();
 	void movedirection(bool up);
+	void maptextures();
 public:
 	// where the piramid is in the world
 	location targetpoint = { -600,0,-1700 };
@@ -61,6 +62,7 @@ public:
 	picker();
 	~picker();
 };
+
 void picker::geteye(float *eye, float *center)
 {
 	eye[0] = cabinpoint.x + startpoint.x;
@@ -202,6 +204,16 @@ inline picker::picker()
 	pickers = Model3D::LoadModel(L"assets\\crane.3dm");
 	populatepicker();
 	calculateoffsetpicker();
+	maptextures();
+}
+
+inline void picker::maptextures()
+{
+	pickers->bindbyname("arm_mid", "textures\\rust.jpg");
+	pickers->bindbyname("arm_end", "textures\\rust.jpg");
+	pickers->bindbyname("left_wind", "textures\\glass.jpg");
+	pickers->bindbyname("right_wind", "textures\\glass.jpg");
+	pickers->bindbyname("cabin", "textures\\metal.jpg");
 }
 
 inline picker::~picker()
