@@ -276,7 +276,8 @@ void Object3D::Draw(RenderingContext* rcontext)
       glVertexAttribPointer(rcontext->verthandles[1], 3, GL_FLOAT, false, 4*6, (void*) (4*3));
       glEnableVertexAttribArray(rcontext->verthandles[0]);
       glEnableVertexAttribArray(rcontext->verthandles[1]);
-      glDisableVertexAttribArray(rcontext->verthandles[2]);
+      //glDisableVertexAttribArray(rcontext->verthandles[2]);
+	  glVertexAttribPointer(rcontext->verthandles[2], 3, GL_FLOAT, false, 4 * 6, (void*)(4 * 3)); // test texture
     }
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);    

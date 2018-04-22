@@ -12,6 +12,8 @@ public:
 
   void Draw(RenderingContext* rcontext);
 
+  void bindbyname(const char * name, const char * filename);
+
   int GetNoOfObjects();
   Object3D** GetObjects();
 
@@ -39,5 +41,17 @@ inline void Model3D::Draw(RenderingContext* rcontext)
 		rcontext->PushModelMatrix();
 		objects[i]->Draw(rcontext);
 		rcontext->PopModelMatrix();
+	}
+}
+
+inline void Model3D::bindbyname(const char* name, const char * filename)
+{
+	for (int i = 1; i != noofobjects; i++)
+	{
+		Object3D* item = objects[i];
+		if (_stricmp(item->getName(), name) == 0)
+		{
+			item->bindtexture(filename);
+		}
 	}
 }

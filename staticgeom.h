@@ -9,6 +9,8 @@ public:
 	void setscale(float x, float y, float z);
 	void setrotation(float x, float y, float z);
 	void draw(RenderingContext * rcontext);
+	void bindbyname(const char* name, const char * filename);
+	void rename(const char * name, const char * newname);
 	location startpoint = {0,0,-1};
 	location startrotation = { 0,0,0 };
 	location startscale = { 1,1,1 };
@@ -62,6 +64,23 @@ inline void staticgeom::draw(RenderingContext * rcontext)
 	rcontext->PopModelMatrix();
 }
 
+inline void staticgeom::bindbyname(const char* name, const char * newname)
+{
+	model->bindbyname(name, newname);
+}
+
+inline void staticgeom::rename(const char* name, const char * newname)
+{
+	Object3D** models = model->GetObjects();
+	for (int i = 1; i != model->GetNoOfObjects(); i++)
+	{
+		Object3D* item = model->GetObjects()[i];
+		if (_stricmp(item->getName(), name) == 0)
+		{
+			item->SetName(newname);
+		}
+	}
+}
 inline void staticgeom::maplocal()
 {
 	Object3D* base = model->GetObjects()[0];
