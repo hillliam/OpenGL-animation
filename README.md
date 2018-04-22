@@ -12,9 +12,9 @@ check list
 - [X] keyboard control of cherry picker
 - [X] world lighting
 - [ ] texture diffrent parts of the cherry picker
-- [ ] animate the cherry picker
+- [X] animate the cherry picker
 - [X] world camera
 - [X] driver camera
-- [ ] draws the skybox
-- [ ] texture the skybox
+- [X] draws the skybox
+- [X] texture the skybox
 - [X] add objects to the world

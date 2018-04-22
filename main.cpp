@@ -494,7 +494,7 @@ void redraw()
 
 void CreateObjects()
 {
-  tower = new staticgeom(L"assets\\monument-nouv.3dm");
+  tower = new staticgeom(L"assets\\monument.3dm");
   ground = new staticgeom(L"assets\\landscape-nouv.3dm");
   sphere = Model3D::LoadModel(L"assets\\Sphere2-nouv.3dm");
   box = Model3D::LoadModel(L"assets\\Box-nouv.3dm");
@@ -504,12 +504,14 @@ void CreateObjects()
   ball = new Object3D();
   ball->SetName("cube");
   //ball->makecube();
-  ground->setlocation(1,-0.2,-1);
-  ground->setscale(4, 4, 4);
+  ground->setlocation(1,0.6,1);
+  ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
-  Object3D** towermodel = tower->model->GetObjects();
-  towermodel[0]->bindtexture("textures\\stone2.jpg");
-
+  tower->bindbyname("cube", "textures\\window.jpg");
+  ground->rename("plane","lane");
+  ground->bindbyname("lane", "textures\\grass.jpg");
+  ground->bindbyname("Circtair", "textures\\btile.jpg");
+  ground->bindbyname("ramid", "textures\\lbtile.jpg");
   mainobject->targetpoint.x = -0.5;
   mainobject->targetpoint.y = -0.7;
   mainobject->targetpoint.z = -1;

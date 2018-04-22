@@ -26,7 +26,13 @@ attribute vec2 a_uv;
 
 // Varyings 
 varying vec4 v_colour;
- 
+varying vec4 ambientLight;
+varying vec4 diffuseLight;
+varying vec4 specularLight;
+
+// texture if maped
+uniform sampler2D ourTexture;
+
 //out bool textured;
 out vec2 TexCoord;
 
@@ -40,18 +46,32 @@ void main()
  
 	// Do light calculations 
 	float ndotl=max(0.0, dot(ecNormal, u_l_direction)); 
-	float ndoth=max(0.0, dot(ecNormal, u_l_halfplane)); 
+	float ndoth=max(0.0, dot(ecNormal, u_l_halfplane));
+	specularLight=vec4(0.0);
+	if (u_textured)
+	{
+		// Ambient light 
+		ambientLight=u_l_ambient*texture(ourTexture, TexCoord); 
  
-	// Ambient light 
-	vec4 ambientLight=u_l_ambient*u_m_ambient; 
+		// Diffuse light 
+		diffuseLight=ndotl*u_l_diffuse*texture(ourTexture, TexCoord); 
  
-	// Diffuse light 
-	vec4 diffuseLight=ndotl*u_l_diffuse*u_m_diffuse; 
+		// Specular light 
+		if (ndoth>0.0)  
+			specularLight=pow(ndoth, u_m_shininess)*u_l_specular*texture(ourTexture, TexCoord);   
+	}
+	else
+	{
+		// Ambient light 
+		ambientLight=u_l_ambient*u_m_ambient; 
  
-	// Specular light 
-	vec4 specularLight=vec4(0.0); 
-	if (ndoth>0.0)  
-	specularLight=pow(ndoth, u_m_shininess)*u_l_specular*u_m_specular; 
-	v_colour=ambientLight+diffuseLight+specularLight; 
+		// Diffuse light 
+		diffuseLight=ndotl*u_l_diffuse*u_m_diffuse; 
+ 
+		// Specular light 
+		if (ndoth>0.0)  
+			specularLight=pow(ndoth, u_m_shininess)*u_l_specular*u_m_specular;  
+	}
+	v_colour=ambientLight+diffuseLight+specularLight;
 	gl_Position=u_mvpmatrix*a_position; 
 } 
