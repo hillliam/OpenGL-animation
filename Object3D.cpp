@@ -409,12 +409,12 @@ void Object3D::makecube()
 	polygons[28] = 4;
 	polygons[29] = 0;
 	//top
-	polygons[30] = 0;
-	polygons[31] = 4;
-	polygons[32] = 3;
-	polygons[33] = 0;
-	polygons[34] = 4;
-	polygons[35] = 3;
+	polygons[30] = 2;
+	polygons[31] = 1;
+	polygons[32] = 5;
+	polygons[33] = 5;
+	polygons[34] = 2;
+	polygons[35] = 6;
 
 	elementtype = GL_TRIANGLES;
 	elementcount = (3 * 2) * 6;

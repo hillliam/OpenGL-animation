@@ -199,8 +199,8 @@ void OnCreate()
   glBufferData(GL_ARRAY_BUFFER, size, verts, GL_DYNAMIC_DRAW);*/
 
   glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
-  //glEnable(GL_CULL_FACE);
-  //glCullFace(GL_BACK);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
   glShadeModel(GL_SMOOTH);
   glEnable(GL_DEPTH_TEST);
   // we can do this here because the camera never moves (for the moment...)
