@@ -372,7 +372,7 @@ void Object3D::makecube()
 
 	this->noofverts = 4*2;
 
-	polygons = (unsigned short*)malloc((sizeof(unsigned short) * 3) * 2 * 4);
+	polygons = (unsigned short*)malloc((sizeof(unsigned short) * 3) * 2 * 6);
 	// front
 	polygons[0] = 0;
 	polygons[1] = 1;
@@ -401,15 +401,21 @@ void Object3D::makecube()
 	polygons[21] = 5;
 	polygons[22] = 4;
 	polygons[23] = 1;
-	//top
-	//polygons[24] = 6;
-	//polygons[25] = 3;
-	//polygons[26] = 1;
 	//bottom
-	//polygons[18] = 0;
-	//polygons[19] = 4;
-	//polygons[20] = 3;
+	polygons[24] = 3;
+	polygons[25] = 7;
+	polygons[26] = 4;
+	polygons[27] = 3;
+	polygons[28] = 4;
+	polygons[29] = 0;
+	//top
+	polygons[30] = 0;
+	polygons[31] = 4;
+	polygons[32] = 3;
+	polygons[33] = 0;
+	polygons[34] = 4;
+	polygons[35] = 3;
 
 	elementtype = GL_TRIANGLES;
-	elementcount = (3 * 2) * 4;
+	elementcount = (3 * 2) * 6;
 }
