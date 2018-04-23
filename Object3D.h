@@ -17,6 +17,7 @@ public:
   void getlocalmove(const Object3D* root);
   void Draw(RenderingContext* rcontext);
   void makeplane();
+  void makecube();
   void SetMaterial(const byte* buffer);
   void SetDiffuse(float r, float g, float b, float a);
   const float* GetDiffuse();

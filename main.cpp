@@ -199,8 +199,8 @@ void OnCreate()
   glBufferData(GL_ARRAY_BUFFER, size, verts, GL_DYNAMIC_DRAW);*/
 
   glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
-  //glEnable(GL_CULL_FACE);
-  //glCullFace(GL_BACK);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
   glShadeModel(GL_SMOOTH);
   glEnable(GL_DEPTH_TEST);
   // we can do this here because the camera never moves (for the moment...)
@@ -278,15 +278,17 @@ void OnDraw()
   //rcontext.Scale(0.3f,0.3f,0.3f);
   glUseProgram(rcontext.nullglprogram);
   setupshader(rcontext.nullglprogram);
-  //drawskybox(&rcontext);
+  drawskybox(&rcontext);
   glUseProgram(rcontext.glprogram);
   setupshader(rcontext.glprogram);
-  //rcontext.RotateX(90);
-  rcontext.Scale(5, 5, 5);
+  rcontext.PushModelMatrix();
+  rcontext.Translate(-3.5,0.3,-2);
+  rcontext.RotateX(180);
   cube->Draw(&rcontext);
-  //tower->draw(&rcontext);
-  //ground->draw(&rcontext);
-  //mainobject->drawpicker(&rcontext);
+  rcontext.PopModelMatrix();
+  tower->draw(&rcontext);
+  ground->draw(&rcontext);
+  mainobject->drawpicker(&rcontext);
   //glFinish();
   HDC display = wglGetCurrentDC();
   drawhud(display, width, hight);
@@ -518,7 +520,8 @@ void CreateObjects()
   mainobject = new picker();
   cube = new Object3D();
   cube->SetName("cube");
-  cube->SetDiffuse(255,255,255,255);
+  cube->makecube();
+  cube->SetDiffuse(255,255,255,0);
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
