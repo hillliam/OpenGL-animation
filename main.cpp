@@ -277,7 +277,7 @@ void OnDraw()
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
-
+	glEnable(GL_CULL_FACE);
   glUseProgram(rcontext.glprogram);
 
   rcontext.InitModelMatrix(true);
@@ -299,11 +299,12 @@ void OnDraw()
   glClear(GL_COLOR_BUFFER_BIT);
 
   glDisable(GL_DEPTH_TEST);
+  glDisable(GL_CULL_FACE); // saves having to use diffrent code for plane
   //glBindTexture(GL_TEXTURE_2D, rcontext.texColorBuffer);
   glUseProgram(rcontext.screenprogram);
   setupshader(rcontext.screenprogram);
   screen->SetTextureMap(rcontext.texColorBuffer);
-  rcontext.RotateX(180);
+  //rcontext.RotateX(180);
   screen->Draw(&rcontext);
   HDC display = wglGetCurrentDC();
   drawhud(display, width, hight);
