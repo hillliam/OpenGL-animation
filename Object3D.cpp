@@ -74,7 +74,7 @@ Object3D::Object3D(bool circledraw)
 	polygons = NULL;
 	name = NULL;
 
-	SetName("circle");
+	//SetName("circle");
 
 	translation[0] = translation[1] = translation[2] = 0.0f;
 	local[0] = local[1] = local[2] = 0.0f;
@@ -82,7 +82,7 @@ Object3D::Object3D(bool circledraw)
 	glossiness = 25;
 
 	elementcount = 0;
-	elementtype = GL_TRIANGLES;
+	elementtype = GL_TRIANGLE_STRIP;
 
 	ambient[0] = ambient[1] = ambient[2] = 0.2f;
 	ambient[3] = 1.0f;
@@ -322,4 +322,71 @@ void Object3D::makeplane()
 
 	elementtype = GL_TRIANGLES;
 	elementcount = 3 * 2;
+}
+
+void Object3D::makecube()
+{ // https://learnopengl.com/Advanced-OpenGL/Framebuffers
+	vertexdata = (float*)malloc((sizeof(float) * 5) * 4*2);
+	// forward face
+	vertexdata[0] = 1; 
+	vertexdata[1] = 1;
+	vertexdata[2] = -1;
+	vertexdata[3] = 1; // u
+	vertexdata[4] = 1; // v
+	vertexdata[5] = 1;
+	vertexdata[6] = -1;
+	vertexdata[7] = -1;
+	vertexdata[8] = 1; // u
+	vertexdata[9] = 0; // v
+	vertexdata[10] = -1;
+	vertexdata[11] = -1;
+	vertexdata[12] = -1;
+	vertexdata[13] = 0; // u
+	vertexdata[14] = 0; // v
+	vertexdata[15] = -1;
+	vertexdata[16] = 1;
+	vertexdata[17] = -1;
+	vertexdata[18] = 0; // u
+	vertexdata[19] = 1; // v
+	// back face
+	vertexdata[20] = 1;
+	vertexdata[21] = 1;
+	vertexdata[22] = 1;
+	vertexdata[23] = 1; // u
+	vertexdata[24] = 1; // v
+	vertexdata[25] = 1;
+	vertexdata[26] = -1;
+	vertexdata[27] = 1;
+	vertexdata[28] = 1; // u
+	vertexdata[29] = 0; // v
+	vertexdata[30] = -1;
+	vertexdata[31] = -1;
+	vertexdata[32] = 1;
+	vertexdata[33] = 0; // u
+	vertexdata[34] = 0; // v
+	vertexdata[35] = -1;
+	vertexdata[36] = 1;
+	vertexdata[37] = 1;
+	vertexdata[38] = 0; // u
+	vertexdata[39] = 1; // v
+
+	this->noofverts = 4*2;
+
+	polygons = (unsigned short*)malloc((sizeof(unsigned short) * 3) * 2 * 2);
+	polygons[0] = 0;
+	polygons[1] = 1;
+	polygons[2] = 3;
+	polygons[3] = 1;
+	polygons[4] = 2;
+	polygons[5] = 3;
+
+	polygons[6] = 4;
+	polygons[7] = 5;
+	polygons[8] = 7;
+	polygons[9] = 5;
+	polygons[10] = 6;
+	polygons[11] = 7;
+
+	elementtype = GL_TRIANGLES;
+	elementcount = (3 * 2) * 2;
 }

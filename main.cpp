@@ -281,7 +281,7 @@ void OnDraw()
   //drawskybox(&rcontext);
   glUseProgram(rcontext.glprogram);
   setupshader(rcontext.glprogram);
-  //rcontext.RotateX(90);
+  rcontext.RotateX(180);
   rcontext.Scale(5, 5, 5);
   cube->Draw(&rcontext);
   //tower->draw(&rcontext);
@@ -518,7 +518,8 @@ void CreateObjects()
   mainobject = new picker();
   cube = new Object3D();
   cube->SetName("cube");
-  cube->SetDiffuse(255,255,255,255);
+  cube->makecube();
+  cube->SetDiffuse(255,255,255,0);
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
