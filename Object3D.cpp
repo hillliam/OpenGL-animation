@@ -120,13 +120,13 @@ void Object3D::InitVBOs()
 		vbos = (unsigned int*)malloc(2 * sizeof(unsigned int));
 	glGenBuffers(2, vbos);
 
-	if (_stricmp(getName(), "plane") == 0)
+	if (_stricmp(getName(), "plane") == 0 || _stricmp(getName(), "cube") == 0)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*5*4, vertexdata, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*5* noofverts, vertexdata, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short)* 6, polygons, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short)* elementcount, polygons, GL_STATIC_DRAW);
 	}
 	else
 	{
@@ -262,7 +262,7 @@ void Object3D::Draw(RenderingContext* rcontext)
       glEnableVertexAttribArray(rcontext->verthandles[1]);
       glEnableVertexAttribArray(rcontext->verthandles[2]);
     }
-	else if (_stricmp(getName(), "plane") == 0)
+	else if (_stricmp(getName(), "plane") == 0 || _stricmp(getName(), "cube") == 0)
 	{
 		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 5 * sizeof(float), (void*)0);
 		//glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4, (void*)0);
@@ -287,7 +287,7 @@ void Object3D::Draw(RenderingContext* rcontext)
 }
 
 void Object3D::makeplane()
-{
+{ // https://learnopengl.com/Getting-started/Textures
 	vertexdata = (float*)malloc((sizeof(float) * 5) * 4);
 	vertexdata[0] = 1;
 	vertexdata[1] = 1;

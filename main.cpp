@@ -19,8 +19,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 RenderingContext rcontext;
 Model3D* sphere, *box, *car, *Cylinder;
 
-Object3D* ball; // static item
-Object3D* skybox; // static item
+Object3D* cube; // static item
 
 //world objects
 staticgeom* tower, *house, *ground;
@@ -200,8 +199,8 @@ void OnCreate()
   glBufferData(GL_ARRAY_BUFFER, size, verts, GL_DYNAMIC_DRAW);*/
 
   glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
+  //glEnable(GL_CULL_FACE);
+  //glCullFace(GL_BACK);
   glShadeModel(GL_SMOOTH);
   glEnable(GL_DEPTH_TEST);
   // we can do this here because the camera never moves (for the moment...)
@@ -279,12 +278,15 @@ void OnDraw()
   //rcontext.Scale(0.3f,0.3f,0.3f);
   glUseProgram(rcontext.nullglprogram);
   setupshader(rcontext.nullglprogram);
-  drawskybox(&rcontext);
+  //drawskybox(&rcontext);
   glUseProgram(rcontext.glprogram);
   setupshader(rcontext.glprogram);
-  tower->draw(&rcontext);
-  ground->draw(&rcontext);
-  mainobject->drawpicker(&rcontext);
+  //rcontext.RotateX(90);
+  rcontext.Scale(5, 5, 5);
+  cube->Draw(&rcontext);
+  //tower->draw(&rcontext);
+  //ground->draw(&rcontext);
+  //mainobject->drawpicker(&rcontext);
   //glFinish();
   HDC display = wglGetCurrentDC();
   drawhud(display, width, hight);
@@ -374,78 +376,91 @@ void OnSize(DWORD type, UINT cx, UINT cy)
 }
 void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	switch (nChar)
+	if (mainobject->cabineye)
 	{
-	/*case 'A':
-		eye[0] += 0.1f;
-		//centre[0] += 0.1f;
-		break;
-	case 'S':
-		eye[1] += 0.1f;
-		//centre[1] += 0.1f;
-		break;
-	case 'Z':
-		eye[0] -= 0.1f;
-		break;
-	case 'X':
-		eye[1] -= 0.1f;
-		break;*/
-	case 'Q':
-		mainobject->foldedmirrors += 90;
-		break;
-	case 'W':
-		mainobject->foldedmirrors -= 90;
-		break;
-	case 'E':
-		mainobject->baserotation += 1;
-		break;
-	case 'R':
-		mainobject->baserotation -= 1;
-		break;
-	case 'T':
-		mainobject->sisorx += 1;
-		break;
-	case 'Y':
-		mainobject->sisorx -= 1;
-		break;
-	case 'U':
-		mainobject->boxy += 1;
-		break;
-	case 'I':
-		mainobject->boxy -= 1;
-		break;
-	case '1': // default view 
-		mainobject->cabineye = false;
-		eye[0] = defaulteye[0];
-		eye[1] = defaulteye[1];
-		eye[2] = defaulteye[2];
-		break;
-	case '2':// view inside picker
-		mainobject->cabineye = true;
-		mainobject->geteye(eye, centre);
-		break;
-	case 'M':
-		if (!animating)
+		switch (nChar)
 		{
-			SetTimer(hwnd, 101, 60, NULL);
-			start = ::GetTickCount();
-			animating = true;
+		case KEY_LUP:
+			centre[1] += 0.5f;
+			break;
+		case KEY_LDOWN:
+			centre[1] -= 0.5f;
+			break;
+		case KEY_LLEFT:
+			centre[2] -= 0.5f;
+			break;
+		case KEY_LRIGHT:
+			centre[2] += 0.5f;
+			break;
 		}
-		else
+	}
+	else
+	{
+		switch (nChar)
 		{
-			KillTimer(hwnd, 101);
-			animating = false;
+		case KEY_LLEFT:
+			eye[0] -= 0.5f;
+			break;
+		case 'Z':
+			eye[0] += 0.5f;
+			break;
+		case KEY_LDOWN:
+			eye[1] += 0.5f;
+			break;
+		case 'X':
+			eye[1] -= 0.5f;
+			break;
+		case KEY_LRIGHT:
+			eye[2] += 0.5f;
+			break;
+		case 'C':
+			eye[2] -= 0.5f;
+			break;
+		case 'F':
+			centre[1] += 0.5f;
+			break;
+		case 'V':
+			centre[1] -= 0.5f;
+			break;
+		case 'G':
+			centre[2] -= 0.5f;
+			break;
+		case 'B':
+			centre[2] += 0.5f;
+			break;
+		case '1': // default view 
+			mainobject->cabineye = false;
+			eye[0] = defaulteye[0];
+			eye[1] = defaulteye[1];
+			eye[2] = defaulteye[2];
+			break;
+		case '2':// view inside picker
+			mainobject->cabineye = true;
+			mainobject->geteye(eye, centre);
+			break;
+		case 'M':
+			if (!animating)
+			{
+				SetTimer(hwnd, 101, 60, NULL);
+				start = ::GetTickCount();
+				animating = true;
+			}
+			else
+			{
+				KillTimer(hwnd, 101);
+				animating = false;
+			}
+			break;
+		case '3': // wireframe mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			break;
+		case '4': // normal mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			break;
+		default:
+			mainobject->keypress(nChar);
+			break;
 		}
-		break;
-	case '3': // wireframe mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		break;
-	case '4': // normal mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		break;
-	default:
-		mainobject->keypress(nChar);
-		break;
 	}
 	sethalfplane();
 	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
@@ -501,9 +516,9 @@ void CreateObjects()
   car = Model3D::LoadModel(L"assets\\car.3dm");
   Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
   mainobject = new picker();
-  ball = new Object3D();
-  ball->SetName("cube");
-  //ball->makecube();
+  cube = new Object3D();
+  cube->SetName("cube");
+  cube->SetDiffuse(255,255,255,255);
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
@@ -526,6 +541,6 @@ void CleanUp()
   delete box;
   delete car;
   delete Cylinder;
-  delete ball;
+  delete cube;
   delete mainobject;
 }

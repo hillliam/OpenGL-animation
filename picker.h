@@ -93,54 +93,60 @@ inline void picker::setrotation(float x, float y, float z)
 }
 
 inline void picker::keypress(UINT nChar)
-{
-	if (cabineye)
-	{ // handle driveing
-		switch (nChar)
-		{
-		case KEY_MUP:
-		case KEY_MDOWN:
-			movedirection(nChar == KEY_MUP);
-			break;
-		case KEY_MLEFT:
-			wheelangle -= 1;
-			break;
-		case KEY_MRIGHT:
-			wheelangle -= 1;
-			break;
-		}
-	}
-	else
+{ // handle moving parts
+	switch (nChar)
 	{
-		switch (nChar)
-		{
-		case 'G':
-			startpoint.x += 0.2;
-			break;
-		case 'H':
-			startpoint.x -= 0.2;
-			break;
-		case 'J':
-			startpoint.y += 0.2;
-			break;
-		case 'K':
-			startpoint.y -= 0.2;
-			break;
-		case 'C':
-			startpoint.z += 0.2;
-			break;
-		case 'V':
-			startpoint.z -= 0.2;
-			break;
-		case 'B':
-			armscale -= 0.1;
-			break;
-		case 'N':
-			armscale += 0.1;
-			break;
-		}
+	case 'G':
+		startpoint.x += 0.2;
+		break;
+	case 'H':
+		startpoint.x -= 0.2;
+		break;
+	case 'J':
+		startpoint.y += 0.2;
+		break;
+	case 'K':
+		startpoint.y -= 0.2;
+		break;
+	case 'C':
+		startpoint.z += 0.2;
+		break;
+	case 'V':
+		startpoint.z -= 0.2;
+		break;
+	case 'O':
+		armscale -= 0.1;
+		break;
+	case 'P':
+		armscale += 0.1;
+		break;
+	case 'Q':
+		foldedmirrors += 90;
+		break;
+	case 'W':
+		foldedmirrors -= 90;
+		break;
+	case 'E':
+		baserotation += 1;
+		break;
+	case 'R':
+		baserotation -= 1;
+		break;
+	case 'T':
+		sisorx += 1;
+		break;
+	case 'Y':
+		sisorx -= 1;
+		break;
+	case 'U':
+		boxy += 1;
+		break;
+	case 'I':
+		boxy -= 1;
+		break;
 	}
 }
+
 void picker::handleanimation(DWORD start)
 {
 
@@ -170,8 +176,18 @@ void picker::handleanimation(DWORD start)
 			if (r > 160.0)
 				animationstage++;
 			break;
+		case 4: // wait
+			if (r > 190.0)
+				animationstage++;
+			break;
+		case 5: // lower arm
+			sisorx = lerpbetween(-35, 0, r, 190, 230);
+			if (r > 230.0)
+				animationstage++;
+			break;
 		}
 }
+
 void picker::drawpicker(RenderingContext* rcontext)
 {
 	rcontext->PushModelMatrix();
