@@ -8,10 +8,12 @@ openGL animation of a cherry picker
 check list
 ------------
 - [X] draws the cherry picker
-- [ ] draws manualy created cube
+- [X] draws manualy created cube
 - [X] keyboard control of cherry picker
+- [X] keyboard input to move camera when in driver view
+- [X] keyboard input to move camera around world
 - [X] world lighting
-- [ ] texture diffrent parts of the cherry picker
+- [X] texture diffrent parts of the cherry picker
 - [X] animate the cherry picker
 - [X] world camera
 - [X] driver camera

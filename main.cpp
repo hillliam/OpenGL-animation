@@ -289,6 +289,11 @@ void OnDraw()
   drawskybox(&rcontext);
   glUseProgram(rcontext.glprogram);
   setupshader(rcontext.glprogram);
+  rcontext.PushModelMatrix();
+  rcontext.Translate(-3.5,0.3,-2);
+  rcontext.RotateX(180);
+  cube->Draw(&rcontext);
+  rcontext.PopModelMatrix();
   tower->draw(&rcontext);
   ground->draw(&rcontext);
   mainobject->drawpicker(&rcontext);
@@ -394,78 +399,91 @@ void OnSize(DWORD type, UINT cx, UINT cy)
 }
 void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	switch (nChar)
+	if (mainobject->cabineye)
 	{
-	/*case 'A':
-		eye[0] += 0.1f;
-		//centre[0] += 0.1f;
-		break;
-	case 'S':
-		eye[1] += 0.1f;
-		//centre[1] += 0.1f;
-		break;
-	case 'Z':
-		eye[0] -= 0.1f;
-		break;
-	case 'X':
-		eye[1] -= 0.1f;
-		break;*/
-	case 'Q':
-		mainobject->foldedmirrors += 90;
-		break;
-	case 'W':
-		mainobject->foldedmirrors -= 90;
-		break;
-	case 'E':
-		mainobject->baserotation += 1;
-		break;
-	case 'R':
-		mainobject->baserotation -= 1;
-		break;
-	case 'T':
-		mainobject->sisorx += 1;
-		break;
-	case 'Y':
-		mainobject->sisorx -= 1;
-		break;
-	case 'U':
-		mainobject->boxy += 1;
-		break;
-	case 'I':
-		mainobject->boxy -= 1;
-		break;
-	case '1': // default view 
-		mainobject->cabineye = false;
-		eye[0] = defaulteye[0];
-		eye[1] = defaulteye[1];
-		eye[2] = defaulteye[2];
-		break;
-	case '2':// view inside picker
-		mainobject->cabineye = true;
-		mainobject->geteye(eye, centre);
-		break;
-	case 'M':
-		if (!animating)
+		switch (nChar)
 		{
-			SetTimer(hwnd, 101, 60, NULL);
-			start = ::GetTickCount();
-			animating = true;
+		case KEY_LUP:
+			centre[1] += 0.5f;
+			break;
+		case KEY_LDOWN:
+			centre[1] -= 0.5f;
+			break;
+		case KEY_LLEFT:
+			centre[2] -= 0.5f;
+			break;
+		case KEY_LRIGHT:
+			centre[2] += 0.5f;
+			break;
 		}
-		else
+	}
+	else
+	{
+		switch (nChar)
 		{
-			KillTimer(hwnd, 101);
-			animating = false;
+		case KEY_LLEFT:
+			eye[0] -= 0.5f;
+			break;
+		case 'Z':
+			eye[0] += 0.5f;
+			break;
+		case KEY_LDOWN:
+			eye[1] += 0.5f;
+			break;
+		case 'X':
+			eye[1] -= 0.5f;
+			break;
+		case KEY_LRIGHT:
+			eye[2] += 0.5f;
+			break;
+		case 'C':
+			eye[2] -= 0.5f;
+			break;
+		case 'F':
+			centre[1] += 0.5f;
+			break;
+		case 'V':
+			centre[1] -= 0.5f;
+			break;
+		case 'G':
+			centre[2] -= 0.5f;
+			break;
+		case 'B':
+			centre[2] += 0.5f;
+			break;
+		case '1': // default view 
+			mainobject->cabineye = false;
+			eye[0] = defaulteye[0];
+			eye[1] = defaulteye[1];
+			eye[2] = defaulteye[2];
+			break;
+		case '2':// view inside picker
+			mainobject->cabineye = true;
+			mainobject->geteye(eye, centre);
+			break;
+		case 'M':
+			if (!animating)
+			{
+				SetTimer(hwnd, 101, 60, NULL);
+				start = ::GetTickCount();
+				animating = true;
+			}
+			else
+			{
+				KillTimer(hwnd, 101);
+				animating = false;
+			}
+			break;
+		case '3': // wireframe mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			break;
+		case '4': // normal mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			break;
+		default:
+			mainobject->keypress(nChar);
+			break;
 		}
-		break;
-	case '3': // wireframe mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		break;
-	case '4': // normal mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		break;
-	default:
-		mainobject->keypress(nChar);
-		break;
 	}
 	sethalfplane();
 	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
@@ -526,7 +544,8 @@ void CreateObjects()
   screen->makeplane();
   cube = new Object3D();
   cube->SetName("cube");
-  //cube->makecube();
+  cube->makecube();
+  cube->SetDiffuse(255, 255, 255, 0);
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
@@ -567,6 +586,7 @@ void CleanUp()
 {
   glDeleteProgram(rcontext.glprogram);
   glDeleteProgram(rcontext.nullglprogram);
+  glDeleteProgram(rcontext.screenprogram);
   cleanhud();
   delete sphere;
   delete box;
