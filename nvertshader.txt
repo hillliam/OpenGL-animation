@@ -19,6 +19,9 @@ uniform mat4 u_mvpmatrix;
  //textureflag
 uniform bool u_textured;
 
+// screen effect
+uniform int u_effect;
+
 // Attributes 
 attribute vec4 a_position;
 attribute vec3 a_normal;

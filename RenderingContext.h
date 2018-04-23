@@ -24,6 +24,7 @@ public:
   int glprogram; // full shader with lighting 
   int nullglprogram; // no lighting program
   int screenprogram; // screen shader
+  int effect; // post effect
   int mvhandle, mvphandle;
   float viewmatrix[16], projectionmatrix[16];
   float mvmatrix[16], mvpmatrix[16];

@@ -28,6 +28,8 @@ attribute vec2 a_uv;
 varying vec4 v_colour;
 
 out vec2 TexCoord;
+// screen effect
+uniform int u_effect;
 
 void main() 
 {

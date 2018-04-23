@@ -44,6 +44,7 @@ void sethalfplane();
 void redraw();
 void setupshader(int program);
 void makeframebuffer();
+void updateframebuffer();
 
 const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
 float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
@@ -67,6 +68,7 @@ bool animating = false;
 // starting location on screen of mouse
 float lastx = 0;
 float lasty = 0;
+int activeeffect = 0;
 
 // Win32 entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -237,6 +239,9 @@ void setupshader(int program)
 
 	// texture flag
 	rcontext.textureflag[0] = glGetUniformLocation(program, "u_textured");
+
+	// screen effect
+	rcontext.effect = glGetUniformLocation(program, "u_effect");
 }
 
 void drawarm()
@@ -273,11 +278,11 @@ void drawcar()
 void OnDraw()
 {
 	//pre draw
-	glBindFramebuffer(GL_FRAMEBUFFER, rcontext.framebuffer);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+  glBindFramebuffer(GL_FRAMEBUFFER, rcontext.framebuffer);
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
   glUseProgram(rcontext.glprogram);
 
   rcontext.InitModelMatrix(true);
@@ -308,6 +313,7 @@ void OnDraw()
   //glBindTexture(GL_TEXTURE_2D, rcontext.texColorBuffer);
   glUseProgram(rcontext.screenprogram);
   setupshader(rcontext.screenprogram);
+  glUniform1i(rcontext.effect, activeeffect);
   screen->SetTextureMap(rcontext.texColorBuffer);
   //rcontext.RotateX(180);
   screen->Draw(&rcontext);
@@ -395,6 +401,7 @@ void OnSize(DWORD type, UINT cx, UINT cy)
 		hight = cy;
 
 		Matrix::SetFrustum(rcontext.projectionmatrix, left, right, bottom, top, NEAR_CLIP, FAR_CLIP);
+		updateframebuffer();
 	}
 }
 void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -480,6 +487,15 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		case '4': // normal mode
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			break;
+		case '7': // normal mode
+			activeeffect = 0;
+			break;
+		case '8': // grayscale
+			activeeffect = 1;
+			break;
+		case '9': // inverted
+			activeeffect = 2;
+			break;
 		default:
 			mainobject->keypress(nChar);
 			break;
@@ -559,6 +575,14 @@ void CreateObjects()
   mainobject->targetpoint.z = -1;
 }
 
+void updateframebuffer()
+{
+	glBindTexture(GL_TEXTURE_2D, rcontext.texColorBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)width, (int)hight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glBindRenderbuffer(GL_RENDERBUFFER, rcontext.rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (int)width, (int)hight);
+}
+
 void makeframebuffer()
 {
 	glGenFramebuffers(1, &rcontext.framebuffer);
@@ -567,7 +591,7 @@ void makeframebuffer()
 	// generate texture
 	glGenTextures(1, &rcontext.texColorBuffer);
 	glBindTexture(GL_TEXTURE_2D, rcontext.texColorBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)width, (int)hight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -577,7 +601,7 @@ void makeframebuffer()
 
 	glGenRenderbuffers(1, &rcontext.rbo);
 	glBindRenderbuffer(GL_RENDERBUFFER, rcontext.rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (int)width, (int)hight);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rcontext.rbo);
 }

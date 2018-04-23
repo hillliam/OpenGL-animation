@@ -4,6 +4,9 @@ varying vec4 v_colour;
 //texture for skybox
 uniform sampler2D ourTexture;
 
+// screen effect
+uniform int u_effect;
+
 in vec2 TexCoord;
 
 void main()  

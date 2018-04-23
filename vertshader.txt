@@ -33,6 +33,9 @@ varying vec4 specularLight;
 // texture if maped
 uniform sampler2D ourTexture;
 
+// screen effect
+uniform int u_effect;
+
 //out bool textured;
 out vec2 TexCoord;
 
