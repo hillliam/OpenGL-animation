@@ -388,19 +388,19 @@ void Object3D::makecube()
 	polygons[10] = 6;
 	polygons[11] = 7;
 	// left side can be made up of points from front and back
-	polygons[12] = 2;
-	polygons[13] = 6;
-	polygons[14] = 3;
-	polygons[15] = 6;
+	polygons[12] = 3;
+	polygons[13] = 2;
+	polygons[14] = 6;
+	polygons[15] = 7;
 	polygons[16] = 3;
-	polygons[17] = 7;
+	polygons[17] = 6;
 	// right side
-	polygons[18] = 0;
-	polygons[19] = 4;
-	polygons[20] = 1;
-	polygons[21] = 5;
+	polygons[18] = 1;
+	polygons[19] = 0;
+	polygons[20] = 4;
+	polygons[21] = 1;
 	polygons[22] = 4;
-	polygons[23] = 1;
+	polygons[23] = 5;
 	//bottom
 	polygons[24] = 3;
 	polygons[25] = 7;
@@ -409,12 +409,12 @@ void Object3D::makecube()
 	polygons[28] = 4;
 	polygons[29] = 0;
 	//top
-	polygons[30] = 2;
-	polygons[31] = 1;
-	polygons[32] = 5;
+	polygons[30] = 1;
+	polygons[31] = 5;
+	polygons[32] = 2;
 	polygons[33] = 5;
-	polygons[34] = 2;
-	polygons[35] = 6;
+	polygons[34] = 6;
+	polygons[35] = 2;
 
 	elementtype = GL_TRIANGLES;
 	elementcount = (3 * 2) * 6;
