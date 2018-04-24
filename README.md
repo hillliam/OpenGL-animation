@@ -20,3 +20,9 @@ check list
 - [X] draws the skybox
 - [X] texture the skybox
 - [X] add objects to the world
+
+extra improvments
+--------------
+- [X] render world to framebuffer
+- [X] add diffrent effects to world
+- [X] framebuffer scales with screen

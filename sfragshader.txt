@@ -1,0 +1,26 @@
+#version 330 core
+varying vec4 v_colour; 
+
+//texture for skybox
+uniform sampler2D ourTexture;
+
+in vec2 TexCoord;
+
+// screen effect
+uniform int u_effect;
+
+void main()  
+{ // https://open.gl/framebuffers
+	//gl_FragColor = vec4(TexCoord, 0,255);  // for debugging texture uv
+	vec4 result = texture(ourTexture, TexCoord);
+	if (u_effect == 1) // grayscale
+	{
+		float avg = (0.2126 * result.r) + (0.7152 * result.g) + (0.0722 * result.b);
+		result = vec4(avg, avg, avg, 1.0);
+	}
+	else if (u_effect == 2) // invert
+	{
+		result = vec4(1.0, 1.0, 1.0, 1.0) - result;
+	}
+	gl_FragColor = result;
+} 

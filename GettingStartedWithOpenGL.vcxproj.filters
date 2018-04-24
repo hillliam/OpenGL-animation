@@ -85,6 +85,12 @@
     <Text Include="vertshader.txt">
       <Filter>shaders</Filter>
     </Text>
+    <Text Include="sfragshader.txt">
+      <Filter>shaders</Filter>
+    </Text>
+    <Text Include="svertshader.txt">
+      <Filter>shaders</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\Box-nouv.3dm">

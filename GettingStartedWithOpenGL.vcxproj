@@ -144,6 +144,8 @@
     <Text Include="fragshader.txt" />
     <Text Include="nfragshader.txt" />
     <Text Include="nvertshader.txt" />
+    <Text Include="sfragshader.txt" />
+    <Text Include="svertshader.txt" />
     <Text Include="vertshader.txt" />
   </ItemGroup>
   <ItemGroup>
