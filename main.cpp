@@ -42,7 +42,6 @@ void CleanUp();
 void lights();
 void sethalfplane();
 void redraw();
-void setupshader(int program);
 
 const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
 float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
@@ -183,9 +182,9 @@ void OnCreate()
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
   rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
   rcontext.screenprogram = LoadShaders(L"svertshader.txt", L"sfragshader.txt");
-  setupshader(rcontext.nullglprogram);
-  setupshader(rcontext.glprogram);
-  setupshader(rcontext.screenprogram);
+  setupshader(&rcontext, rcontext.nullglprogram);
+  setupshader(&rcontext, rcontext.glprogram);
+  setupshader(&rcontext, rcontext.screenprogram);
 
   glUseProgram(rcontext.glprogram);
   // populate light
@@ -214,37 +213,6 @@ void OnCreate()
   lights();
 }
 
-void setupshader(int program)
-{
-	// Light
-	rcontext.lighthandles[0] = glGetUniformLocation(program, "u_l_direction");
-	rcontext.lighthandles[1] = glGetUniformLocation(program, "u_l_halfplane");
-	rcontext.lighthandles[2] = glGetUniformLocation(program, "u_l_ambient");
-	rcontext.lighthandles[3] = glGetUniformLocation(program, "u_l_diffuse");
-	rcontext.lighthandles[4] = glGetUniformLocation(program, "u_l_specular");
-	// Material
-	rcontext.mathandles[0] = glGetUniformLocation(program, "u_m_ambient");
-	rcontext.mathandles[1] = glGetUniformLocation(program, "u_m_diffuse");
-	rcontext.mathandles[2] = glGetUniformLocation(program, "u_m_specular");
-	rcontext.mathandles[3] = glGetUniformLocation(program, "u_m_shininess");
-	// Matrices
-	rcontext.mvhandle = glGetUniformLocation(program, "u_mvmatrix");
-	rcontext.mvphandle = glGetUniformLocation(program, "u_mvpmatrix");
-
-	// Attributes
-	rcontext.verthandles[0] = glGetAttribLocation(program, "a_position");
-	rcontext.verthandles[1] = glGetAttribLocation(program, "a_normal");
-	rcontext.verthandles[2] = glGetAttribLocation(program, "a_uv");
-
-	// texture flag
-	rcontext.textureflag[0] = glGetUniformLocation(program, "u_textured");
-
-	// screen effect
-	rcontext.effect = glGetUniformLocation(program, "u_effect");
-
-	//glBindFragDataLocation(program, 0, "result");
-}
-
 // This is called when the window needs to be redrawn
 void OnDraw()
 {
@@ -261,6 +229,7 @@ void OnDraw()
   setupshader(&rcontext, rcontext.glprogram);
   rcontext.PushModelMatrix();
   rcontext.Translate(-3.5,0.3,-2);
+  rcontext.Scale(0.5f, 0.5f, 0.5f);
   rcontext.RotateX(180);
   cube->Draw(&rcontext);
   rcontext.PopModelMatrix();
@@ -516,9 +485,14 @@ void CreateObjects()
   ground->bindbyname("lane", "textures\\grass.jpg");
   ground->bindbyname("Circtair", "textures\\btile.jpg");
   ground->bindbyname("ramid", "textures\\lbtile.jpg");
-  ground->bindbyname("ramid", "textures\\lbtile.jpg");
-  ground->bindbyname("ramid", "textures\\lbtile.jpg");
-  ground->bindbyname("ramid", "textures\\lbtile.jpg");
+  ground->copybyname("Diamond", "ramid");
+  ground->copybyname("Gear", "ramid");
+  ground->copybyname("Mesh", "Circtair");
+  ground->copybyname("Paraloid", "lane");
+  ground->copybyname("Spindle", "lane");
+  ground->copybyname("Star", "Circtair");
+  ground->copybyname("Suzanne", "Circtair");
+  ground->copybyname("Thread", "Circtair");
   mainobject->targetpoint.x = -0.5;
   mainobject->targetpoint.y = -0.7;
   mainobject->targetpoint.z = -1;
