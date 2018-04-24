@@ -6,6 +6,15 @@ Object3D* fsbox;
 Object3D* bsbox;
 Object3D* usbox;
 
+void freeskybox()
+{
+	delete lsbox;
+	delete rsbox;
+	delete fsbox;
+	delete bsbox;
+	delete usbox;
+}
+
 void setupskybox()
 {//right
 	rsbox = new Object3D();

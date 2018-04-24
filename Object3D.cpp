@@ -105,6 +105,7 @@ Object3D::~Object3D()
   free(vertexdata);
   free(polygons);
   free(name);
+  glDeleteTextures(1, (unsigned int*)&texturemap);
 }
 
 void Object3D::getlocalmove(const Object3D* root)
