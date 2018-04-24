@@ -21,6 +21,7 @@ void main()
 	if (u_textured == 1)
 		result = texture(ourTexture, TexCoord) + (ambientLight + specularLight); 
 	else if (u_textured == 2)
+		result = texture(ourTexture, vec2(0,0)) + (ambientLight + specularLight);
 	else
 		result = ambientLight + diffuseLight + specularLight;
 }
