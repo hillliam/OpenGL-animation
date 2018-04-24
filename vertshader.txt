@@ -17,7 +17,7 @@ uniform mat4 u_mvmatrix;
 uniform mat4 u_mvpmatrix; 
  
 //textureflag
-uniform bool u_textured = false;
+uniform int u_textured = 0;
 
 // Attributes 
 in vec4 a_position; 
@@ -55,7 +55,7 @@ void main()
 	float ndotl=max(0.0, dot(ecNormal, u_l_direction)); 
 	float ndoth=max(0.0, dot(ecNormal, u_l_halfplane));
 	specularLight=vec4(0.0);
-	if (u_textured)
+	if (u_textured >= 1)
 	{
 		// Ambient light 
 		ambientLight=u_l_ambient*texture(ourTexture, TexCoord); 

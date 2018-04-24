@@ -264,7 +264,7 @@ void Object3D::Draw(RenderingContext* rcontext)
 	}
 	else
 	{
-		glUniform1i(rcontext->textureflag[0], false);
+		glUniform1i(rcontext->textureflag[0], 2);
 	}
     // Attributes
     if (incuv)
