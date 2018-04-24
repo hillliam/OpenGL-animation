@@ -1,5 +1,5 @@
 #version 330 core
-varying vec4 v_colour; 
+in vec4 v_colour; 
 
 //texture for skybox
 uniform sampler2D ourTexture;
@@ -9,8 +9,11 @@ uniform int u_effect;
 
 in vec2 TexCoord;
 
+// result of shader
+out vec4 result;
+
 void main()  
 { 
-//gl_FragColor = vec4(TexCoord, 0,255);  // for debugging texture uv
-gl_FragColor = texture(ourTexture, TexCoord); 
+	//result = vec4(TexCoord, 0,255);  // for debugging texture uv
+	result = texture(ourTexture, TexCoord); 
 } 
