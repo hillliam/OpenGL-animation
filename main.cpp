@@ -17,13 +17,12 @@ static HWND hwnd;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 RenderingContext rcontext;
-Model3D* sphere, *box, *car, *Cylinder;
 
 Object3D* cube; // static item
 Object3D* screen; // static item
 
 //world objects
-staticgeom* tower, *house, *ground;
+staticgeom* tower, *ground;
 
 picker* mainobject;
 // learnopengl.com
@@ -77,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//return 0;
   // This mini section is really useful to find memory leaks
 #ifdef _DEBUG   // only include this section of code in the DEBUG build
-//_CrtSetBreakAlloc(12);  // really useful line of code to help find memory leaks
+  //_CrtSetBreakAlloc(12);  // really useful line of code to help find memory leaks
   _onexit(_CrtDumpMemoryLeaks); // check for memory leaks when the program exits
 #endif
 
@@ -242,36 +241,8 @@ void setupshader(int program)
 
 	// screen effect
 	rcontext.effect = glGetUniformLocation(program, "u_effect");
-}
 
-void drawarm()
-{
-	rcontext.PushModelMatrix();
-	rcontext.Scale(1.0, 7.0, 1.0);
-	//rcontext.RotateX(90);
-	//rcontext.RotateZ(90);
-	Cylinder->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
-void drawsphere()
-{
-	rcontext.Translate(0.0f, 2.5f, 0.0f);
-	rcontext.PushModelMatrix();
-	//rcontext.Translate(0.0f, 2.0f, 0.0f);
-	rcontext.Scale(2.0, 2.0, 2.0);
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
-void drawcar()
-{
-	rcontext.PushModelMatrix();
-	rcontext.Translate(1.0f, -1.0f, 1.0f);
-	rcontext.RotateX(180);
-	rcontext.Scale(1.2, 1.2, 1.2);
-	car->Draw(&rcontext);
-	rcontext.PopModelMatrix();
+	//glBindFragDataLocation(program, 0, "result");
 }
 
 // This is called when the window needs to be redrawn
@@ -550,10 +521,6 @@ void CreateObjects()
 {
   tower = new staticgeom(L"assets\\monument.3dm");
   ground = new staticgeom(L"assets\\landscape-nouv.3dm");
-  sphere = Model3D::LoadModel(L"assets\\Sphere2-nouv.3dm");
-  box = Model3D::LoadModel(L"assets\\Box-nouv.3dm");
-  car = Model3D::LoadModel(L"assets\\car.3dm");
-  Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
   mainobject = new picker();
   screen = new Object3D();
   screen->SetName("plane");
@@ -606,16 +573,22 @@ void makeframebuffer()
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rcontext.rbo);
 }
 
+void freeframebuffer()
+{
+	glDeleteFramebuffers(1, &rcontext.framebuffer);
+	glDeleteRenderbuffers(1, &rcontext.rbo);
+}
+
 void CleanUp()
 {
   glDeleteProgram(rcontext.glprogram);
   glDeleteProgram(rcontext.nullglprogram);
   glDeleteProgram(rcontext.screenprogram);
   cleanhud();
-  delete sphere;
-  delete box;
-  delete car;
-  delete Cylinder;
+  freeskybox();
+  freeframebuffer();
+  delete ground;
+  delete tower;
   delete screen;
   delete cube;
   delete mainobject;
