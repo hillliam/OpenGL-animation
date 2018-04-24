@@ -19,6 +19,7 @@ public:
   void makeplane();
   void makecube();
   void SetMaterial(const byte* buffer);
+  void SetMaterial(const Object3D * copy);
   void SetDiffuse(float r, float g, float b, float a);
   const float* GetDiffuse();
   void SetTextureMap(int id);

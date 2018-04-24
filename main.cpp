@@ -561,7 +561,7 @@ void CreateObjects()
   cube = new Object3D();
   cube->SetName("cube");
   cube->makecube();
-  cube->SetDiffuse(255, 255, 255, 0);
+  cube->SetMaterial(tower->model->GetObjects()[0]);
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
