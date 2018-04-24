@@ -485,7 +485,7 @@ void CreateObjects()
   ground->bindbyname("lane", "textures\\grass.jpg");
   ground->bindbyname("Circtair", "textures\\btile.jpg");
   ground->bindbyname("ramid", "textures\\lbtile.jpg");
-  ground->copybyname("Diamond", "ramid");
+  ground->bindbyname("Diamond", "textures\\green.bmp");
   ground->copybyname("Gear", "ramid");
   ground->copybyname("Mesh", "Circtair");
   ground->copybyname("Paraloid", "lane");
