@@ -63,6 +63,9 @@ inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* cent
 	matrix[12] = DotProduct3(ns, eye);
 	matrix[13] = DotProduct3(nu, eye); // FIX 
 	matrix[14] = DotProduct3(forward, eye);
+	free(forward);
+	free(s);
+	free(u);
 }
 
 inline float Matrix::DotProduct3(const float* vec1, const float* vec2)
