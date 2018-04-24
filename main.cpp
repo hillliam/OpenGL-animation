@@ -92,7 +92,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   classname.hCursor=LoadCursor(NULL, IDC_ARROW);
   classname.hbrBackground=NULL;//   ::GetSysColorBrush(COLOR_3DFACE); - note, setting this to null prevents flickering when resizing the window
   classname.lpszMenuName=NULL;
-  classname.lpszClassName=L"GettingStarted";
+  classname.lpszClassName=L"GL world";
   classname.hIconSm=LoadIcon(NULL, IDI_WINLOGO);
   RegisterClassEx(&classname);
 
@@ -103,7 +103,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   int offy=(::GetSystemMetrics(SM_CYSCREEN)-height)/2;
   OnSize(NULL, width, hight);
   // Create the window using the definition provided above
-  CreateWindowEx(NULL, L"GettingStarted", L"Getting Started with OpenGL - lighting", WS_OVERLAPPEDWINDOW|WS_VISIBLE, offx, offy, width, height, NULL, NULL, hInstance, NULL);
+  CreateWindowEx(NULL, L"GL world", L"Liam OpenGL world", WS_OVERLAPPEDWINDOW|WS_VISIBLE, offx, offy, width, height, NULL, NULL, hInstance, NULL);
 
   // Set the event-based message system up
   MSG msg;
