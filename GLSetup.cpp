@@ -20,8 +20,10 @@ HDC InitGL(HWND parent)
   {
 	  WGL_CONTEXT_MAJOR_VERSION_ARB, 3, 
 	  WGL_CONTEXT_MINOR_VERSION_ARB, 3, 
-	  WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-	  0
+	  WGL_CONTEXT_PROFILE_MASK_ARB,
+	  //WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+	  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+	  0//WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB, 0
   };
   if (wglCreateContextAttribsARB)
   {
@@ -153,7 +155,7 @@ bool LinkProgram(int program, int shader, int fragment)
 {
   glAttachShader(program, shader);
   glAttachShader(program, fragment);
-  glBindFragDataLocation(program, 0, "result");
+  //glBindFragDataLocation(program, 0, "result");
   glLinkProgram(program);
       
   int status;
