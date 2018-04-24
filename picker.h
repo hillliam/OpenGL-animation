@@ -230,6 +230,9 @@ inline void picker::maptextures()
 	pickers->bindbyname("left_wind", "textures\\glass.jpg");
 	pickers->bindbyname("right_wind", "textures\\glass.jpg");
 	pickers->bindbyname("cabin", "textures\\metal.jpg");
+	//pickers->bindbyname("rear_wheel", "textures\\tyre_tread.jpg");
+	//pickers->bindbyname("left_wheel", "textures\\tyre_tread.jpg");
+	//pickers->bindbyname("rear_wheel", "textures\\tyre_tread.jpg");
 }
 
 inline picker::~picker()
