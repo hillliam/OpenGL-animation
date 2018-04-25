@@ -118,8 +118,11 @@ void Object3D::getlocalmove(const Object3D* root)
 void Object3D::InitVBOs()
 {
 	if (!vbos)
-		vbos = (unsigned int*)malloc(2 * sizeof(unsigned int));
+		vbos = (unsigned int*)malloc(3 * sizeof(unsigned int));
 	glGenBuffers(2, vbos);
+
+	glGenVertexArrays(1, &vbos[2]); // Create our Vertex Array Object  
+	glBindVertexArray(vbos[2]); // Bind our Vertex Array Object so we can use it
 
 	if (_stricmp(getName(), "plane") == 0 || _stricmp(getName(), "cube") == 0)
 	{
@@ -139,6 +142,7 @@ void Object3D::InitVBOs()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, polygons, GL_STATIC_DRAW);
 	}
+
 }
   
 void Object3D::SetVertexData(const byte* buffer, int noofverts, int bufferlen)
@@ -290,12 +294,14 @@ void Object3D::Draw(RenderingContext* rcontext)
       glVertexAttribPointer(rcontext->verthandles[1], 3, GL_FLOAT, false, 4*6, (void*) (4*3));
       glEnableVertexAttribArray(rcontext->verthandles[0]);
       glEnableVertexAttribArray(rcontext->verthandles[1]);
-      //glDisableVertexAttribArray(rcontext->verthandles[2]);
+      glEnableVertexAttribArray(rcontext->verthandles[2]);
 	  glVertexAttribPointer(rcontext->verthandles[2], 3, GL_FLOAT, false, 4 * 6, (void*)(4 * 3)); // test texture
     }
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbos[1]);    
+	glBindVertexArray(vbos[2]);
     glDrawElements(elementtype, elementcount, GL_UNSIGNED_SHORT, 0);
+	glBindVertexArray(0);
 
  // rcontext->PopModelMatrix();
 }
