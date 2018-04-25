@@ -28,3 +28,5 @@ extra improvments
 - [X] add diffrent effects to world
 - [X] framebuffer scales with screen
 - [X] create openGL core context
+- [X] updated shaders to old words
+- [X] use vao to fix 3.3 errors

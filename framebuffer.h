@@ -20,7 +20,6 @@ void postrender(RenderingContext* rcontext, int effect)
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE); // saves having to use diffrent code for plane
 							 //glBindTexture(GL_TEXTURE_2D, rcontext.texColorBuffer);
-	glUseProgram(rcontext->screenprogram);
 	setupshader(rcontext, rcontext->screenprogram);
 	glUniform1i(rcontext->effect, effect);
 	screen->SetTextureMap(rcontext->texColorBuffer);

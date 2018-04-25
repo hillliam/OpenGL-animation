@@ -222,10 +222,8 @@ void OnDraw()
   //drawarm();
   //rcontext.Translate(-1.0f, -0.3f, -1.0f);
   //rcontext.Scale(0.3f,0.3f,0.3f);
-  glUseProgram(rcontext.nullglprogram);
   setupshader(&rcontext, rcontext.nullglprogram);
   drawskybox(&rcontext);
-  glUseProgram(rcontext.glprogram);
   setupshader(&rcontext, rcontext.glprogram);
   rcontext.PushModelMatrix();
   rcontext.Translate(-3.5,0.3,-2);

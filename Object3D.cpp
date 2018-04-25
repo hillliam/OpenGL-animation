@@ -101,6 +101,8 @@ Object3D::Object3D(bool circledraw)
 
 Object3D::~Object3D()
 {
+  glDeleteVertexArrays(1, &vbos[2]);
+  glDeleteBuffers(2, vbos);
   free(vbos);
   free(vertexdata);
   free(polygons);

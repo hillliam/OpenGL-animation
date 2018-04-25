@@ -2,6 +2,7 @@
 
 void setupshader(RenderingContext* rcontext, int program)
 {
+	glUseProgram(program);
 	// Light
 	rcontext->lighthandles[0] = glGetUniformLocation(program, "u_l_direction");
 	rcontext->lighthandles[1] = glGetUniformLocation(program, "u_l_halfplane");
