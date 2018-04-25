@@ -186,7 +186,6 @@ void OnCreate()
   setupshader(&rcontext, rcontext.glprogram);
   setupshader(&rcontext, rcontext.screenprogram);
 
-  glUseProgram(rcontext.glprogram);
   // populate light
 
 //glEnable(GL_BLEND);

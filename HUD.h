@@ -19,7 +19,7 @@ void drawhud(HDC display, float width, float hight)
 	drawtext(src, "m: toggle animation", 270, width - 100);
 	drawtext(src, "1: world camera", 290, width - 100);
 	drawtext(src, "2: driver camera", 290, width - 100);
-	::BitBlt(display, 0, 0, width, hight, src, 0, 0, SRCAND); // add text to screen or SRCAND
+	::BitBlt(display, 0, 0, width, hight, src, 0, 0, SRCAND); // add text to screen
 	DeleteDC(hdcsrc);
 }
 

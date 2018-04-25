@@ -234,8 +234,8 @@ inline void picker::maptextures()
 	pickers->copybyname("right_wind", "left_wind");
 	pickers->bindbyname("cabin", "textures\\metal.jpg");
 	pickers->copybyname("base", "cabin");
-	pickers->copybyname("base", "cabin");
-	pickers->copybyname("base", "cabin");
+	pickers->copybyname("right_mirr", "cabin");
+	pickers->copybyname("left_mirro", "cabin");
 	//pickers->bindbyname("rear_wheel", "textures\\tyre_tread.jpg"); texturing wheels is not working
 	//pickers->bindbyname("left_wheel", "textures\\tyre_tread.jpg");
 	//pickers->bindbyname("rightwheel", "textures\\tyre_tread.jpg");
