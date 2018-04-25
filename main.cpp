@@ -481,7 +481,8 @@ void CreateObjects()
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
-  tower->bindbyname("cube", "textures\\window.jpg");
+  tower->rename("cube", "block");
+  //tower->bindbyname("block", "textures\\window.jpg");
   ground->rename("plane","lane");
   ground->bindbyname("lane", "textures\\grass.jpg");
   ground->bindbyname("Circtair", "textures\\btile.jpg");
