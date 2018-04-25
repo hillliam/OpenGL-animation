@@ -380,51 +380,53 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		case 'B':
 			centre[2] += 0.5f;
 			break;
-		case '1': // default view 
-			mainobject->cabineye = false;
-			eye[0] = defaulteye[0];
-			eye[1] = defaulteye[1];
-			eye[2] = defaulteye[2];
-			break;
-		case '2':// view inside picker
-			mainobject->cabineye = true;
-			mainobject->geteye(eye, centre);
-			break;
-		case 'M':
-			if (!animating)
-			{
-				SetTimer(hwnd, 101, 60, NULL);
-				start = ::GetTickCount();
-				animating = true;
-			}
-			else
-			{
-				KillTimer(hwnd, 101);
-				animating = false;
-			}
-			break;
-		case '3': // wireframe mode
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			break;
-		case '4': // normal mode
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			break;
-		case '7': // normal mode
-			activeeffect = 0;
-			break;
-		case '8': // grayscale
-			activeeffect = 1;
-			break;
-		case '9': // inverted
-			activeeffect = 2;
-			break;
-		default:
-			mainobject->keypress(nChar);
-			break;
 		}
 	}
+	switch (nChar)
+	{
+	case '1': // default view 
+		mainobject->cabineye = false;
+		eye[0] = defaulteye[0];
+		eye[1] = defaulteye[1];
+		eye[2] = defaulteye[2];
+		break;
+	case '2':// view inside picker
+		mainobject->cabineye = true;
+		mainobject->geteye(eye, centre);
+		break;
+	case 'M':
+		if (!animating)
+		{
+			SetTimer(hwnd, 101, 60, NULL);
+			start = ::GetTickCount();
+			animating = true;
+		}
+		else
+		{
+			KillTimer(hwnd, 101);
+			animating = false;
+		}
+		break;
+	case '3': // wireframe mode
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case '4': // normal mode
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	case '7': // normal mode
+		activeeffect = 0;
+		break;
+	case '8': // grayscale
+		activeeffect = 1;
+		break;
+	case '9': // inverted
+		activeeffect = 2;
+		break;
+	default:
+		mainobject->keypress(nChar);
+		break;
+	}
 	sethalfplane();
-	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
 	redraw();
 }
 
@@ -456,12 +458,14 @@ void OnMouseMove(UINT nFlags, int x, int y)
 	}
 
 	sethalfplane();
-	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
 	redraw();
 }
 
 void redraw()
 {
+	if (mainobject->cabineye)
+		mainobject->geteye(eye, centre);
+	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
 	PAINTSTRUCT paint;
 	BeginPaint(hwnd, &paint);
 	OnDraw();
