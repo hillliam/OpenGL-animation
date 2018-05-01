@@ -14,8 +14,6 @@
 
 static HWND hwnd;
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
 RenderingContext rcontext;
 
 Object3D* cube; // static item
