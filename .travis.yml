@@ -2,18 +2,17 @@ language: cpp
 
 compiler:
   - gcc
-  - clang
 
 script: 
-  - CXX -c Object3D.cpp -o objected.o
-  - CXX -c Model3D.cpp -o model3d.o
-  - CXX -c GLSetup.cpp -o glsetup.o
-  - CXX -c Matrix.cpp -o matrix.o
-  - CXX -c picker.cpp -o picker.o
-  - CXX -c staticgeom.cpp -o staticgeom.o
-  - CXX -c RenderingContext.cpp -o renderingContext.o
-  - CXX -c testing.cpp -o testing.o
-  - CXX linuxmain.cpp -o main.exe
+  - g++ -c Object3D.cpp -o objected.o
+  - g++ -c Model3D.cpp -o model3d.o
+  - g++ -c GLSetup.cpp -o glsetup.o
+  - g++ -c Matrix.cpp -o matrix.o
+  - g++ -c picker.cpp -o picker.o
+  - g++ -c staticgeom.cpp -o staticgeom.o
+  - g++ -c RenderingContext.cpp -o renderingContext.o
+  - g++ -c testing.cpp -o testing.o
+  - g++ linuxmain.cpp -o main.exe
 
 notifications:
   email: false
