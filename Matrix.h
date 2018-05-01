@@ -1,6 +1,8 @@
 #pragma once
 #include <math.h> // remember to add _USE_MATH_DEFINES to the project settings
 #include <memory.h>
+#include <stdio.h>
+#include <cstdlib>
 
 #define DEGSTORADS(x)     ((x*M_PI)/180)
 
