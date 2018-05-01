@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Model3D.h"
 
 class staticgeom
 {

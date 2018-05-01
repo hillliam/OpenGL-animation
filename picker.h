@@ -1,4 +1,5 @@
 #pragma once
+#include "Model3D.h"
 
 //main class used by picker
 
