@@ -2,7 +2,10 @@
 
 #define GLEW_STATIC 
 
+#ifdef _WIN32
 #include <Windows.h>
+#endif
+#include "GL/glut.h"
 #include "GL\glew.h"
 //#include "GL\eglew.h"
 //#include "GL\glxew.h"

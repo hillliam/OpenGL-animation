@@ -1,5 +1,3 @@
-#include <Windows.h>  // for access to the windows APIs
-#include <crtdbg.h>   // for debug stuff
 #include <math.h>
 #include <iostream>
 #include "GLSetup.h"
@@ -69,15 +67,9 @@ float lasty = 0;
 int activeeffect = 0;
 // framebuffer flag
 // Win32 entry point
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+/*int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	Test::testmatrixclass();
-	//return 0;
-  // This mini section is really useful to find memory leaks
-#ifdef _DEBUG   // only include this section of code in the DEBUG build
-  //_CrtSetBreakAlloc(12);  // really useful line of code to help find memory leaks
-  _onexit(_CrtDumpMemoryLeaks); // check for memory leaks when the program exits
-#endif
 
   // To create a window, we must first define various attributes about it
 	WNDCLASSEX classname;
@@ -164,7 +156,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     break;
   }
   return DefWindowProc(hWnd, message, wParam, lParam);
-}
+}*/
 
 // This is called then the window is first created and useful to get things ready (e.g. load or create pens, brushes, images, etc)
 void OnCreate()
