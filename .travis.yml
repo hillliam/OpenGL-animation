@@ -1,0 +1,15 @@
+language: cpp
+
+compiler:
+  - gcc
+
+script: 
+  - g++ Object3D.cpp -o objected.o
+  - g++ Model3D.cpp -o model3d.o
+  - g++ GLSetup.cpp -o glsetup.o
+  - g++ Matrix.cpp -o matrix.o
+  - g++ picker.cpp -o picker.o
+  - g++ staticgeom.cpp -o staticgeom.o
+  - g++ RenderingContext.cpp -o renderingContext.o
+  - g++ testing.cpp -o testing.o
+  - g++ linuxmain.cpp -o main.exe
