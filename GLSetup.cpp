@@ -1,6 +1,6 @@
 #include "GLSetup.h"
 #include <stdio.h>
-#include <io.h>
+//#include <io.h>
 #include "Utils.h"
 
 #ifdef _WIN32

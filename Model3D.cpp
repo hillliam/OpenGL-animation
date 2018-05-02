@@ -18,7 +18,7 @@ Model3D* Model3D::LoadModel(const wchar_t* filename)
   Model3D* model=new Model3D();
 
   FILE* file=NULL;
-  _wfopen_s(&file, filename, L"rb");
+  file = fopen(filename, L"rb");
 
   if (file)
   {
