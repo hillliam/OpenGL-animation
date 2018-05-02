@@ -109,10 +109,12 @@ int LoadProgram(int type, const wchar_t* filename)
   if (shader!=0)
   {
     FILE* file=NULL;
-    _wfopen_s(&file, filename, L"rb");
+    file = fopen(filename, "rb");
     if (file)
     {
-      int len=_filelength(_fileno(file));
+      fseek(file, 0L, SEEK_END);
+      int len=ftell(file);
+      rewind(file);
       char* data=(char*) malloc(len);
       int read=0;
       int pos=0;
@@ -139,7 +141,7 @@ int LoadProgram(int type, const wchar_t* filename)
         char* error=(char*) malloc(len+1);
         glGetShaderInfoLog(shader, len, &status, error);
         error[len]='\0';
-        DisplayMessage(error);
+        //DisplayMessage(error);
         free(error);
 
         glDeleteShader(shader);
@@ -172,7 +174,7 @@ bool LinkProgram(int program, int shader, int fragment)
     char* error=(char*) malloc(length+1);
     glGetProgramInfoLog(program, length, &status, error);
     error[length]='\0';
-    DisplayMessage(error);
+    //DisplayMessage(error);
     free(error);
     return false;
   }
