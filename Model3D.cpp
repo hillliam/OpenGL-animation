@@ -22,7 +22,7 @@ Model3D* Model3D::LoadModel(const wchar_t* filename)
 
   if (file)
   {
-    byte buffer[4];
+    unsigned char buffer[4];
     fread(buffer, 1, 4, file);
     int version=(buffer[0]&0xFF)|((buffer[1]&0xFF)<<8)|((buffer[2]&0xFF)<<16)|((buffer[3]&0xFF)<<24);
     if (version==4)
@@ -37,7 +37,7 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
 {
   int config=0;   // if the file includes texture coordinates then config&1=1
   int bufflen=60;
-  byte* buffer=(byte*) malloc(bufflen);  // enough for a bulk material read
+  unsigned char* buffer=(unsigned char*) malloc(bufflen);  // enough for a bulk material read
   int read=fread(buffer, 1, 4, file);
   if (read==4)
     config=*(int*) buffer;
@@ -71,7 +71,7 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
     if (bufflen<reqsize)
     {
       free(buffer);
-      buffer=(byte*) malloc(reqsize);
+      buffer=(unsigned char*) malloc(reqsize);
       bufflen=reqsize;
     }
 
@@ -88,7 +88,7 @@ void Model3D::Read3DSVersion4(FILE* file, Model3D* model)
     if (bufflen<reqsize)
     {
       free(buffer);
-      buffer=(byte*) malloc(reqsize);
+      buffer=(unsigned char*) malloc(reqsize);
       bufflen=reqsize;
     }
 

@@ -210,12 +210,12 @@ void Object3D::SetMaterial(const unsigned char* buffer)
     specular[i]=*(float*) (buffer+offset+32);
   }
 
-  WORD tmp=*(WORD*) (buffer+48);
+  unsigned short tmp=*(unsigned short*) (buffer+48);
   glossiness=(float) tmp;
   if (glossiness>100)
     glossiness=100;
 
-  tmp=*(WORD*) (buffer+50);
+  tmp=*(unsigned short*) (buffer+50);
   speclevel=(float) tmp;
 
   if (speclevel>100)

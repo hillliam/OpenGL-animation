@@ -3,10 +3,13 @@
 #include <io.h>
 #include "Utils.h"
 
+#ifdef _WIN32
 BOOL SetupPixelFormat(HDC hdc);
+#endif
 int LoadProgram(int type, const wchar_t* filename);
 bool LinkProgram(int program, int shader, int fragment);
 
+#ifdef _WIN32
 HDC InitGL(HWND parent)
 {
   HDC hdcNew=::GetDC(parent);
@@ -77,6 +80,7 @@ BOOL SetupPixelFormat(HDC hdc)
   }
   return TRUE;
 }
+#endif
 
 int LoadShaders(const wchar_t* vertshader, const wchar_t* fragshader)
 {

@@ -296,63 +296,63 @@ void picker::populatepicker()
 	for (int i = 0; i < pickers->GetNoOfObjects(); i++)
 	{
 		Object3D* current = pickers->GetObjects()[i];
-		if (_stricmp(current->getName(), "arm_base") == 0)
+		if (strcasecmp(current->getName(), "arm_base") == 0)
 		{
 			arm_base = current;
 		}
-		else if (_stricmp(current->getName(), "arm_mid") == 0)
+		else if (strcasecmp(current->getName(), "arm_mid") == 0)
 		{
 			arm_mid = current;
 		}
-		else if (_stricmp(current->getName(), "armjoint") == 0)
+		else if (strcasecmp(current->getName(), "armjoint") == 0)
 		{
 			armjoint = current;
 		}
-		else if (_stricmp(current->getName(), "arm_end") == 0)
+		else if (strcasecmp(current->getName(), "arm_end") == 0)
 		{
 			arm_end = current;
 		}
-		else if (_stricmp(current->getName(), "lift_pbox") == 0)
+		else if (strcasecmp(current->getName(), "lift_pbox") == 0)
 		{
 			lift_box_p = current;
 		}
-		else if (_stricmp(current->getName(), "lift_box") == 0)
+		else if (strcasecmp(current->getName(), "lift_box") == 0)
 		{
 			lift_box = current;
 		}
-		else if (_stricmp(current->getName(), "base") == 0)
+		else if (strcasecmp(current->getName(), "base") == 0)
 		{
 			base = current;
 		}
-		else if (_stricmp(current->getName(), "cabin") == 0)
+		else if (strcasecmp(current->getName(), "cabin") == 0)
 		{
 			cabin = current;
 		}
-		else if (_stricmp(current->getName(), "left_wind") == 0)
+		else if (strcasecmp(current->getName(), "left_wind") == 0)
 		{
 			left_wind = current;
 		}
-		else if (_stricmp(current->getName(), "rear_wheel") == 0)
+		else if (strcasecmp(current->getName(), "rear_wheel") == 0)
 		{
 			rear_wheels = current;
 		}
-		else if (_stricmp(current->getName(), "right_wind") == 0)
+		else if (strcasecmp(current->getName(), "right_wind") == 0)
 		{
 			right_wind = current;
 		}
-		else if (_stricmp(current->getName(), "left_wheel") == 0)
+		else if (strcasecmp(current->getName(), "left_wheel") == 0)
 		{
 			left_wheel = current;
 		}
-		else if (_stricmp(current->getName(), "rightwheel") == 0)
+		else if (strcasecmp(current->getName(), "rightwheel") == 0)
 		{
 			rightwheel = current;
 		}
-		else if (_stricmp(current->getName(), "right_mirr") == 0)
+		else if (strcasecmp(current->getName(), "right_mirr") == 0)
 		{
 			right_mirror = current;
 		}
-		else if (_stricmp(current->getName(), "left_mirro") == 0)
+		else if (strcasecmp(current->getName(), "left_mirro") == 0)
 		{
 			left_mirror = current;
 		}

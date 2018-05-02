@@ -13,5 +13,7 @@
 #endif
 #include "GL/glut.h"
 
+#ifdef _WIN32
 HDC InitGL(HWND parent);
+#endif
 int LoadShaders(const wchar_t* vertshader, const wchar_t* fragshader);

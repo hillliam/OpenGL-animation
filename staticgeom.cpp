@@ -56,7 +56,7 @@ inline void staticgeom::rename(const char* name, const char * newname)
 	for (int i = 1; i != model->GetNoOfObjects(); i++)
 	{
 		Object3D* item = model->GetObjects()[i];
-		if (_stricmp(item->getName(), name) == 0)
+		if (strcasecmp(item->getName(), name) == 0)
 		{
 			item->SetName(newname);
 		}

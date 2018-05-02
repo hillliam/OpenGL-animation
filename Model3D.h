@@ -21,7 +21,7 @@ private:
   int noofobjects;
   Object3D** objects;
 
-  static void Model3D::Read3DSVersion4(FILE* file, Model3D* model);
+  static void Read3DSVersion4(FILE* file, Model3D* model);
 };
 
 inline int Model3D::GetNoOfObjects()
@@ -49,7 +49,7 @@ inline void Model3D::bindbyname(const char* name, const char * filename)
 	for (int i = 0; i != noofobjects; i++)
 	{
 		Object3D* item = objects[i];
-		if (_stricmp(item->getName(), name) == 0)
+		if (strcasecmp(item->getName(), name) == 0)
 		{
 			item->bindtexture(filename);
 		}
@@ -63,11 +63,11 @@ inline void Model3D::copybyname(const char * name, const char * copyname)
 	for (int i = 0; i != noofobjects; i++)
 	{
 		Object3D* item = objects[i];
-		if (_stricmp(item->getName(), name) == 0)
+		if (strcasecmp(item->getName(), name) == 0)
 		{
 			one = item;
 		}
-		if (_stricmp(item->getName(), copyname) == 0)
+		if (strcasecmp(item->getName(), copyname) == 0)
 		{
 			two = item;
 		}
