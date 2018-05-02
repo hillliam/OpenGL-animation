@@ -29,7 +29,7 @@ inline void picker::setrotation(float x, float y, float z)
 	startrotation.z = z;
 }
 
-inline void picker::keypress(UINT nChar)
+inline void picker::keypress(unsigned int nChar)
 { // handle moving parts
 	switch (nChar)
 	{

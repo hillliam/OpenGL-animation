@@ -12,7 +12,7 @@
 #include "framebuffer.h"
 #include "shaders.h"
 
-static HWND hwnd;
+//static HWND hwnd;
 
 RenderingContext rcontext;
 
@@ -163,11 +163,12 @@ int main(int argc, char **argv)
   glutCreateWindow("Liam OpenGL world");
   GLenum err=glewInit();
   if (err!=GLEW_OK)
-    DisplayMessage((char*) glewGetErrorString(err));
+    return 1;
+	//DisplayMessage((char*) glewGetErrorString(err));
 
   CreateObjects();
   setupskybox();
-  setupfont();
+  //setupfont();
   makeframebuffer(&rcontext, width, hight);
   rcontext.glprogram=LoadShaders("vertshader.txt", "fragshader.txt");
   rcontext.nullglprogram = LoadShaders("nvertshader.txt", "nfragshader.txt");
@@ -227,9 +228,9 @@ void OnDraw()
   //glFinish();
   //end rendering
   postrender(&rcontext, activeeffect);
-  HDC display = wglGetCurrentDC();
+  //HDC display = wglGetCurrentDC();
   //drawhud(display, width, hight);
-  SwapBuffers(display);
+  //SwapBuffers(display);
 }
 
 void sethalfplane()
@@ -385,13 +386,13 @@ void OnKeyDown(unsigned int nChar, unsigned int nRepCnt, unsigned int nFlags)
 	case 'M':
 		if (!animating)
 		{
-			SetTimer(hwnd, 101, 60, NULL);
-			start = ::GetTickCount();
+			//SetTimer(hwnd, 101, 60, NULL);
+			//start = ::GetTickCount();
 			animating = true;
 		}
 		else
 		{
-			KillTimer(hwnd, 101);
+			//KillTimer(hwnd, 101);
 			animating = false;
 		}
 		break;
@@ -454,10 +455,10 @@ void redraw()
 	if (mainobject->cabineye)
 		mainobject->geteye(eye, centre);
 	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
-	PAINTSTRUCT paint;
-	BeginPaint(hwnd, &paint);
+	//PAINTSTRUCT paint;
+	//BeginPaint(hwnd, &paint);
 	OnDraw();
-	EndPaint(hwnd, &paint);
+	//EndPaint(hwnd, &paint);
 }
 
 void CreateObjects()
@@ -496,7 +497,7 @@ void CleanUp()
   glDeleteProgram(rcontext.glprogram);
   glDeleteProgram(rcontext.nullglprogram);
   glDeleteProgram(rcontext.screenprogram);
-  cleanhud();
+  //cleanhud();
   freeskybox();
   freeframebuffer(&rcontext);
   delete ground;
