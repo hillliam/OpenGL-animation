@@ -55,12 +55,12 @@ public:
 	// piviot box turning
 	int boxy = 0;
 	void drawpicker(RenderingContext * rcontext);
-	void handleanimation(DWORD start);
+	void handleanimation(unsigned int start);
 	void geteye(float *eye, float * center);
 	void setlocation(float x, float y, float z);
 	void setscale(float x, float y, float z);
 	void setrotation(float x, float y, float z);
-	void keypress(UINT nChar);
+	void keypress(unsigned int nChar);
 	picker();
 	~picker();
 };

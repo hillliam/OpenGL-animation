@@ -84,10 +84,10 @@ inline void picker::keypress(UINT nChar)
 	}
 }
 
-void picker::handleanimation(DWORD start)
+void picker::handleanimation(unsigned int start)
 {
 
-	DWORD elapsed = GetTickCount() - start;
+	unsigned int elapsed = GetTickCount() - start;
 	float r = elapsed * 0.005;
 		switch (animationstage)
 		{

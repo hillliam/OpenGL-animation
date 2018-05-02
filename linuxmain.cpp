@@ -24,15 +24,14 @@ staticgeom* tower, *ground;
 picker* mainobject;
 // learnopengl.com
 
-DWORD start;
+unsigned int start;
 
-void OnCreate();
 void OnDraw();
-void OnTimer(UINT nIDEvent);
-void OnSize(DWORD type, UINT cx, UINT cy);
-void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-void OnLButtonDown(UINT nFlags, int x, int y);
-void OnMouseMove(UINT nFlags, int x, int y);
+void OnTimer(unsigned int nIDEvent);
+void OnSize(unsigned int cx, unsigned int cy);
+void OnKeyDown(unsigned int nChar, unsigned int nRepCnt, unsigned int nFlags);
+void OnLButtonDown(unsigned int nFlags, int x, int y);
+void OnMouseMove(unsigned int nFlags, int x, int y);
 void CreateObjects();
 void CleanUp();
 void lights();
@@ -113,7 +112,7 @@ int activeeffect = 0;
 }
 
 // This is our message handling method and is called by the system (via the above while-loop) when we have a message to process
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam)
 {
   switch (message) 
   {
@@ -126,7 +125,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
     break;
   case WM_SIZE:
-    OnSize((DWORD) wParam, (UINT) (lParam&0xFFFF), (UINT) (lParam>>16));
+    OnSize((DWORD) wParam, (unsigned int) (lParam&0xFFFF), (unsigned int) (lParam>>16));
     break;
   case WM_PAINT:
     {
@@ -157,10 +156,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }*/
 
 // This is called then the window is first created and useful to get things ready (e.g. load or create pens, brushes, images, etc)
-void OnCreate()
+int main(int argc, char **argv)
 {
-  InitGL(hwnd);
-
+  //InitGL(hwnd);
+  glutInit(&argc, argv);
+  glutCreateWindow("Liam OpenGL world");
   GLenum err=glewInit();
   if (err!=GLEW_OK)
     DisplayMessage((char*) glewGetErrorString(err));
@@ -200,6 +200,7 @@ void OnCreate()
   Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
   sethalfplane();
   lights();
+  return 0;
 }
 
 // This is called when the window needs to be redrawn
@@ -294,7 +295,7 @@ void lights()
 }
 
 // Called when the window is resized
-void OnSize(DWORD type, UINT cx, UINT cy)
+void OnSize(unsigned int cx, unsigned int cy)
 {
 	if (cx > 0 && cy > 0)
 	{
@@ -313,7 +314,7 @@ void OnSize(DWORD type, UINT cx, UINT cy)
 		updateframebuffer(&rcontext, width, hight);
 	}
 }
-void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+void OnKeyDown(unsigned int nChar, unsigned int nRepCnt, unsigned int nFlags)
 {
 	if (mainobject->cabineye)
 	{
@@ -417,16 +418,16 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	redraw();
 }
 
-void OnTimer(UINT nIDEvent)
+void OnTimer(unsigned int nIDEvent)
 {
 	mainobject->handleanimation(start);
 	redraw();
 }
-void OnLButtonDown(UINT nFlags, int x, int y)
+void OnLButtonDown(unsigned int nFlags, int x, int y)
 {
 }
 
-void OnMouseMove(UINT nFlags, int x, int y)
+void OnMouseMove(unsigned int nFlags, int x, int y)
 {
 	if (nFlags == 1) // mouse key is down
 	{// diffrence between last and now

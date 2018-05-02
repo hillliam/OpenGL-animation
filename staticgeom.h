@@ -5,7 +5,7 @@
 class staticgeom
 {
 public:
-	staticgeom(const wchar_t* filename);
+	staticgeom(const char* filename);
 	~staticgeom();
 	void setlocation(float x, float y, float z);
 	void setscale(float x, float y, float z);

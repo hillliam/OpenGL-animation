@@ -1,6 +1,6 @@
 #include "staticgeom.h"
 
-staticgeom::staticgeom(const wchar_t* filename)
+staticgeom::staticgeom(const char* filename)
 {
 	model = Model3D::LoadModel(filename);
 	//startpoint.x = startpoint.y = startpoint.z = 0;
