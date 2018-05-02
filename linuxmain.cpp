@@ -7,7 +7,7 @@
 #include "testing.h"
 #include "picker.h"
 #include "staticgeom.h"
-#include "HUD.h"
+//#include "HUD.h"
 #include "enviroment.h"
 #include "framebuffer.h"
 #include "shaders.h"
@@ -227,7 +227,7 @@ void OnDraw()
   //end rendering
   postrender(&rcontext, activeeffect);
   HDC display = wglGetCurrentDC();
-  drawhud(display, width, hight);
+  //drawhud(display, width, hight);
   SwapBuffers(display);
 }
 

@@ -1,18 +1,28 @@
 language: cpp
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-7
+  env:
+   - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
 compiler:
   - gcc
 
 script: 
-  - g++ -c Object3D.cpp -o objected.o
-  - g++ -c Model3D.cpp -o model3d.o
-  - g++ -c GLSetup.cpp -o glsetup.o
-  - g++ -c Matrix.cpp -o matrix.o
-  - g++ -c picker.cpp -o picker.o
-  - g++ -c staticgeom.cpp -o staticgeom.o
-  - g++ -c RenderingContext.cpp -o renderingContext.o
-  - g++ -c testing.cpp -o testing.o
-  - g++ linuxmain.cpp -o main.exe
+  - mkdir lib
+  - g++ -c -std=c++11 Object3D.cpp -o lib/objected.o
+  - g++ -c -std=c++11 Model3D.cpp -o lib/model3d.o
+  - g++ -c -std=c++11 GLSetup.cpp -o lib/glsetup.o
+  - g++ -c -std=c++11 Matrix.cpp -o lib/matrix.o
+  - g++ -c -std=c++11 picker.cpp -o lib/picker.o
+  - g++ -c -std=c++11 staticgeom.cpp -o lib/staticgeom.o
+  - g++ -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.o
+  - g++ -c -std=c++11 testing.cpp -o lib/testing.o
+  - g++ -std=c++11 -L lib/* linuxmain.cpp -o main.exe
 
 notifications:
   email: false
