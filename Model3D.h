@@ -8,7 +8,7 @@ public:
   Model3D();
   ~Model3D();
 
-  static Model3D* LoadModel(const wchar_t* filename);
+  static Model3D* LoadModel(const char* filename);
 
   void Draw(RenderingContext* rcontext);
 

@@ -169,9 +169,9 @@ void OnCreate()
   setupskybox();
   setupfont();
   makeframebuffer(&rcontext, width, hight);
-  rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
-  rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
-  rcontext.screenprogram = LoadShaders(L"svertshader.txt", L"sfragshader.txt");
+  rcontext.glprogram=LoadShaders("vertshader.txt", "fragshader.txt");
+  rcontext.nullglprogram = LoadShaders("nvertshader.txt", "nfragshader.txt");
+  rcontext.screenprogram = LoadShaders("svertshader.txt", "sfragshader.txt");
   setupshader(&rcontext, rcontext.nullglprogram);
   setupshader(&rcontext, rcontext.glprogram);
   setupshader(&rcontext, rcontext.screenprogram);
@@ -461,8 +461,8 @@ void redraw()
 
 void CreateObjects()
 {
-  tower = new staticgeom(L"assets\\monument.3dm");
-  ground = new staticgeom(L"assets\\landscape-nouv.3dm");
+  tower = new staticgeom("assets\\monument.3dm");
+  ground = new staticgeom("assets\\landscape-nouv.3dm");
   mainobject = new picker();
   cube = new Object3D();
   cube->SetName("cube");

@@ -13,7 +13,7 @@ Model3D::~Model3D()
   free(objects);
 }
 
-Model3D* Model3D::LoadModel(const wchar_t* filename)
+Model3D* Model3D::LoadModel(const char* filename)
 {
   Model3D* model=new Model3D();
 

@@ -154,7 +154,7 @@ void picker::drawpicker(RenderingContext* rcontext)
 
 inline picker::picker()
 {
-	pickers = Model3D::LoadModel(L"assets\\crane.3dm");
+	pickers = Model3D::LoadModel("assets\\crane.3dm");
 	populatepicker();
 	calculateoffsetpicker();
 	maptextures();

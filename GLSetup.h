@@ -16,4 +16,4 @@
 #ifdef _WIN32
 HDC InitGL(HWND parent);
 #endif
-int LoadShaders(const wchar_t* vertshader, const wchar_t* fragshader);
+int LoadShaders(const char* vertshader, const char* fragshader);

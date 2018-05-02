@@ -6,7 +6,7 @@
 #ifdef _WIN32
 BOOL SetupPixelFormat(HDC hdc);
 #endif
-int LoadProgram(int type, const wchar_t* filename);
+int LoadProgram(int type, const char* filename);
 bool LinkProgram(int program, int shader, int fragment);
 
 #ifdef _WIN32
@@ -82,7 +82,7 @@ BOOL SetupPixelFormat(HDC hdc)
 }
 #endif
 
-int LoadShaders(const wchar_t* vertshader, const wchar_t* fragshader)
+int LoadShaders(const char* vertshader, const char* fragshader)
 {
   int vhandle=LoadProgram(GL_VERTEX_SHADER, vertshader); 
   int fhandle=LoadProgram(GL_FRAGMENT_SHADER, fragshader);
@@ -102,7 +102,7 @@ int LoadShaders(const wchar_t* vertshader, const wchar_t* fragshader)
   return 0;
 }
 
-int LoadProgram(int type, const wchar_t* filename)
+int LoadProgram(int type, const char* filename)
 {
   int shader=glCreateShader(type);
     
