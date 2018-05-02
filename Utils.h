@@ -1,5 +1,7 @@
 #pragma once
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 
 //cabin look keys 
 
@@ -8,6 +10,7 @@
 #define KEY_LLEFT 'A'
 #define KEY_LRIGHT 'D'
 
+#ifdef _WIN32
 inline void DisplayMessage(const char* msg)
 {
   int len=strlen(msg)+1;
@@ -16,6 +19,7 @@ inline void DisplayMessage(const char* msg)
   MessageBox(NULL, text, L"OpenGL Message", MB_ICONINFORMATION);
   free(text);
 }
+#endif
 
 inline float lerpbetween(float svalue, float evalue, double r, float stime, float etime)
 {
