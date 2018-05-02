@@ -126,7 +126,7 @@ void Object3D::InitVBOs()
 	glGenVertexArrays(1, &vbos[2]); // Create our Vertex Array Object  
 	glBindVertexArray(vbos[2]); // Bind our Vertex Array Object so we can use it
 
-	if (_stricmp(getName(), "plane") == 0 || _stricmp(getName(), "cube") == 0)
+	if (strcasecmp(getName(), "plane") == 0 || strcasecmp(getName(), "cube") == 0)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float)*5* noofverts, vertexdata, GL_STATIC_DRAW);
@@ -147,7 +147,7 @@ void Object3D::InitVBOs()
 
 }
   
-void Object3D::SetVertexData(const byte* buffer, int noofverts, int bufferlen)
+void Object3D::SetVertexData(const unsigned char* buffer, int noofverts, int bufferlen)
 {
   incuv=(bufferlen==4*(noofverts*8));
   vertexdata=(float*) malloc(bufferlen);
@@ -155,7 +155,7 @@ void Object3D::SetVertexData(const byte* buffer, int noofverts, int bufferlen)
   this->noofverts=noofverts;
 }
   
-void Object3D::SetTriangles(const byte* buffer, int noofpolys)
+void Object3D::SetTriangles(const unsigned char* buffer, int noofpolys)
 {
   const int size=3*noofpolys*sizeof(unsigned short);
   polygons=(unsigned short*) malloc(size);
@@ -165,7 +165,7 @@ void Object3D::SetTriangles(const byte* buffer, int noofpolys)
   elementcount=3*noofpolys;
 }
 
-void Object3D::SetTranslation(const byte* buffer)
+void Object3D::SetTranslation(const unsigned char* buffer)
 {
   translation[0]=*(float*) buffer;
   translation[1]=*(float*) (buffer+4);
@@ -199,7 +199,7 @@ void Object3D::bindtexture(const char* file)
 	stbi_image_free(data);
 }
   
-void Object3D::SetMaterial(const byte* buffer)
+void Object3D::SetMaterial(const unsigned char* buffer)
 {
   int i;
   int offset=0;
@@ -282,7 +282,7 @@ void Object3D::Draw(RenderingContext* rcontext)
       glEnableVertexAttribArray(rcontext->verthandles[1]);
       glEnableVertexAttribArray(rcontext->verthandles[2]);
     }
-	else if (_stricmp(getName(), "plane") == 0 || _stricmp(getName(), "cube") == 0)
+	else if (strcasecmp(getName(), "plane") == 0 || strcasecmp(getName(), "cube") == 0)
 	{
 		glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 5 * sizeof(float), (void*)0);
 		//glVertexAttribPointer(rcontext->verthandles[0], 3, GL_FLOAT, false, 4, (void*)0);

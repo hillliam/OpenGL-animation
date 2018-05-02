@@ -1,6 +1,7 @@
 #pragma once
 #include "GLSetup.h"
 #include "RenderingContext.h"
+#include <strings.h>
 
 class Object3D
 {
@@ -13,19 +14,19 @@ public:
 
   void SetName(const char* name);
   char* getName();
-  void SetVertexData(const byte* buffer, int noofverts, int bufferlen);
-  void SetTriangles(const byte* buffer, int noofpolys);
+  void SetVertexData(const unsigned char* buffer, int noofverts, int bufferlen);
+  void SetTriangles(const unsigned char* buffer, int noofpolys);
   void getlocalmove(const Object3D* root);
   void Draw(RenderingContext* rcontext);
   void makeplane();
   void makecube();
-  void SetMaterial(const byte* buffer);
+  void SetMaterial(const unsigned char* buffer);
   void SetMaterial(const Object3D * copy);
   void SetDiffuse(float r, float g, float b, float a);
   const float* GetDiffuse();
   void SetTextureMap(int id);
 
-  void SetTranslation(const byte* buffer);
+  void SetTranslation(const unsigned char* buffer);
   void SetTranslation(float x, float y, float z);
 
   void resetlocal();
@@ -77,7 +78,7 @@ inline void Object3D::SetName(const char* name)
 {
   const int len=strlen(name)+1;
   this->name=(char*) realloc(this->name, len);
-  strcpy_s(this->name, len, name);
+  strncpy(this->name, name, len);
 
   int noofitems=0;
   int* data=(int*) malloc(sizeof(int)*noofitems);
