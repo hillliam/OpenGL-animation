@@ -6,7 +6,6 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
-      - libglew2.0
       - libglew-dev
       - freeglut3-dev
   env:
