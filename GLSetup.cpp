@@ -126,8 +126,8 @@ int LoadProgram(int type, const char* filename)
       }
       while (read>0 && pos!=len);
       fclose(file);
-
-      glShaderSource(shader, 1, &data, &len);
+      const char* sdata = (const char *)data;
+      glShaderSource(shader, 1, &sdata, &len);
       glCompileShader(shader);
       free(data);
       
