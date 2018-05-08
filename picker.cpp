@@ -1,4 +1,5 @@
 #include "picker.h"
+#include <time.h>
 
 void picker::geteye(float *eye, float *center)
 {
