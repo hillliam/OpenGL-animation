@@ -25,6 +25,15 @@ script:
   - g++ -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.o
   - g++ -c -std=c++11 testing.cpp -o lib/testing.o
   - g++ -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main.exe
+  - em++ -c -std=c++11 Object3D.cpp -o lib/objected.bc
+  - em++ -c -std=c++11 Model3D.cpp -o lib/model3d.bc
+  - em++ -c -std=c++11 GLSetup.cpp -o lib/glsetup.bc
+  - em++ -c -std=c++11 Matrix.cpp -o lib/matrix.bc
+  - em++ -c -std=c++11 picker.cpp -o lib/picker.bc
+  - em++ -c -std=c++11 staticgeom.cpp -o lib/staticgeom.bc
+  - em++ -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.bc
+  - em++ -c -std=c++11 testing.cpp -o lib/testing.bc
+  - em++ -std=c++11 -L lib/* linuxmain.cpp -o glworld.js
 
 notifications:
   email: false
