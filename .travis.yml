@@ -6,6 +6,9 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
+      - libglew2.0
+      - libglew-dev
+      - freeglut3-dev
   env:
    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -22,7 +25,7 @@ script:
   - g++ -c -std=c++11 staticgeom.cpp -o lib/staticgeom.o
   - g++ -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.o
   - g++ -c -std=c++11 testing.cpp -o lib/testing.o
-  - g++ -std=c++11 -L lib/* linuxmain.cpp -o main.exe
+  - g++ -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main.exe
 
 notifications:
   email: false
