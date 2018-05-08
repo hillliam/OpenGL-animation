@@ -16,24 +16,24 @@ compiler:
 
 script: 
   - mkdir lib
-  - g++ -c -std=c++11 Object3D.cpp -o lib/objected.o
-  - g++ -c -std=c++11 Model3D.cpp -o lib/model3d.o
-  - g++ -c -std=c++11 GLSetup.cpp -o lib/glsetup.o
-  - g++ -c -std=c++11 Matrix.cpp -o lib/matrix.o
-  - g++ -c -std=c++11 picker.cpp -o lib/picker.o
-  - g++ -c -std=c++11 staticgeom.cpp -o lib/staticgeom.o
-  - g++ -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.o
-  - g++ -c -std=c++11 testing.cpp -o lib/testing.o
-  - g++ -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main.exe
-  - em++ -c -std=c++11 Object3D.cpp -o lib/objected.bc
-  - em++ -c -std=c++11 Model3D.cpp -o lib/model3d.bc
-  - em++ -c -std=c++11 GLSetup.cpp -o lib/glsetup.bc
-  - em++ -c -std=c++11 Matrix.cpp -o lib/matrix.bc
-  - em++ -c -std=c++11 picker.cpp -o lib/picker.bc
-  - em++ -c -std=c++11 staticgeom.cpp -o lib/staticgeom.bc
-  - em++ -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.bc
-  - em++ -c -std=c++11 testing.cpp -o lib/testing.bc
-  - em++ -std=c++11 -L lib/* linuxmain.cpp -o glworld.js
+  - g++ -O2 -c -std=c++11 Object3D.cpp -o lib/objected.o
+  - g++ -O2 -c -std=c++11 Model3D.cpp -o lib/model3d.o
+  - g++ -O2 -c -std=c++11 GLSetup.cpp -o lib/glsetup.o
+  - g++ -O2 -c -std=c++11 Matrix.cpp -o lib/matrix.o
+  - g++ -O2 -c -std=c++11 picker.cpp -o lib/picker.o
+  - g++ -O2 -c -std=c++11 staticgeom.cpp -o lib/staticgeom.o
+  - g++ -O2 -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.o
+  - g++ -O2 -c -std=c++11 testing.cpp -o lib/testing.o
+  - g++ -O2 -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main.exe
+  - em++ -O2 -c -std=c++11 Object3D.cpp -o lib/objected.bc
+  - em++ -O2 -c -std=c++11 Model3D.cpp -o lib/model3d.bc
+  - em++ -O2 -c -std=c++11 GLSetup.cpp -o lib/glsetup.bc
+  - em++ -O2 -c -std=c++11 Matrix.cpp -o lib/matrix.bc
+  - em++ -O2 -c -std=c++11 picker.cpp -o lib/picker.bc
+  - em++ -O2 -c -std=c++11 staticgeom.cpp -o lib/staticgeom.bc
+  - em++ -O2 -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.bc
+  - em++ -O2 -c -std=c++11 testing.cpp -o lib/testing.bc
+  - em++ -O2 -std=c++11 -L lib/* linuxmain.cpp -o glworld.js -s DEMANGLE_SUPPORT=1 --preload-file fragshader.txt --preload-file vertshader.txt --preload-file sfragshader.txt --preload-file svertshader.txt --preload-file nfragshader.txt --preload-file nvertshader.txt --preload-file assets/crane.3dm --preload-file assets/landscape-nouv.3dm --preload-file assets/monument.3dm
 
 notifications:
   email: false
