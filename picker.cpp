@@ -9,28 +9,28 @@ void picker::geteye(float *eye, float *center)
 	center[0] = startrotation.y; // point the camera forword
 }
 
-inline void picker::setlocation(float x, float y, float z)
+void picker::setlocation(float x, float y, float z)
 {
 	startpoint.x = x;
 	startpoint.y = y;
 	startpoint.z = z;
 }
 
-inline void picker::setscale(float x, float y, float z)
+void picker::setscale(float x, float y, float z)
 {
 	startscale.x = x;
 	startscale.y = y;
 	startscale.z = z;
 }
 
-inline void picker::setrotation(float x, float y, float z)
+void picker::setrotation(float x, float y, float z)
 {
 	startrotation.x = x;
 	startrotation.y = y;
 	startrotation.z = z;
 }
 
-inline void picker::keypress(unsigned int nChar)
+void picker::keypress(unsigned int nChar)
 { // handle moving parts
 	switch (nChar)
 	{
@@ -161,7 +161,7 @@ void picker::drawpicker(RenderingContext* rcontext)
 	rcontext->PopModelMatrix();
 }
 
-inline picker::picker()
+picker::picker()
 {
 	pickers = Model3D::LoadModel("assets\\crane.3dm");
 	populatepicker();
@@ -169,7 +169,7 @@ inline picker::picker()
 	maptextures();
 }
 
-inline void picker::maptextures()
+void picker::maptextures()
 {
 	pickers->bindbyname("arm_mid", "textures\\rust.jpg"); 
 	pickers->copybyname("arm_end", "arm_mid"); // save memory by copying texture id
@@ -187,7 +187,7 @@ inline void picker::maptextures()
 	//pickers->bindbyname("rightwheel", "textures\\tyre_tread.jpg");
 }
 
-inline picker::~picker()
+picker::~picker()
 {
 	delete pickers;
 }
