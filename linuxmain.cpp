@@ -28,8 +28,8 @@ unsigned int start;
 
 void OnDraw();
 void OnTimer(unsigned int nIDEvent);
-void OnSize(unsigned int cx, unsigned int cy);
-void OnKeyDown(unsigned int nChar, unsigned int nRepCnt, unsigned int nFlags);
+void OnSize(int cx, int cy);
+void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags);
 void OnLButtonDown(unsigned int nFlags, int x, int y);
 void OnMouseMove(unsigned int nFlags, int x, int y);
 void CreateObjects();
@@ -160,9 +160,17 @@ int main(int argc, char **argv)
 {
   //InitGL(hwnd);
   glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
   glutInitWindowSize(600,600);
+  width = 600;
+  hight = 600;
   glutCreateWindow("Liam OpenGL world");
+
+  glutReshapeFunc(OnSize);
+  glutIdleFunc(OnDraw);
   glutDisplayFunc(OnDraw);
+  glutKeyboardFunc(OnKeyDown);
+
   GLenum err=glewInit();
   if (err!=GLEW_OK)
     return 1;
@@ -204,6 +212,7 @@ int main(int argc, char **argv)
   sethalfplane();
   lights();
   glutMainLoop();
+  //OnDraw();
   return 0;
 }
 
@@ -301,7 +310,7 @@ void lights()
 }
 
 // Called when the window is resized
-void OnSize(unsigned int cx, unsigned int cy)
+void OnSize(int cx, int cy)
 {
 	if (cx > 0 && cy > 0)
 	{
@@ -320,7 +329,7 @@ void OnSize(unsigned int cx, unsigned int cy)
 		updateframebuffer(&rcontext, width, hight);
 	}
 }
-void OnKeyDown(unsigned int nChar, unsigned int nRepCnt, unsigned int nFlags)
+void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 {
 	if (mainobject->cabineye)
 	{
