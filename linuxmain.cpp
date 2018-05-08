@@ -160,7 +160,9 @@ int main(int argc, char **argv)
 {
   //InitGL(hwnd);
   glutInit(&argc, argv);
+  glutInitWindowSize(600,600);
   glutCreateWindow("Liam OpenGL world");
+  glutDisplayFunc(OnDraw);
   GLenum err=glewInit();
   if (err!=GLEW_OK)
     return 1;
@@ -201,12 +203,14 @@ int main(int argc, char **argv)
   Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
   sethalfplane();
   lights();
+  glutMainLoop();
   return 0;
 }
 
 // This is called when the window needs to be redrawn
 void OnDraw()
 {
+
 	//pre draw
 	prerender(&rcontext);
   rcontext.InitModelMatrix(true);
@@ -231,6 +235,7 @@ void OnDraw()
   //HDC display = wglGetCurrentDC();
   //drawhud(display, width, hight);
   //SwapBuffers(display);
+  glutSwapBuffers();
 }
 
 void sethalfplane()
