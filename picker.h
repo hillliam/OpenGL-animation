@@ -64,3 +64,5 @@ public:
 	picker();
 	~picker();
 };
+
+double GetTickCount(void);
