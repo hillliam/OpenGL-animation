@@ -30,7 +30,7 @@ script:
   - g++-7 -O2 -c -std=c++11 staticgeom.cpp -o lib/staticgeom.o
   - g++-7 -O2 -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.o
   - g++-7 -O2 -c -std=c++11 testing.cpp -o lib/testing.o
-  - g++-7 -O2 -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main.exe
+  - g++-7 -O2 -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main -lglut -lGL -lGLU -lGLEW
   - docker exec -it emscripten em++ -O2 -c -std=c++11 Object3D.cpp -o lib/objected.bc
   - docker exec -it emscripten em++ -O2 -c -std=c++11 Model3D.cpp -o lib/model3d.bc
   - docker exec -it emscripten em++ -O2 -c -std=c++11 GLSetup.cpp -o lib/glsetup.bc
