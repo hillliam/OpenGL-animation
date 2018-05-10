@@ -1,5 +1,12 @@
 #include "picker.h"
-#include <time.h>
+
+double GetTickCount(void) 
+{
+  struct timespec now;
+  if (clock_gettime(CLOCK_MONOTONIC, &now))
+    return 0;
+  return now.tv_sec * 1000.0 + now.tv_nsec / 1000000.0;
+}
 
 void picker::geteye(float *eye, float *center)
 {
@@ -9,28 +16,28 @@ void picker::geteye(float *eye, float *center)
 	center[0] = startrotation.y; // point the camera forword
 }
 
-inline void picker::setlocation(float x, float y, float z)
+void picker::setlocation(float x, float y, float z)
 {
 	startpoint.x = x;
 	startpoint.y = y;
 	startpoint.z = z;
 }
 
-inline void picker::setscale(float x, float y, float z)
+void picker::setscale(float x, float y, float z)
 {
 	startscale.x = x;
 	startscale.y = y;
 	startscale.z = z;
 }
 
-inline void picker::setrotation(float x, float y, float z)
+void picker::setrotation(float x, float y, float z)
 {
 	startrotation.x = x;
 	startrotation.y = y;
 	startrotation.z = z;
 }
 
-inline void picker::keypress(unsigned int nChar)
+void picker::keypress(unsigned int nChar)
 { // handle moving parts
 	switch (nChar)
 	{
@@ -83,14 +90,6 @@ inline void picker::keypress(unsigned int nChar)
 		boxy -= 1;
 		break;
 	}
-}
-
-double GetTickCount(void) 
-{
-  struct timespec now;
-  if (clock_gettime(CLOCK_MONOTONIC, &now))
-    return 0;
-  return now.tv_sec * 1000.0 + now.tv_nsec / 1000000.0;
 }
 
 void picker::handleanimation(unsigned int start)
@@ -161,24 +160,24 @@ void picker::drawpicker(RenderingContext* rcontext)
 	rcontext->PopModelMatrix();
 }
 
-inline picker::picker()
+picker::picker()
 {
-	pickers = Model3D::LoadModel("assets\\crane.3dm");
+	pickers = Model3D::LoadModel("assets/crane.3dm");
 	populatepicker();
 	calculateoffsetpicker();
 	maptextures();
 }
 
-inline void picker::maptextures()
+void picker::maptextures()
 {
-	pickers->bindbyname("arm_mid", "textures\\rust.jpg"); 
+	pickers->bindbyname("arm_mid", "textures/rust.jpg"); 
 	pickers->copybyname("arm_end", "arm_mid"); // save memory by copying texture id
 	pickers->copybyname("arm_base", "arm_mid");
 	pickers->copybyname("armjoint", "arm_mid");
 	pickers->copybyname("lift_box", "arm_mid");
-	pickers->bindbyname("left_wind", "textures\\glass.jpg");
+	pickers->bindbyname("left_wind", "textures/glass.jpg");
 	pickers->copybyname("right_wind", "left_wind");
-	pickers->bindbyname("cabin", "textures\\metal.jpg");
+	pickers->bindbyname("cabin", "textures/metal.jpg");
 	pickers->copybyname("base", "cabin");
 	pickers->copybyname("right_mirr", "cabin");
 	pickers->copybyname("left_mirro", "cabin");
@@ -187,7 +186,7 @@ inline void picker::maptextures()
 	//pickers->bindbyname("rightwheel", "textures\\tyre_tread.jpg");
 }
 
-inline picker::~picker()
+picker::~picker()
 {
 	delete pickers;
 }

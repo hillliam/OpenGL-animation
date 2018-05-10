@@ -20,27 +20,27 @@ void setupskybox()
 	rsbox = new Object3D();
 	rsbox->SetName("plane");
 	rsbox->makeplane();
-	rsbox->bindtexture("textures\\negx.jpg");
+	rsbox->bindtexture("textures/negx.jpg");
 	//left
 	lsbox = new Object3D();
 	lsbox->SetName("plane");
 	lsbox->makeplane();
-	lsbox->bindtexture("textures\\posx.jpg");
+	lsbox->bindtexture("textures/posx.jpg");
 	//forward
 	fsbox = new Object3D();
 	fsbox->SetName("plane");
 	fsbox->makeplane();
-	fsbox->bindtexture("textures\\negz.jpg");
+	fsbox->bindtexture("textures/negz.jpg");
 	//back
 	bsbox = new Object3D();
 	bsbox->SetName("plane");
 	bsbox->makeplane();
-	bsbox->bindtexture("textures\\posz.jpg");
+	bsbox->bindtexture("textures/posz.jpg");
 	//up
 	usbox = new Object3D();
 	usbox->SetName("plane");
 	usbox->makeplane();
-	usbox->bindtexture("textures\\posy.jpg");
+	usbox->bindtexture("textures/posy.jpg");
 }
 
 void drawupskybox(RenderingContext* rcontext)

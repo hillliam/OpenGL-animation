@@ -4,14 +4,21 @@
 
 #ifdef _WIN32
 #include <Windows.h>
-#endif
 #include "GL/glew.h"
+#else
+#include <GL/glew.h>
+#endif
+
 //#include "GL\eglew.h"
 //#include "GL\glxew.h"
 #ifdef _WIN32
 #include "GL/wglew.h"
 #endif
-#include "GL/glut.h"
+#ifndef _WIN32
+#include <GL/freeglut.h>
+#include <GL/freeglut_ext.h>
+#include <time.h>
+#endif
 
 #ifdef _WIN32
 HDC InitGL(HWND parent);

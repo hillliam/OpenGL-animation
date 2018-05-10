@@ -12,28 +12,28 @@ staticgeom::~staticgeom()
 	delete model;
 }
 
-inline void staticgeom::setlocation(float x, float y, float z)
+void staticgeom::setlocation(float x, float y, float z)
 {
 	startpoint.x = x;
 	startpoint.y = y;
 	startpoint.z = z;
 }
 
-inline void staticgeom::setscale(float x, float y, float z)
+void staticgeom::setscale(float x, float y, float z)
 {
 	startscale.x = x;
 	startscale.y = y;
 	startscale.z = z;
 }
 
-inline void staticgeom::setrotation(float x, float y, float z)
+void staticgeom::setrotation(float x, float y, float z)
 {
 	startrotation.x = x;
 	startrotation.y = y;
 	startrotation.z = z;
 }
 
-inline void staticgeom::draw(RenderingContext * rcontext)
+void staticgeom::draw(RenderingContext * rcontext)
 {
 	rcontext->PushModelMatrix();
 	rcontext->Translate(startpoint.x, startpoint.y, startpoint.z);
@@ -45,12 +45,12 @@ inline void staticgeom::draw(RenderingContext * rcontext)
 	rcontext->PopModelMatrix();
 }
 
-inline void staticgeom::bindbyname(const char* name, const char * newname)
+void staticgeom::bindbyname(const char* name, const char * newname)
 {
 	model->bindbyname(name, newname);
 }
 
-inline void staticgeom::rename(const char* name, const char * newname)
+void staticgeom::rename(const char* name, const char * newname)
 {
 	Object3D** models = model->GetObjects();
 	for (int i = 1; i != model->GetNoOfObjects(); i++)
@@ -62,12 +62,12 @@ inline void staticgeom::rename(const char* name, const char * newname)
 		}
 	}
 }
-inline void staticgeom::copybyname(const char * name, const char * copyname)
+void staticgeom::copybyname(const char * name, const char * copyname)
 {
 	model->copybyname(name, copyname);
 }
 
-inline void staticgeom::maplocal()
+void staticgeom::maplocal()
 {
 	Object3D* base = model->GetObjects()[0];
 	for (int i = 1; i != model->GetNoOfObjects(); i++)

@@ -2,7 +2,7 @@
 
 #ifndef _MIKE
 
-inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* centre, const float* up)
+void Matrix::SetLookAt(float* matrix, const float* eye, const float* centre, const float* up)
 {
 	float nup[3] = { up[0], up[1], up[2] };
 	Matrix::Normalise3(nup);
@@ -39,7 +39,7 @@ inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* cent
 	free(u);
 }
 
-inline float Matrix::DotProduct3(const float* vec1, const float* vec2)
+float Matrix::DotProduct3(const float* vec1, const float* vec2)
 {
 	float value = 0;
 	value += vec1[0] * vec2[0];
@@ -48,7 +48,7 @@ inline float Matrix::DotProduct3(const float* vec1, const float* vec2)
 	return value;
 }
 
-inline void Matrix::CrossProduct3(const float* vec1, const float* vec2, float* dst)
+void Matrix::CrossProduct3(const float* vec1, const float* vec2, float* dst)
 {
 	dst[0] = vec1[1] * vec2[2] - vec1[2] * vec2[1];
 	dst[1] = vec1[2] * vec2[0] - vec1[0] * vec2[2];
@@ -58,13 +58,13 @@ inline void Matrix::CrossProduct3(const float* vec1, const float* vec2, float* d
 // We can inline SetIdentity because it is such a small method
 // This method is done for you
 
-inline void Matrix::SetIdentity(float* matrix)
+void Matrix::SetIdentity(float* matrix)
 {
   memset(matrix, 0, sizeof(float)*16);
   matrix[0]=matrix[5]=matrix[10]=matrix[15]=1;
 }
 
-inline void Matrix::Normalise3(float* vector)
+void Matrix::Normalise3(float* vector)
 {
 	float x = vector[0];
 	float y = vector[1];
@@ -78,7 +78,7 @@ inline void Matrix::Normalise3(float* vector)
 	vector[2] = vector[2] / mag;
 }
 
-inline void Matrix::SetFrustum(float* matrix, float left, float right, float bottom, float top, float neara, float fara)
+void Matrix::SetFrustum(float* matrix, float left, float right, float bottom, float top, float neara, float fara)
 {
 	memset(matrix, 0, sizeof(float) * 16);
 	matrix[0] = (2 * neara) / (right - left);
@@ -90,7 +90,7 @@ inline void Matrix::SetFrustum(float* matrix, float left, float right, float bot
 	matrix[14] = -(2* fara * neara) / (fara - neara);
 }
 
-inline void Matrix::SetOrtho(float* matrix, float left, float right, float bottom, float top, float neara, float fara)
+void Matrix::SetOrtho(float* matrix, float left, float right, float bottom, float top, float neara, float fara)
 {
 	memset(matrix, 0, sizeof(float) * 16);
 	matrix[0] = 2 / (right - left);
@@ -102,7 +102,7 @@ inline void Matrix::SetOrtho(float* matrix, float left, float right, float botto
 	matrix[15] = 1;
 }
 
-inline void Matrix::MultiplyMatrix(float* result, const float* lhs, const float* rhs)
+void Matrix::MultiplyMatrix(float* result, const float* lhs, const float* rhs)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -117,7 +117,7 @@ inline void Matrix::MultiplyMatrix(float* result, const float* lhs, const float*
 	}
 }
 
-inline void Matrix::Translate(float* matrix, const float tx, const float ty, const float tz)
+void Matrix::Translate(float* matrix, const float tx, const float ty, const float tz)
 {
 	matrix[12] = matrix[0] * tx + matrix[4] * ty + matrix[8] * tz + matrix[12];
 	matrix[13] = matrix[1] * tx + matrix[5] * ty + matrix[9] * tz + matrix[13];
@@ -125,7 +125,7 @@ inline void Matrix::Translate(float* matrix, const float tx, const float ty, con
 	//matrix[15] = matrix[3] * tx + matrix[7] * ty + matrix[11] * tz + matrix[15];
 }
 
-inline void Matrix::Scale(float* matrix, const float sx, const float sy, const float sz)
+void Matrix::Scale(float* matrix, const float sx, const float sy, const float sz)
 {
 	matrix[0] *= sx;
 	matrix[4] *= sy;
@@ -141,7 +141,7 @@ inline void Matrix::Scale(float* matrix, const float sx, const float sy, const f
 	matrix[11] *= sz;
 }
 
-inline void Matrix::RotateX(float* matrix, const float degs)
+void Matrix::RotateX(float* matrix, const float degs)
 {
 	const float sine = sin(DEGSTORADS(degs));
 	const float cost = cos(DEGSTORADS(degs));
@@ -161,7 +161,7 @@ inline void Matrix::RotateX(float* matrix, const float degs)
 	matrix[11] = -old7 * sine + matrix[11] * cost;
 }
 
-inline void Matrix::RotateY(float* matrix, const float degs)
+void Matrix::RotateY(float* matrix, const float degs)
 {
 	const float sine = sin(DEGSTORADS(degs));
 	const float cost = cos(DEGSTORADS(degs));
@@ -180,7 +180,7 @@ inline void Matrix::RotateY(float* matrix, const float degs)
 	matrix[11] = old3 * sine + matrix[11] * cost;
 }
 
-inline void Matrix::RotateZ(float* matrix, const float degs)
+void Matrix::RotateZ(float* matrix, const float degs)
 {
 	const float sine = sin(DEGSTORADS(degs));
 	const float cost = cos(DEGSTORADS(degs));

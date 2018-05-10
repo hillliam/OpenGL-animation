@@ -1,7 +1,9 @@
 #pragma once
 #include "GLSetup.h"
 #include "RenderingContext.h"
+#ifndef _WIN32
 #include <strings.h>
+#endif
 
 class Object3D
 {
