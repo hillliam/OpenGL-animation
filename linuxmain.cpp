@@ -13,6 +13,8 @@
 #include "shaders.h"
 
 //static HWND hwnd;
+int mainWindow;
+using namespace std;
 
 RenderingContext rcontext;
 
@@ -27,11 +29,11 @@ picker* mainobject;
 unsigned int start;
 
 void OnDraw();
-void OnTimer(unsigned int nIDEvent);
+void OnTimer();
 void OnSize(int cx, int cy);
 void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags);
 void OnLButtonDown(unsigned int nFlags, int x, int y);
-void OnMouseMove(unsigned int nFlags, int x, int y);
+void OnMouseMove(int nFlags, int state, int x, int y);
 void CreateObjects();
 void CleanUp();
 void lights();
@@ -62,7 +64,6 @@ float lastx = 0;
 float lasty = 0;
 // active screen effect
 int activeeffect = 0;
-// framebuffer flag
 // Win32 entry point
 /*int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -158,18 +159,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM 
 // This is called then the window is first created and useful to get things ready (e.g. load or create pens, brushes, images, etc)
 int main(int argc, char **argv)
 {
+
   //InitGL(hwnd);
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
   glutInitWindowSize(600,600);
   width = 600;
   hight = 600;
-  glutCreateWindow("Liam OpenGL world");
+  glutInitContextVersion(3,3);
+  glutInitContextProfile(GLUT_CORE_PROFILE);
+  mainWindow = glutCreateWindow("Liam OpenGL world");
 
   glutReshapeFunc(OnSize);
-  glutIdleFunc(OnDraw);
+  glutIdleFunc(OnTimer);
   glutDisplayFunc(OnDraw);
   glutKeyboardFunc(OnKeyDown);
+  glutMouseFunc(OnMouseMove);
 
   GLenum err=glewInit();
   if (err!=GLEW_OK)
@@ -177,12 +182,17 @@ int main(int argc, char **argv)
 	//DisplayMessage((char*) glewGetErrorString(err));
 
   CreateObjects();
+  //cout<< "loaded all models"<<endl;
   setupskybox();
+  //cout<< "created skybox"<<endl;
   //setupfont();
   makeframebuffer(&rcontext, width, hight);
   rcontext.glprogram=LoadShaders("vertshader.txt", "fragshader.txt");
+  //cout<< "load base shader"<<endl;
   rcontext.nullglprogram = LoadShaders("nvertshader.txt", "nfragshader.txt");
+  //cout<< "load skybox shader"<<endl;
   rcontext.screenprogram = LoadShaders("svertshader.txt", "sfragshader.txt");
+  //cout<< "load screen shader"<<endl;
   setupshader(&rcontext, rcontext.nullglprogram);
   setupshader(&rcontext, rcontext.glprogram);
   setupshader(&rcontext, rcontext.screenprogram);
@@ -219,7 +229,7 @@ int main(int argc, char **argv)
 // This is called when the window needs to be redrawn
 void OnDraw()
 {
-
+	//cout<< "rendering begin"<<endl;
 	//pre draw
 	prerender(&rcontext);
   rcontext.InitModelMatrix(true);
@@ -245,6 +255,7 @@ void OnDraw()
   //drawhud(display, width, hight);
   //SwapBuffers(display);
   glutSwapBuffers();
+  //cout<< "rendering end"<<endl;
 }
 
 void sethalfplane()
@@ -312,6 +323,7 @@ void lights()
 // Called when the window is resized
 void OnSize(int cx, int cy)
 {
+	cout<< "size change: "<<cx << " "<< cy<<endl;
 	if (cx > 0 && cy > 0)
 	{
 		glViewport(0, 0, cx, cy);
@@ -331,6 +343,7 @@ void OnSize(int cx, int cy)
 }
 void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 {
+	cout<< "key pressed: "<< nChar<<endl;
 	if (mainobject->cabineye)
 	{
 		switch (nChar)
@@ -401,7 +414,7 @@ void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 		if (!animating)
 		{
 			//SetTimer(hwnd, 101, 60, NULL);
-			//start = ::GetTickCount();
+			start = GetTickCount();
 			animating = true;
 		}
 		else
@@ -433,8 +446,9 @@ void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 	redraw();
 }
 
-void OnTimer(unsigned int nIDEvent)
+void OnTimer()
 {
+	//cout<< "timer tick"<<endl;
 	mainobject->handleanimation(start);
 	redraw();
 }
@@ -442,8 +456,9 @@ void OnLButtonDown(unsigned int nFlags, int x, int y)
 {
 }
 
-void OnMouseMove(unsigned int nFlags, int x, int y)
+void OnMouseMove(int state, int nFlags, int x, int y)
 {
+	cout<< "mouse move: " << nFlags << " " << state<< " " << x<< " "<< y<<endl;
 	if (nFlags == 1) // mouse key is down
 	{// diffrence between last and now
 		eye[0] = (lastx - x);
@@ -471,14 +486,18 @@ void redraw()
 	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
 	//PAINTSTRUCT paint;
 	//BeginPaint(hwnd, &paint);
-	OnDraw();
+	glutSetWindow(mainWindow);
+	glutPostRedisplay();
+	//OnDraw();
 	//EndPaint(hwnd, &paint);
 }
 
 void CreateObjects()
 {
-  tower = new staticgeom("assets\\monument.3dm");
-  ground = new staticgeom("assets\\landscape-nouv.3dm");
+  tower = new staticgeom("assets/monument.3dm");
+  //cout<< "load tower"<<endl;
+  ground = new staticgeom("assets/landscape-nouv.3dm");
+  //cout<< "load ground"<<endl;
   mainobject = new picker();
   cube = new Object3D();
   cube->SetName("cube");
@@ -490,10 +509,11 @@ void CreateObjects()
   tower->rename("cube", "block");
   //tower->bindbyname("block", "textures\\window.jpg");
   ground->rename("plane","lane");
-  ground->bindbyname("lane", "textures\\grass.jpg");
-  ground->bindbyname("Circtair", "textures\\btile.jpg");
-  ground->bindbyname("ramid", "textures\\lbtile.jpg");
-  ground->bindbyname("Diamond", "textures\\green.bmp");
+  ground->bindbyname("lane", "textures/grass.jpg");
+  ground->bindbyname("Circtair", "textures/btile.jpg");
+  ground->bindbyname("ramid", "textures/lbtile.jpg");
+  ground->bindbyname("Diamond", "textures/green.bmp");
+  //cout<< "load textures"<<endl;
   ground->copybyname("Gear", "ramid");
   ground->copybyname("Mesh", "Circtair");
   ground->copybyname("Paraloid", "lane");
