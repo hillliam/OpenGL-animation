@@ -2,6 +2,8 @@
 #include <stdio.h>
 //#include <io.h>
 #include "Utils.h"
+#include <iostream>
+using namespace std;
 
 #ifdef _WIN32
 BOOL SetupPixelFormat(HDC hdc);
@@ -110,6 +112,7 @@ int LoadProgram(int type, const char* filename)
   {
     FILE* file=NULL;
     file = fopen(filename, "rb");
+    cout<< "open file: "<<filename<<endl;
     if (file)
     {
       fseek(file, 0L, SEEK_END);
@@ -150,6 +153,7 @@ int LoadProgram(int type, const char* filename)
     }
     else
     {
+      cout<< "failed to open file: "<<filename<<endl;
       glDeleteShader(shader);
       shader=0;
     }

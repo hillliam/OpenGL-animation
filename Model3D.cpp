@@ -1,4 +1,6 @@
 #include "Model3D.h"
+#include <iostream>
+using namespace std;
 
 Model3D::Model3D()
 {
@@ -19,7 +21,7 @@ Model3D* Model3D::LoadModel(const char* filename)
 
   FILE* file=NULL;
   file = fopen(filename, "rb");
-
+  cout<< "open file: "<<filename<<endl;
   if (file)
   {
     unsigned char buffer[4];
@@ -28,6 +30,10 @@ Model3D* Model3D::LoadModel(const char* filename)
     if (version==4)
       Read3DSVersion4(file, model);
     fclose(file);
+  }
+  else
+  {
+    cout<< "failed to open file: "<<filename<<endl;
   }
 
   return model;
