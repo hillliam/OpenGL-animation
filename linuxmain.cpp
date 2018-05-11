@@ -166,8 +166,8 @@ int main(int argc, char **argv)
   glutInitWindowSize(600,600);
   width = 600;
   hight = 600;
-  glutInitContextVersion(3,3);
-  glutInitContextProfile(GLUT_CORE_PROFILE);
+  //glutInitContextVersion(3,3);
+  //glutInitContextProfile(GLUT_CORE_PROFILE);
   mainWindow = glutCreateWindow("Liam OpenGL world");
 
   glutReshapeFunc(OnSize);
@@ -486,7 +486,7 @@ void redraw()
 	Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
 	//PAINTSTRUCT paint;
 	//BeginPaint(hwnd, &paint);
-	glutSetWindow(mainWindow);
+	//glutSetWindow(mainWindow);
 	glutPostRedisplay();
 	//OnDraw();
 	//EndPaint(hwnd, &paint);

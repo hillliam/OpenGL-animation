@@ -15,8 +15,8 @@
 #include "GL/wglew.h"
 #endif
 #ifndef _WIN32
-#include <GL/freeglut.h>
-#include <GL/freeglut_ext.h>
+#include <GL/glut.h>
+#include "GL/freeglut_ext.h"
 #include <time.h>
 #endif
 
