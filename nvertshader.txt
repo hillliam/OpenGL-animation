@@ -1,4 +1,4 @@
-#version 330 core
+#version 300 es
 // Light 
 uniform vec3 u_l_direction; 
 uniform vec3 u_l_halfplane; 

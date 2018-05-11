@@ -1,4 +1,4 @@
-#version 330 core
+#version 300 es
 // Light 
 uniform vec3 u_l_direction; 
 uniform vec3 u_l_halfplane; 
@@ -17,7 +17,7 @@ uniform mat4 u_mvmatrix;
 uniform mat4 u_mvpmatrix; 
  
 //textureflag
-uniform int u_textured = 0;
+uniform int u_textured;
 
 // Attributes 
 in vec4 a_position; 
