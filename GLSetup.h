@@ -24,3 +24,4 @@
 HDC InitGL(HWND parent);
 #endif
 int LoadShaders(const char* vertshader, const char* fragshader);
+void showerror();

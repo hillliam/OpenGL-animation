@@ -96,6 +96,9 @@ int LoadShaders(const char* vertshader, const char* fragshader)
       return phandle;
     else
     {
+      cout<< "loading shader failed";
+      showerror();
+      cout<<endl;
       glDeleteProgram(phandle);
       glDeleteShader(fhandle);
       glDeleteShader(vhandle);
@@ -144,6 +147,7 @@ int LoadProgram(int type, const char* filename)
         char* error=(char*) malloc(len+1);
         glGetShaderInfoLog(shader, len, &status, error);
         error[len]='\0';
+        cout << "shader create error " << error << endl;
         //DisplayMessage(error);
         free(error);
 
@@ -178,9 +182,21 @@ bool LinkProgram(int program, int shader, int fragment)
     char* error=(char*) malloc(length+1);
     glGetProgramInfoLog(program, length, &status, error);
     error[length]='\0';
+    cout << "shader link error " << error << endl;
     //DisplayMessage(error);
     free(error);
     return false;
   }
   return true;
+}
+
+void showerror()
+{
+  GLenum errCode;
+  const GLubyte *errString;
+  if ((errCode = glGetError()) != GL_NO_ERROR)
+  {
+    errString = gluErrorString(errCode);
+  }
+  cout << errString;
 }
