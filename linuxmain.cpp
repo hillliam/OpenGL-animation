@@ -215,7 +215,7 @@ int main(int argc, char **argv)
   glClearColor(0.0f, 1.0f, 0.0f, 0.0f);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
-  glShadeModel(GL_SMOOTH);
+  //glShadeModel(GL_SMOOTH);
   glEnable(GL_DEPTH_TEST);
   // we can do this here because the camera never moves (for the moment...)
   Matrix::SetLookAt(rcontext.viewmatrix, eye, centre, up);
