@@ -163,9 +163,9 @@ int main(int argc, char **argv)
   //InitGL(hwnd);
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-  glutInitWindowSize(600,600);
-  width = 600;
-  hight = 600;
+  width = 1200;
+  hight = 700;
+  glutInitWindowSize(width, hight);
   //glutInitContextVersion(3,3);
   //glutInitContextProfile(GLUT_CORE_PROFILE);
   mainWindow = glutCreateWindow("Liam OpenGL world");
