@@ -29,12 +29,12 @@ in vec2 a_uv;
 out vec4 ambientLight;
 out vec4 diffuseLight;
 out vec4 specularLight;
-
+flat out int textured;
 // texture if maped
 uniform sampler2D ourTexture;
 
 // screen effect
-uniform int u_effect;
+//uniform float u_effect;
 
 //out bool textured;
 out vec2 TexCoord;
@@ -80,5 +80,6 @@ void main()
 			specularLight=pow(ndoth, u_m_shininess)*u_l_specular*u_m_specular;  
 	}
 	//v_colour = ambientLight+diffuseLight+specularLight;
+	textured = u_textured;
 	gl_Position = u_mvpmatrix*a_position; 
 } 

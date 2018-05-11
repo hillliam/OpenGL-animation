@@ -20,7 +20,7 @@ uniform mat4 u_mvpmatrix;
 uniform bool u_textured;
 
 // screen effect
-uniform int u_effect;
+//uniform int u_effect;
 
 // Attributes 
 in vec4 a_position;

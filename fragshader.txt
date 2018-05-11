@@ -9,9 +9,9 @@ in vec4 specularLight;
 uniform sampler2D ourTexture;
 
 // screen effect
-uniform int u_effect;
+//uniform int u_effect;
 
-uniform int u_textured;
+flat in int textured;
 in vec2 TexCoord;
 
 // result of shader
@@ -19,9 +19,9 @@ out vec4 result;
 
 void main()  
 {
-	if (u_textured == 1)
+	if (textured == 1)
 		result = texture(ourTexture, TexCoord) + (ambientLight + specularLight); 
-	else if (u_textured == 2)
+	else if (textured == 2)
 		result = texture(ourTexture, vec2(0,0)) + (ambientLight + specularLight);
 	else
 		result = ambientLight + diffuseLight + specularLight;
