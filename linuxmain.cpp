@@ -448,9 +448,12 @@ void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 
 void OnTimer()
 {
-	//cout<< "timer tick"<<endl;
-	mainobject->handleanimation(start);
-	redraw();
+	if (animating)
+	{
+		//cout<< "timer tick"<<endl;
+		mainobject->handleanimation(start);
+		redraw();
+	}
 }
 void OnLButtonDown(unsigned int nFlags, int x, int y)
 {
