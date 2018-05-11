@@ -39,7 +39,7 @@ script:
   - docker exec -it emscripten em++ -O2 -c -std=c++11 staticgeom.cpp -o lib/staticgeom.bc
   - docker exec -it emscripten em++ -O2 -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.bc
   - docker exec -it emscripten em++ -O2 -c -std=c++11 testing.cpp -o lib/testing.bc
-  - docker exec -it emscripten em++ -O2 -std=c++11 -L lib/* linuxmain.cpp -o glworld.js -s DEMANGLE_SUPPORT=1 -s FULL_ES2=1 -s ALLOW_MEMORY_GROWTH=1 --preload-file fragshader.txt --preload-file vertshader.txt --preload-file sfragshader.txt --preload-file svertshader.txt --preload-file nfragshader.txt --preload-file nvertshader.txt --preload-file assets/crane.3dm --preload-file assets/landscape-nouv.3dm --preload-file assets/monument.3dm --preload-file textures/grass.jpg --preload-file textures/btile.jpg --preload-file textures/lbtile.jpg --preload-file textures/green.bmp --preload-file textures/rust.jpg --preload-file textures/glass.jpg --preload-file textures/metal.jpg 
+  - docker exec -it emscripten em++ -O2 -std=c++11 -L lib/* linuxmain.cpp -o glworld.js -s DEMANGLE_SUPPORT=1 -s FULL_ES3=1 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 --preload-file fragshader.txt --preload-file vertshader.txt --preload-file sfragshader.txt --preload-file svertshader.txt --preload-file nfragshader.txt --preload-file nvertshader.txt --preload-file assets/crane.3dm --preload-file assets/landscape-nouv.3dm --preload-file assets/monument.3dm --preload-file textures/grass.jpg --preload-file textures/btile.jpg --preload-file textures/lbtile.jpg --preload-file textures/green.bmp --preload-file textures/rust.jpg --preload-file textures/glass.jpg --preload-file textures/metal.jpg 
 
 notifications:
   email: false
