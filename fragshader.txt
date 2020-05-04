@@ -1,19 +1,27 @@
 #version 330 core
-varying vec4 v_colour; 
-varying vec4 ambientLight;
-varying vec4 diffuseLight;
-varying vec4 specularLight;
+//in vec4 v_colour; 
+in vec4 ambientLight;
+in vec4 diffuseLight;
+in vec4 specularLight;
 
 // texture if maped
 uniform sampler2D ourTexture;
 
-uniform bool u_textured = false;
+// screen effect
+uniform int u_effect;
+
+uniform int u_textured = 0;
 in vec2 TexCoord;
+
+// result of shader
+out vec4 result;
 
 void main()  
 {
-	if (u_textured)
-		gl_FragColor = texture(ourTexture, TexCoord) + (ambientLight + specularLight); 
+	if (u_textured == 1)
+		result = texture(ourTexture, TexCoord) + (ambientLight + specularLight); 
+	else if (u_textured == 2)
+		result = texture(ourTexture, vec2(0,0)) + (ambientLight + specularLight);
 	else
-		gl_FragColor=v_colour;
-} 
+		result = ambientLight + diffuseLight + specularLight;
+}

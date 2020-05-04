@@ -9,6 +9,7 @@ public:
   Object3D(bool circledraw);
   ~Object3D();
   float local[3];
+  int texturemap;
 
   void SetName(const char* name);
   char* getName();
@@ -19,6 +20,7 @@ public:
   void makeplane();
   void makecube();
   void SetMaterial(const byte* buffer);
+  void SetMaterial(const Object3D * copy);
   void SetDiffuse(float r, float g, float b, float a);
   const float* GetDiffuse();
   void SetTextureMap(int id);
@@ -43,8 +45,6 @@ private:
   float ambient[4], diffuse[4], specular[4];
 
   unsigned int* vbos;
-  
-  int texturemap;
 
   void InitVBOs();
   void circle();

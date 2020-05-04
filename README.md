@@ -8,6 +8,7 @@ openGL animation of a cherry picker
 check list
 ------------
 - [X] draws the cherry picker
+- [X] matrix look at works
 - [X] draws manualy created cube
 - [X] keyboard control of cherry picker
 - [X] keyboard input to move camera when in driver view
@@ -20,3 +21,10 @@ check list
 - [X] draws the skybox
 - [X] texture the skybox
 - [X] add objects to the world
+
+extra improvments
+--------------
+- [X] render world to framebuffer
+- [X] add diffrent effects to world
+- [X] framebuffer scales with screen
+- [X] create openGL core context

@@ -11,18 +11,19 @@
 #include "staticgeom.h"
 #include "HUD.h"
 #include "enviroment.h"
+#include "framebuffer.h"
+#include "shaders.h"
 
 static HWND hwnd;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 RenderingContext rcontext;
-Model3D* sphere, *box, *car, *Cylinder;
 
 Object3D* cube; // static item
 
 //world objects
-staticgeom* tower, *house, *ground;
+staticgeom* tower, *ground;
 
 picker* mainobject;
 // learnopengl.com
@@ -41,7 +42,6 @@ void CleanUp();
 void lights();
 void sethalfplane();
 void redraw();
-void setupshader(int program);
 
 const float defaulteye[3] = { 0.0f, 1.0f, 3.0f };
 float eye[3] = { defaulteye[0], defaulteye[1], defaulteye[2] };
@@ -65,7 +65,9 @@ bool animating = false;
 // starting location on screen of mouse
 float lastx = 0;
 float lasty = 0;
-
+// active screen effect
+int activeeffect = 0;
+// framebuffer flag
 // Win32 entry point
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -73,7 +75,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	//return 0;
   // This mini section is really useful to find memory leaks
 #ifdef _DEBUG   // only include this section of code in the DEBUG build
-//_CrtSetBreakAlloc(12);  // really useful line of code to help find memory leaks
+  //_CrtSetBreakAlloc(12);  // really useful line of code to help find memory leaks
   _onexit(_CrtDumpMemoryLeaks); // check for memory leaks when the program exits
 #endif
 
@@ -89,7 +91,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   classname.hCursor=LoadCursor(NULL, IDC_ARROW);
   classname.hbrBackground=NULL;//   ::GetSysColorBrush(COLOR_3DFACE); - note, setting this to null prevents flickering when resizing the window
   classname.lpszMenuName=NULL;
-  classname.lpszClassName=L"GettingStarted";
+  classname.lpszClassName=L"GL world";
   classname.hIconSm=LoadIcon(NULL, IDI_WINLOGO);
   RegisterClassEx(&classname);
 
@@ -100,7 +102,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   int offy=(::GetSystemMetrics(SM_CYSCREEN)-height)/2;
   OnSize(NULL, width, hight);
   // Create the window using the definition provided above
-  CreateWindowEx(NULL, L"GettingStarted", L"Getting Started with OpenGL - lighting", WS_OVERLAPPEDWINDOW|WS_VISIBLE, offx, offy, width, height, NULL, NULL, hInstance, NULL);
+  CreateWindowEx(NULL, L"GL world", L"Liam OpenGL world", WS_OVERLAPPEDWINDOW|WS_VISIBLE, offx, offy, width, height, NULL, NULL, hInstance, NULL);
 
   // Set the event-based message system up
   MSG msg;
@@ -176,11 +178,13 @@ void OnCreate()
   CreateObjects();
   setupskybox();
   setupfont();
+  makeframebuffer(&rcontext, width, hight);
   rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
   rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
-  
-  setupshader(rcontext.nullglprogram);
-  setupshader(rcontext.glprogram);
+  rcontext.screenprogram = LoadShaders(L"svertshader.txt", L"sfragshader.txt");
+  setupshader(&rcontext, rcontext.nullglprogram);
+  setupshader(&rcontext, rcontext.glprogram);
+  setupshader(&rcontext, rcontext.screenprogram);
 
   glUseProgram(rcontext.glprogram);
   // populate light
@@ -209,80 +213,23 @@ void OnCreate()
   lights();
 }
 
-void setupshader(int program)
-{
-	// Light
-	rcontext.lighthandles[0] = glGetUniformLocation(program, "u_l_direction");
-	rcontext.lighthandles[1] = glGetUniformLocation(program, "u_l_halfplane");
-	rcontext.lighthandles[2] = glGetUniformLocation(program, "u_l_ambient");
-	rcontext.lighthandles[3] = glGetUniformLocation(program, "u_l_diffuse");
-	rcontext.lighthandles[4] = glGetUniformLocation(program, "u_l_specular");
-	// Material
-	rcontext.mathandles[0] = glGetUniformLocation(program, "u_m_ambient");
-	rcontext.mathandles[1] = glGetUniformLocation(program, "u_m_diffuse");
-	rcontext.mathandles[2] = glGetUniformLocation(program, "u_m_specular");
-	rcontext.mathandles[3] = glGetUniformLocation(program, "u_m_shininess");
-	// Matrices
-	rcontext.mvhandle = glGetUniformLocation(program, "u_mvmatrix");
-	rcontext.mvphandle = glGetUniformLocation(program, "u_mvpmatrix");
-
-	// Attributes
-	rcontext.verthandles[0] = glGetAttribLocation(program, "a_position");
-	rcontext.verthandles[1] = glGetAttribLocation(program, "a_normal");
-	rcontext.verthandles[2] = glGetAttribLocation(program, "a_uv");
-
-	// texture flag
-	rcontext.textureflag[0] = glGetUniformLocation(program, "u_textured");
-}
-
-void drawarm()
-{
-	rcontext.PushModelMatrix();
-	rcontext.Scale(1.0, 7.0, 1.0);
-	//rcontext.RotateX(90);
-	//rcontext.RotateZ(90);
-	Cylinder->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
-void drawsphere()
-{
-	rcontext.Translate(0.0f, 2.5f, 0.0f);
-	rcontext.PushModelMatrix();
-	//rcontext.Translate(0.0f, 2.0f, 0.0f);
-	rcontext.Scale(2.0, 2.0, 2.0);
-	sphere->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
-void drawcar()
-{
-	rcontext.PushModelMatrix();
-	rcontext.Translate(1.0f, -1.0f, 1.0f);
-	rcontext.RotateX(180);
-	rcontext.Scale(1.2, 1.2, 1.2);
-	car->Draw(&rcontext);
-	rcontext.PopModelMatrix();
-}
-
 // This is called when the window needs to be redrawn
 void OnDraw()
 {
-  glUseProgram(rcontext.glprogram);
-
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
+	//pre draw
+	prerender(&rcontext);
   rcontext.InitModelMatrix(true);
   //drawarm();
   //rcontext.Translate(-1.0f, -0.3f, -1.0f);
   //rcontext.Scale(0.3f,0.3f,0.3f);
   glUseProgram(rcontext.nullglprogram);
-  setupshader(rcontext.nullglprogram);
+  setupshader(&rcontext, rcontext.nullglprogram);
   drawskybox(&rcontext);
   glUseProgram(rcontext.glprogram);
-  setupshader(rcontext.glprogram);
+  setupshader(&rcontext, rcontext.glprogram);
   rcontext.PushModelMatrix();
   rcontext.Translate(-3.5,0.3,-2);
+  rcontext.Scale(0.5f, 0.5f, 0.5f);
   rcontext.RotateX(180);
   cube->Draw(&rcontext);
   rcontext.PopModelMatrix();
@@ -290,6 +237,8 @@ void OnDraw()
   ground->draw(&rcontext);
   mainobject->drawpicker(&rcontext);
   //glFinish();
+  //end rendering
+  postrender(&rcontext, activeeffect);
   HDC display = wglGetCurrentDC();
   drawhud(display, width, hight);
   SwapBuffers(display);
@@ -374,6 +323,7 @@ void OnSize(DWORD type, UINT cx, UINT cy)
 		hight = cy;
 
 		Matrix::SetFrustum(rcontext.projectionmatrix, left, right, bottom, top, NEAR_CLIP, FAR_CLIP);
+		updateframebuffer(&rcontext, width, hight);
 	}
 }
 void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -459,6 +409,15 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		case '4': // normal mode
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			break;
+		case '7': // normal mode
+			activeeffect = 0;
+			break;
+		case '8': // grayscale
+			activeeffect = 1;
+			break;
+		case '9': // inverted
+			activeeffect = 2;
+			break;
 		default:
 			mainobject->keypress(nChar);
 			break;
@@ -513,15 +472,11 @@ void CreateObjects()
 {
   tower = new staticgeom(L"assets\\monument.3dm");
   ground = new staticgeom(L"assets\\landscape-nouv.3dm");
-  sphere = Model3D::LoadModel(L"assets\\Sphere2-nouv.3dm");
-  box = Model3D::LoadModel(L"assets\\Box-nouv.3dm");
-  car = Model3D::LoadModel(L"assets\\car.3dm");
-  Cylinder = Model3D::LoadModel(L"assets\\cilinder-nouv.3dm");
   mainobject = new picker();
   cube = new Object3D();
   cube->SetName("cube");
   cube->makecube();
-  cube->SetDiffuse(255,255,255,0);
+  cube->SetMaterial(tower->model->GetObjects()[0]);
   ground->setlocation(1,0.6,1);
   ground->setscale(10, 10, 10);
   tower->setlocation(-0.5, -0.7, -1);
@@ -530,6 +485,14 @@ void CreateObjects()
   ground->bindbyname("lane", "textures\\grass.jpg");
   ground->bindbyname("Circtair", "textures\\btile.jpg");
   ground->bindbyname("ramid", "textures\\lbtile.jpg");
+  ground->bindbyname("Diamond", "textures\\green.bmp");
+  ground->copybyname("Gear", "ramid");
+  ground->copybyname("Mesh", "Circtair");
+  ground->copybyname("Paraloid", "lane");
+  ground->copybyname("Spindle", "lane");
+  ground->copybyname("Star", "Circtair");
+  ground->copybyname("Suzanne", "Circtair");
+  ground->copybyname("Thread", "Circtair");
   mainobject->targetpoint.x = -0.5;
   mainobject->targetpoint.y = -0.7;
   mainobject->targetpoint.z = -1;
@@ -539,11 +502,12 @@ void CleanUp()
 {
   glDeleteProgram(rcontext.glprogram);
   glDeleteProgram(rcontext.nullglprogram);
+  glDeleteProgram(rcontext.screenprogram);
   cleanhud();
-  delete sphere;
-  delete box;
-  delete car;
-  delete Cylinder;
+  freeskybox();
+  freeframebuffer(&rcontext);
+  delete ground;
+  delete tower;
   delete cube;
   delete mainobject;
 }

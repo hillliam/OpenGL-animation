@@ -105,6 +105,7 @@ Object3D::~Object3D()
   free(vertexdata);
   free(polygons);
   free(name);
+  glDeleteTextures(1, (unsigned int*)&texturemap);
 }
 
 void Object3D::getlocalmove(const Object3D* root)
@@ -218,6 +219,19 @@ void Object3D::SetMaterial(const byte* buffer)
   for (int i=0; i<4; i++)
     specular[i]*=spec;
 }
+
+void Object3D::SetMaterial(const Object3D* copy)
+{
+	for (int i = 0; i<4; i++, i++)
+	{
+		ambient[i] = copy->ambient[i];
+		diffuse[i] = copy->diffuse[i];
+		specular[i] = copy->specular[i];
+	}
+
+	glossiness = copy->glossiness;
+	speclevel = copy->speclevel;
+}
   
 void Object3D::Draw(RenderingContext* rcontext)
 {
@@ -250,7 +264,7 @@ void Object3D::Draw(RenderingContext* rcontext)
 	}
 	else
 	{
-		glUniform1i(rcontext->textureflag[0], false);
+		glUniform1i(rcontext->textureflag[0], 2);
 	}
     // Attributes
     if (incuv)
