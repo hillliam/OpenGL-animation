@@ -9,8 +9,8 @@ FROM gitpod/workspace-full
 RUN sudo apt -q update && sudo apt install -yq python3 cmake && sudo rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/emscripten-core/emsdk.git
 RUN cd emsdk
-RUN ./emsdk install latest
+RUN sudo ./emsdk install latest
 
-RUN ./emsdk activate latest
+RUN sudo ./emsdk activate latest
 
-RUN source ./emsdk_env.sh
+RUN sudo source ./emsdk_env.sh
