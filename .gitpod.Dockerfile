@@ -6,4 +6,11 @@ FROM gitpod/workspace-full
 #
 # More information: https://www.gitpod.io/docs/config-docker/
 
-RUN sudo apt -q update && sudo apt install -yq emscripten  && sudo rm -rf /var/lib/apt/lists/*
+RUN sudo apt -q update && sudo apt install -yq python3 cmake && sudo rm -rf /var/lib/apt/lists/*
+RUN git clone https://github.com/emscripten-core/emsdk.git
+RUN cd emsdk
+RUN ./emsdk install latest
+
+RUN ./emsdk activate latest
+
+RUN source ./emsdk_env.sh
