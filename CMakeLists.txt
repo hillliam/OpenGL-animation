@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 # Add source files
 add_executable(OpenGLAnimation
-  main.cpp
+  linuxmain.cpp
   Object3D.cpp
   Model3D.cpp
   GLSetup.cpp
