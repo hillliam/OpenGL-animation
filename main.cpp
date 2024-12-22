@@ -399,7 +399,7 @@ void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		if (!animating)
 		{
 			SetTimer(hwnd, 101, 60, NULL);
-			start = ::GetTickCount();
+			start = ::GetTimeElapsed();
 			animating = true;
 		}
 		else

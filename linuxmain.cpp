@@ -414,7 +414,7 @@ void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 		if (!animating)
 		{
 			//SetTimer(hwnd, 101, 60, NULL);
-			start = GetTickCount();
+			start = GetTimeElapsed();
 			animating = true;
 		}
 		else
