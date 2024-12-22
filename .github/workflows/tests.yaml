@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: install cmake
+        run: sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev
       - name: CMake Action
         uses: threeal/cmake-action@v2.1.0
       
