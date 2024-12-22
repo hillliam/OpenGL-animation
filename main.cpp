@@ -50,7 +50,11 @@ float up[3] = { 0.0f, 1.0f, 0.0f };
 float lightpos[3] = { 4.0f, 4.0f, 3.0f };
 float width = 0;
 float hight = 0;
-const float FOVY = (60.0f*(float)M_PI / 180.0f);
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+const float FOVY = (60.0f * (float)M_PI / 180.0f);
 float fAspect = 0;
 // our FOV is 60 degrees 
 const float NEAR_CLIP = 0.01f;  // for example
@@ -91,7 +95,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   classname.hCursor=LoadCursor(NULL, IDC_ARROW);
   classname.hbrBackground=NULL;//   ::GetSysColorBrush(COLOR_3DFACE); - note, setting this to null prevents flickering when resizing the window
   classname.lpszMenuName=NULL;
-  classname.lpszClassName=L"GL world";
+  classname.lpszClassName="GL world";
   classname.hIconSm=LoadIcon(NULL, IDI_WINLOGO);
   RegisterClassEx(&classname);
 
@@ -102,7 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
   int offy=(::GetSystemMetrics(SM_CYSCREEN)-height)/2;
   OnSize(NULL, width, hight);
   // Create the window using the definition provided above
-  CreateWindowEx(NULL, L"GL world", L"Liam OpenGL world", WS_OVERLAPPEDWINDOW|WS_VISIBLE, offx, offy, width, height, NULL, NULL, hInstance, NULL);
+  CreateWindowEx(NULL, "GL world", "Liam OpenGL world", WS_OVERLAPPEDWINDOW|WS_VISIBLE, offx, offy, width, height, NULL, NULL, hInstance, NULL);
 
   // Set the event-based message system up
   MSG msg;
@@ -179,9 +183,9 @@ void OnCreate()
   setupskybox();
   setupfont();
   makeframebuffer(&rcontext, width, hight);
-  rcontext.glprogram=LoadShaders(L"vertshader.txt", L"fragshader.txt");
-  rcontext.nullglprogram = LoadShaders(L"nvertshader.txt", L"nfragshader.txt");
-  rcontext.screenprogram = LoadShaders(L"svertshader.txt", L"sfragshader.txt");
+  rcontext.glprogram=LoadShaders("vertshader.txt", "fragshader.txt");
+  rcontext.nullglprogram = LoadShaders("nvertshader.txt", "nfragshader.txt");
+  rcontext.screenprogram = LoadShaders("svertshader.txt", "sfragshader.txt");
   setupshader(&rcontext, rcontext.nullglprogram);
   setupshader(&rcontext, rcontext.glprogram);
   setupshader(&rcontext, rcontext.screenprogram);
@@ -471,8 +475,8 @@ void redraw()
 
 void CreateObjects()
 {
-  tower = new staticgeom(L"assets\\monument.3dm");
-  ground = new staticgeom(L"assets\\landscape-nouv.3dm");
+  tower = new staticgeom("assets\\monument.3dm");
+  ground = new staticgeom("assets\\landscape-nouv.3dm");
   mainobject = new picker();
   cube = new Object3D();
   cube->SetName("cube");

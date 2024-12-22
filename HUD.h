@@ -61,5 +61,5 @@ void drawtext(HDC display, const char* message, int x, int y)
 	oss << message;
 
 	std::wstring ws = oss.str();
-	::TextOut(hdcsrc, x, y, ws.c_str(), ws.length());
+	::TextOut(hdcsrc, x, y, message, ws.length());
 }

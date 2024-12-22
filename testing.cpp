@@ -1,5 +1,9 @@
 #include "testing.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 void Test::printmatrix(const float data[], int size)
 {
 	for (int i = 0; i != size; i++)

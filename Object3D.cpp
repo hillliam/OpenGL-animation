@@ -2,6 +2,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#ifdef _WIN32
+#include <cstring> // Add this line
+#define strcasecmp _stricmp
+#endif
+
 Object3D::Object3D()
 {
   vbos=NULL;

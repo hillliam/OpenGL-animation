@@ -2,6 +2,10 @@
 
 #ifndef _MIKE
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 void Matrix::SetLookAt(float* matrix, const float* eye, const float* centre, const float* up)
 {
 	float nup[3] = { up[0], up[1], up[2] };

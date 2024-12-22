@@ -65,4 +65,4 @@ public:
 	~picker();
 };
 
-double GetTickCount(void);
+double GetTimeElapsed(void);

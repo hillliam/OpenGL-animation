@@ -2,6 +2,11 @@
 #include "Object3D.h"
 #include <stdio.h>
 
+#ifdef _WIN32
+#include <cstring> // Add this line
+#define strcasecmp _stricmp
+#endif
+
 class Model3D
 {
 public:

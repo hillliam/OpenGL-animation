@@ -71,13 +71,13 @@ BOOL SetupPixelFormat(HDC hdc)
 
   if (!(pixelformat=ChoosePixelFormat(hdc, &pfd)))
   {
-    MessageBox(NULL, L"ChoosePixelFormat failed", L"GLSetup", MB_OK);
+    MessageBox(NULL, "ChoosePixelFormat failed", "GLSetup", MB_OK);
     return FALSE;
   }
 
   if (!SetPixelFormat(hdc, pixelformat, &pfd))
   {
-    MessageBox(NULL, L"SetPixelFormat failed", L"GLSetup", MB_OK);
+    MessageBox(NULL, "SetPixelFormat failed", "GLSetup", MB_OK);
     return FALSE;
   }
   return TRUE;

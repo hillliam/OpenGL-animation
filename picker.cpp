@@ -1,11 +1,29 @@
 #include "picker.h"
 
-double GetTickCount(void) 
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <time.h>
+#endif
+
+double GetTimeElapsed(void) 
 {
+#ifdef _WIN32
+  static LARGE_INTEGER frequency;
+  static BOOL use_qpc = QueryPerformanceFrequency(&frequency);
+  if (use_qpc) {
+    LARGE_INTEGER now;
+    QueryPerformanceCounter(&now);
+    return (1000.0 * now.QuadPart) / frequency.QuadPart;
+  } else {
+    return GetTickCount();
+  }
+#else
   struct timespec now;
   if (clock_gettime(CLOCK_MONOTONIC, &now))
     return 0;
   return now.tv_sec * 1000.0 + now.tv_nsec / 1000000.0;
+#endif
 }
 
 void picker::geteye(float *eye, float *center)
@@ -95,7 +113,7 @@ void picker::keypress(unsigned int nChar)
 void picker::handleanimation(unsigned int start)
 {
 
-	unsigned int elapsed = GetTickCount() - start;
+	unsigned int elapsed = GetTimeElapsed() - start;
 	float r = elapsed * 0.005;
 		switch (animationstage)
 		{

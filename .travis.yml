@@ -5,11 +5,11 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-7
+      - g++-10
       - libglew-dev
       - freeglut3-dev
   env:
-   - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+   - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
 
 services:
   - docker
@@ -22,23 +22,9 @@ before_install:
 
 script: 
   - mkdir lib
-  - g++-7 -O2 -c -std=c++11 Object3D.cpp -o lib/objected.o
-  - g++-7 -O2 -c -std=c++11 Model3D.cpp -o lib/model3d.o
-  - g++-7 -O2 -c -std=c++11 GLSetup.cpp -o lib/glsetup.o
-  - g++-7 -O2 -c -std=c++11 Matrix.cpp -o lib/matrix.o
-  - g++-7 -O2 -c -std=c++11 picker.cpp -o lib/picker.o
-  - g++-7 -O2 -c -std=c++11 staticgeom.cpp -o lib/staticgeom.o
-  - g++-7 -O2 -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.o
-  - g++-7 -O2 -c -std=c++11 testing.cpp -o lib/testing.o
-  - g++-7 -O2 -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main -lglut -lGL -lGLU -lGLEW
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 Object3D.cpp -o lib/objected.bc
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 Model3D.cpp -o lib/model3d.bc
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 GLSetup.cpp -o lib/glsetup.bc
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 Matrix.cpp -o lib/matrix.bc
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 picker.cpp -o lib/picker.bc
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 staticgeom.cpp -o lib/staticgeom.bc
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 RenderingContext.cpp -o lib/renderingContext.bc
-  - docker exec -it emscripten em++ -O2 -c -std=c++11 testing.cpp -o lib/testing.bc
+  - for file in Object3D Model3D GLSetup Matrix picker staticgeom RenderingContext testing; do g++-10 -O2 -c -std=c++11 $file.cpp -o lib/$file.o; done
+  - g++-10 -O2 -std=c++11 -L lib/* -L /usr/include/GL/* -L /usr/lib/libglut/* linuxmain.cpp -o main -lglut -lGL -lGLU -lGLEW
+  - for file in Object3D Model3D GLSetup Matrix picker staticgeom RenderingContext testing; do docker exec -it emscripten em++ -O2 -c -std=c++11 $file.cpp -o lib/$file.bc; done
   - docker exec -it emscripten em++ -O2 -std=c++11 -L lib/* linuxmain.cpp -o glworld.js -s DEMANGLE_SUPPORT=1 -s FULL_ES3=1 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 --preload-file fragshader.txt --preload-file vertshader.txt --preload-file sfragshader.txt --preload-file svertshader.txt --preload-file nfragshader.txt --preload-file nvertshader.txt --preload-file assets/crane.3dm --preload-file assets/landscape-nouv.3dm --preload-file assets/monument.3dm --preload-file textures/grass.jpg --preload-file textures/btile.jpg --preload-file textures/lbtile.jpg --preload-file textures/green.bmp --preload-file textures/rust.jpg --preload-file textures/glass.jpg --preload-file textures/metal.jpg --preload-file textures/negx.jpg --preload-file textures/posx.jpg --preload-file textures/negx.jpg --preload-file textures/negz.jpg --preload-file textures/posz.jpg --preload-file textures/posy.jpg
 
 notifications:
