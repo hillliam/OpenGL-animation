@@ -19,10 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       
       - name: Setup Emscripten toolchain
-        uses: mymindstorm/setup-emsdk@v6
+        uses: mymindstorm/setup-emsdk@main
       # Runs a single command using the runners shell
       - name: Build
         run: em++ -O2 -std=c++11 Object3D.cpp Model3D.cpp GLSetup.cpp Matrix.cpp picker.cpp staticgeom.cpp RenderingContext.cpp testing.cpp linuxmain.cpp -o index.html -s DEMANGLE_SUPPORT=1 -s FULL_ES3=1 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 --preload-file fragshader.txt --preload-file vertshader.txt --preload-file sfragshader.txt --preload-file svertshader.txt --preload-file nfragshader.txt --preload-file nvertshader.txt --preload-file assets/crane.3dm --preload-file assets/landscape-nouv.3dm --preload-file assets/monument.3dm --preload-file textures/grass.jpg --preload-file textures/btile.jpg --preload-file textures/lbtile.jpg --preload-file textures/green.bmp --preload-file textures/rust.jpg --preload-file textures/glass.jpg --preload-file textures/metal.jpg --preload-file textures/negx.jpg --preload-file textures/posx.jpg --preload-file textures/negx.jpg --preload-file textures/negz.jpg --preload-file textures/posz.jpg --preload-file textures/posy.jpg
@@ -32,7 +32,7 @@ jobs:
         
         
       - name: Upload index.html
-        uses: actions/upload-artifact@v2.1.4
+        uses: actions/upload-artifact@main
         with:
           # Artifact name
           name: index.html # optional, default is artifact
@@ -40,7 +40,7 @@ jobs:
           path: index.html   
           
       - name: Upload index.js
-        uses: actions/upload-artifact@v2.1.4
+        uses: actions/upload-artifact@main
         with:
           # Artifact name
           name: index.js # optional, default is artifact
@@ -48,7 +48,7 @@ jobs:
           path: index.js
           
       - name: Upload main
-        uses: actions/upload-artifact@v2.1.4
+        uses: actions/upload-artifact@main
         with:
           # Artifact name
           name: main # optional, default is artifact
