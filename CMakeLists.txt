@@ -21,6 +21,7 @@ target_include_directories(OpenGLAnimation PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Add OpenGL and GLUT libraries
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 
 # Add FreeGLUT source directory
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/freeglut-3.6.0)
