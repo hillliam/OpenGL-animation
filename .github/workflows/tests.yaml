@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: install cmake
-        run: sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev wget -y
+        run: sudo apt-get install libglu1-mesa-dev libglew-dev freeglut3-dev mesa-common-dev wget -y
       - name: download freeglut3-dev
         run: wget -O freeglut-3.6.0.tar.gz https://github.com/freeglut/freeglut/releases/download/v3.6.0/freeglut-3.6.0.tar.gz
       - name: extract freeglut3-dev
