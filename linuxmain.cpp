@@ -424,10 +424,10 @@ void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 		}
 		break;
 	case '3': // wireframe mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		break;
 	case '4': // normal mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
 	case '7': // normal mode
 		activeeffect = 0;
