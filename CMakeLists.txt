@@ -26,29 +26,17 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/freeglut-3.6.0)
 
 # Specify the paths to the GLEW library and include directory
-set(GLEW_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glew-2.1.0/include")
-set(GLEW_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/glew-2.1.0/lib/Release/x64/glew32.lib")
+#set(GLEW_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glew-2.1.0/include")
+#set(GLEW_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/glew-2.1.0/lib/Release/x64/glew32.lib")
 
 # Include GLEW headers
-include_directories(${GLEW_INCLUDE_DIR})
+#include_directories(${GLEW_INCLUDE_DIR})
 
 # Link libraries
 target_link_libraries(OpenGLAnimation
   OpenGL::GL
   freeglut
-  ${GLEW_LIBRARY}
-  kernel32.lib
-  user32.lib
-  gdi32.lib
-  winspool.lib
-  comdlg32.lib
-  advapi32.lib
-  shell32.lib
-  ole32.lib
-  oleaut32.lib
-  uuid.lib
-  odbc32.lib
-  odbccp32.lib
+  #${GLEW_LIBRARY}
 )
 
 # Add tests

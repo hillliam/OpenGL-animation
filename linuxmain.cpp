@@ -176,11 +176,6 @@ int main(int argc, char **argv)
   glutKeyboardFunc(OnKeyDown);
   glutMouseFunc(OnMouseMove);
 
-  GLenum err=glewInit();
-  if (err!=GLEW_OK)
-    return 1;
-	//DisplayMessage((char*) glewGetErrorString(err));
-
   CreateObjects();
   //cout<< "loaded all models"<<endl;
   setupskybox();
@@ -424,10 +419,10 @@ void OnKeyDown(unsigned char nChar, int nRepCnt, int nFlags)
 		}
 		break;
 	case '3': // wireframe mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// WebGL does not support glPolygonMode, so we skip this
 		break;
 	case '4': // normal mode
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		// WebGL does not support glPolygonMode, so we skip this
 		break;
 	case '7': // normal mode
 		activeeffect = 0;
