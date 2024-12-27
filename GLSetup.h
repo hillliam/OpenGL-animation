@@ -1,11 +1,16 @@
 #pragma once
 
+#define GLEW_STATIC 
+
 #ifdef _WIN32
 #include <Windows.h>
+#include "GL/glew.h"
 #else
-#include <GL/gl.h>
+#include <GL/glew.h>
 #endif
 
+//#include "GL\eglew.h"
+//#include "GL\glxew.h"
 #ifdef _WIN32
 #include "GL/wglew.h"
 #endif

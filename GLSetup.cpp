@@ -20,6 +20,7 @@ HDC InitGL(HWND parent)
     return 0;
   HGLRC hrcs = wglCreateContext(hdcNew);
   wglMakeCurrent(hdcNew, hrcs);
+  GLenum err = glewInit();
   const int attributes[] =
   {
 	  WGL_CONTEXT_MAJOR_VERSION_ARB, 4, 
