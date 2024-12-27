@@ -196,7 +196,7 @@ void showerror()
   const GLubyte *errString;
   if ((errCode = glGetError()) != GL_NO_ERROR)
   {
-    errString = gluErrorString(errCode);
+    errString = glewGetErrorString(errCode);
   }
   cout << errString;
 }

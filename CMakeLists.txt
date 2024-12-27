@@ -25,14 +25,11 @@ find_package(OpenGL REQUIRED)
 # Add FreeGLUT source directory
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/freeglut-3.6.0)
 
-# Add GLEW source directory with EXCLUDE_FROM_ALL to avoid building unnecessary targets
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/glew/build/cmake EXCLUDE_FROM_ALL)
-
 # Link libraries
 target_link_libraries(OpenGLAnimation
   OpenGL::GL
   freeglut
-  glew
+  GLEW::GLEW
 )
 
 # Add tests
