@@ -14,6 +14,12 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Disable -Werror for GoogleTest
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  set_target_properties(gtest PROPERTIES COMPILE_FLAGS "-Wno-error")
+  set_target_properties(gtest_main PROPERTIES COMPILE_FLAGS "-Wno-error")
+endif()
+
 enable_testing()
 
 # Add test files
