@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "../Object3D.cpp"
 #include "../RenderingContext.cpp"
+#include "../Matrix.cpp"
 
 class Object3DTest : public ::testing::Test {
 protected:
