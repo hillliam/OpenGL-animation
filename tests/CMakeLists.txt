@@ -36,10 +36,16 @@ add_executable(
 target_link_libraries(
   Object3DTest
   gtest_main
+  OpenGL::GL
+  freeglut
+  GLEW::GLEW
 )
 target_link_libraries(
   MatrixTest
   gtest_main
+  OpenGL::GL
+  freeglut
+  GLEW::GLEW
 )
 
 include(GoogleTest)
