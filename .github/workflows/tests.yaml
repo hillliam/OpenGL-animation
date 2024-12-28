@@ -27,5 +27,7 @@ jobs:
         run: tar -xvf freeglut-3.6.0.tar.gz
       - name: CMake Action
         uses: threeal/cmake-action@main
+      - name: list build folder
+        run: ls build
       - name: run tests
-        run: ctest --test-dir build
+        run: ./build/MatrixTest && ./build/Object3DTest
