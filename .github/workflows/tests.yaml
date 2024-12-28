@@ -28,6 +28,6 @@ jobs:
       - name: CMake Action
         uses: threeal/cmake-action@main
       - name: list build folder
-        run: ls build
+        run: ls build/bin
       - name: run tests
-        run: ./build/MatrixTest && ./build/Object3DTest
+        run: ./build/bin/MatrixTest && ./build/bin/Object3DTest
