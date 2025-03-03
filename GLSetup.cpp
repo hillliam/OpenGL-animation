@@ -13,12 +13,28 @@ HDC InitGL(HWND parent)
 
   if (!SetupPixelFormat(hdcNew))
     return 0;
-
-  HGLRC hrc=wglCreateContext(hdcNew);
-  wglMakeCurrent(hdcNew, hrc);
-
+  HGLRC hrcs = wglCreateContext(hdcNew);
+  wglMakeCurrent(hdcNew, hrcs);
+  GLenum err = glewInit();
+  const int attributes[] =
+  {
+	  WGL_CONTEXT_MAJOR_VERSION_ARB, 3, 
+	  WGL_CONTEXT_MINOR_VERSION_ARB, 3, 
+	  WGL_CONTEXT_PROFILE_MASK_ARB,
+	  //WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+	  WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB,
+	  0//WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB, 0
+  };
+  if (wglCreateContextAttribsARB)
+  {
+	  HGLRC hrc = wglCreateContextAttribsARB(hdcNew, NULL, attributes);
+	  wglMakeCurrent(NULL, NULL);
+	  wglDeleteContext(hrcs);
+	  wglMakeCurrent(hdcNew, hrc);
+  }
   glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
+  const GLubyte* message = glGetString(GL_VERSION);
   //glDisable(GL_CULL_FACE);
   return hdcNew;
 }
@@ -139,7 +155,7 @@ bool LinkProgram(int program, int shader, int fragment)
 {
   glAttachShader(program, shader);
   glAttachShader(program, fragment);
-
+  //glBindFragDataLocation(program, 0, "result");
   glLinkProgram(program);
       
   int status;

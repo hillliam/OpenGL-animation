@@ -13,7 +13,7 @@ public:
   void Draw(RenderingContext* rcontext);
 
   void bindbyname(const char * name, const char * filename);
-
+  void copybyname(const char * name, const char * copyname);
   int GetNoOfObjects();
   Object3D** GetObjects();
 
@@ -46,7 +46,7 @@ inline void Model3D::Draw(RenderingContext* rcontext)
 
 inline void Model3D::bindbyname(const char* name, const char * filename)
 {
-	for (int i = 1; i != noofobjects; i++)
+	for (int i = 0; i != noofobjects; i++)
 	{
 		Object3D* item = objects[i];
 		if (_stricmp(item->getName(), name) == 0)
@@ -54,4 +54,23 @@ inline void Model3D::bindbyname(const char* name, const char * filename)
 			item->bindtexture(filename);
 		}
 	}
+}
+
+inline void Model3D::copybyname(const char * name, const char * copyname)
+{
+	Object3D* one = NULL;
+	Object3D* two = NULL;
+	for (int i = 0; i != noofobjects; i++)
+	{
+		Object3D* item = objects[i];
+		if (_stricmp(item->getName(), name) == 0)
+		{
+			one = item;
+		}
+		if (_stricmp(item->getName(), copyname) == 0)
+		{
+			two = item;
+		}
+	}
+	one->SetTextureMap(two->texturemap);
 }

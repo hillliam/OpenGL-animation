@@ -11,6 +11,8 @@ public:
 	void draw(RenderingContext * rcontext);
 	void bindbyname(const char* name, const char * filename);
 	void rename(const char * name, const char * newname);
+	void copybyname(const char * name, const char * copyname);
+
 	location startpoint = {0,0,-1};
 	location startrotation = { 0,0,0 };
 	location startscale = { 1,1,1 };
@@ -81,6 +83,11 @@ inline void staticgeom::rename(const char* name, const char * newname)
 		}
 	}
 }
+inline void staticgeom::copybyname(const char * name, const char * copyname)
+{
+	model->copybyname(name, copyname);
+}
+
 inline void staticgeom::maplocal()
 {
 	Object3D* base = model->GetObjects()[0];

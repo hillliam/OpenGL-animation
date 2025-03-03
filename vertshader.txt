@@ -17,27 +17,34 @@ uniform mat4 u_mvmatrix;
 uniform mat4 u_mvpmatrix; 
  
 //textureflag
-uniform bool u_textured = false;
+uniform int u_textured = 0;
 
 // Attributes 
-attribute vec4 a_position; 
-attribute vec3 a_normal;
-attribute vec2 a_uv; 
+in vec4 a_position; 
+in vec3 a_normal;
+in vec2 a_uv; 
 
 // Varyings 
-varying vec4 v_colour;
-varying vec4 ambientLight;
-varying vec4 diffuseLight;
-varying vec4 specularLight;
+//out vec4 v_colour;
+out vec4 ambientLight;
+out vec4 diffuseLight;
+out vec4 specularLight;
 
 // texture if maped
 uniform sampler2D ourTexture;
+
+// screen effect
+uniform int u_effect;
 
 //out bool textured;
 out vec2 TexCoord;
 
 void main()  
 { 
+	//v_colour = vec4(1,1,1,1);
+	ambientLight = vec4(1,1,1,1);
+	diffuseLight = vec4(1,1,1,1);
+	specularLight = vec4(1,1,1,1);
 	//textured = u_textured;
 	TexCoord = a_uv;
 	// Calculate and normalise eye space normal 
@@ -48,7 +55,7 @@ void main()
 	float ndotl=max(0.0, dot(ecNormal, u_l_direction)); 
 	float ndoth=max(0.0, dot(ecNormal, u_l_halfplane));
 	specularLight=vec4(0.0);
-	if (u_textured)
+	if (u_textured >= 1)
 	{
 		// Ambient light 
 		ambientLight=u_l_ambient*texture(ourTexture, TexCoord); 
@@ -72,6 +79,6 @@ void main()
 		if (ndoth>0.0)  
 			specularLight=pow(ndoth, u_m_shininess)*u_l_specular*u_m_specular;  
 	}
-	v_colour=ambientLight+diffuseLight+specularLight;
-	gl_Position=u_mvpmatrix*a_position; 
+	//v_colour = ambientLight+diffuseLight+specularLight;
+	gl_Position = u_mvpmatrix*a_position; 
 } 

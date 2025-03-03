@@ -23,6 +23,8 @@ public:
   void RotateZ(const float degs);
   int glprogram; // full shader with lighting 
   int nullglprogram; // no lighting program
+  int screenprogram; // screen shader
+  int effect; // post effect
   int mvhandle, mvphandle;
   float viewmatrix[16], projectionmatrix[16];
   float mvmatrix[16], mvpmatrix[16];
@@ -32,6 +34,11 @@ public:
   int mathandles[4];    // ambient, diffuse, specular, shininess
   int verthandles[3];   // position, normal, uv
   int textureflag[1];   // diffuse
+
+  unsigned int framebuffer; // framebuffer
+  unsigned int texColorBuffer; //colour
+  unsigned int rbo; // render
+
 
 private:
   int depth;

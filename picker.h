@@ -225,11 +225,20 @@ inline picker::picker()
 
 inline void picker::maptextures()
 {
-	pickers->bindbyname("arm_mid", "textures\\rust.jpg");
-	pickers->bindbyname("arm_end", "textures\\rust.jpg");
+	pickers->bindbyname("arm_mid", "textures\\rust.jpg"); 
+	pickers->copybyname("arm_end", "arm_mid"); // save memory by copying texture id
+	pickers->copybyname("arm_base", "arm_mid");
+	pickers->copybyname("armjoint", "arm_mid");
+	pickers->copybyname("lift_box", "arm_mid");
 	pickers->bindbyname("left_wind", "textures\\glass.jpg");
-	pickers->bindbyname("right_wind", "textures\\glass.jpg");
+	pickers->copybyname("right_wind", "left_wind");
 	pickers->bindbyname("cabin", "textures\\metal.jpg");
+	pickers->copybyname("base", "cabin");
+	pickers->copybyname("base", "cabin");
+	pickers->copybyname("base", "cabin");
+	//pickers->bindbyname("rear_wheel", "textures\\tyre_tread.jpg"); texturing wheels is not working
+	//pickers->bindbyname("left_wheel", "textures\\tyre_tread.jpg");
+	//pickers->bindbyname("rightwheel", "textures\\tyre_tread.jpg");
 }
 
 inline picker::~picker()
