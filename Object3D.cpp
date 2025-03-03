@@ -218,6 +218,19 @@ void Object3D::SetMaterial(const byte* buffer)
   for (int i=0; i<4; i++)
     specular[i]*=spec;
 }
+
+void Object3D::SetMaterial(const Object3D* copy)
+{
+	for (int i = 0; i<4; i++, i++)
+	{
+		ambient[i] = copy->ambient[i];
+		diffuse[i] = copy->diffuse[i];
+		specular[i] = copy->specular[i];
+	}
+
+	glossiness = copy->glossiness;
+	speclevel = copy->speclevel;
+}
   
 void Object3D::Draw(RenderingContext* rcontext)
 {

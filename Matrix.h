@@ -33,8 +33,7 @@ public:
 
 inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* centre, const float* up)
 {
-	Matrix::SetIdentity(matrix);
-	float nup[3] = {up[0], up[1], up[2]};
+	float nup[3] = { up[0], up[1], up[2] };
 	Matrix::Normalise3(nup);
 	float* forward = new float[3];
 	forward[0] = centre[0] - eye[0];
@@ -42,25 +41,27 @@ inline void Matrix::SetLookAt(float* matrix, const float* eye, const float* cent
 	forward[2] = centre[2] - eye[2];
 	Matrix::Normalise3(forward);
 	float* s = new float[3];
-	CrossProduct3(forward, up, s);
+	CrossProduct3(forward, nup, s);
 	Matrix::Normalise3(s);
-	matrix[0] = s[0];
-	matrix[4] = s[1]; // not negative
-	matrix[8] = s[2];
 	float* u = new float[3];
 	CrossProduct3(s, forward, u);
 	Matrix::Normalise3(u);
+	float ns[3] = { -s[0], -s[1], -s[2] };
+	float nu[3] = { -u[0], -u[1], -u[2] };
+	Matrix::SetIdentity(matrix);
+	matrix[0] = s[0];
+	matrix[4] = s[1]; // not negative
+	matrix[8] = s[2];
+
 	matrix[1] = u[0];
 	matrix[5] = u[1]; // not right
 	matrix[9] = u[2];
-	matrix[2] = forward[0];
+
+	matrix[2] = -forward[0];
 	matrix[6] = -forward[1]; //not negative
 	matrix[10] = -forward[2];
-	matrix[12] = DotProduct3(s, eye);
-	u[0] = -u[0];
-	u[1] = -u[1];
-	u[2] = -u[2];
-	matrix[13] = DotProduct3(u, eye); // FIX 
+	matrix[12] = DotProduct3(ns, eye);
+	matrix[13] = DotProduct3(nu, eye); // FIX 
 	matrix[14] = DotProduct3(forward, eye);
 }
 
